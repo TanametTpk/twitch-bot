@@ -1,18 +1,24 @@
+import ICommand from "../interfaces/ICommand";
+import IMessage from "../interfaces/IMessage";
 import IPublisher from "../interfaces/IPublisher";
 import ISubscriber from "../interfaces/ISubscriber";
 import Tearable from "../interfaces/Tearable";
 
-export default abstract class AbstractPublisher<T> implements IPublisher<T>, Tearable {
-    private subscribers: ISubscriber<T>[] = [];
+export default abstract class AbstractPublisher implements Tearable {
+    private commands!: ICommand[]
 
-    public register(subscriber: ISubscriber<T>): void {
-        this.subscribers.push(subscriber);
+    constructor(commands: ICommand[]) {
+        this.commands = commands
     }
 
-    public publish(messages: T[]): void {
-        this.subscribers.map((subscriber: ISubscriber<T>) => {
-            messages.map((message) => subscriber.receive(message));
-        })
+    protected findMatchCommand(message: string): ICommand | null {
+        for (let i = 0; i < this.commands.length; i++) {
+            const command = this.commands[i];
+            if (command.match(message)) {
+                return command;
+            }
+        }
+        return null;
     }
 
     public abstract start(): void

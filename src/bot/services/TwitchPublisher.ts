@@ -1,12 +1,12 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
-import IMessage from "../../interfaces/IMessage";
 import tmi from 'tmi.js'
+import ICommand from "../../interfaces/ICommand";
 
-export default class TwitchCommander extends AbstractPublisher<IMessage> {
+export default class TwitchCommander extends AbstractPublisher {
     private client: tmi.Client
 
-    public constructor() {
-        super()
+    public constructor(commands: ICommand[]) {
+        super(commands)
         this.client = new tmi.Client({
             options: {
                 debug: [undefined, 'development'].includes(process.env.NODE_ENV),
@@ -24,12 +24,13 @@ export default class TwitchCommander extends AbstractPublisher<IMessage> {
         this.client.connect();
 
         this.client.on('message', (channel, tags, message, self) => {
-            let chat: IMessage = {
-                userId: tags["user-id"] || "unknows",
-                username: tags.username || "unknows",
+            const command = this.findMatchCommand(message);
+            if (command) command.twitchPerform(
+                this.client,
+                channel,
+                tags,
                 message
-            }
-            this.publish([chat])
+            )
         });
     }
 
