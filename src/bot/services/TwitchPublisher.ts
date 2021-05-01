@@ -1,15 +1,16 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import IMessage from "../../interfaces/IMessage";
 import tmi from 'tmi.js'
+import { TwitchConfig } from "../../interfaces/Configs";
 
 export default class TwitchCommander extends AbstractPublisher<IMessage> {
     private client: tmi.Client
 
-    public constructor(channel_name: string) {
+    public constructor(config: TwitchConfig) {
         super()
         this.client = new tmi.Client({
             connection: { reconnect: true },
-            channels: [ channel_name ]
+            channels: [ config.channel_name ]
         })
     }
 

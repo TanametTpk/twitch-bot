@@ -1,14 +1,15 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import IMessage from "../../interfaces/IMessage";
 import Discord from 'discord.js'
+import { DiscordConfig } from "../../interfaces/Configs";
 
 export default class DiscordPublisher extends AbstractPublisher<IMessage> {
     private token: string;
     private client: Discord.Client;
     
-    public constructor(token: string) {
+    public constructor(config: DiscordConfig) {
         super();
-        this.token = token;
+        this.token = config.token;
         this.client = new Discord.Client();
     }
 
