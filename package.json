@@ -1,0 +1,25 @@
+{
+   "name": "twitch-bot",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "ts-node src/index.ts"
+   },
+   "author": "",
+   "license": "ISC",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "@types/tmi.js": "^1.7.1",
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "discord.js": "^12.5.3",
+      "reflect-metadata": "^0.1.10",
+      "sqlite3": "^4.0.3",
+      "tmi.js": "^1.8.3",
+      "typeorm": "0.2.32"
+   }
+}
