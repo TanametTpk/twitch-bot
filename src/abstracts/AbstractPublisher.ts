@@ -1,7 +1,4 @@
 import ICommand from "../interfaces/ICommand";
-import IMessage from "../interfaces/IMessage";
-import IPublisher from "../interfaces/IPublisher";
-import ISubscriber from "../interfaces/ISubscriber";
 import Tearable from "../interfaces/Tearable";
 
 export default abstract class AbstractPublisher implements Tearable {
