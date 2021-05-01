@@ -7,15 +7,18 @@ import ISubscriber from '../interfaces/ISubscriber';
 import requireAll from './utils/require-all';
 import ICommand from '../interfaces/ICommand';
 import Tearable from '../interfaces/Tearable';
+import getConfigs from './utils/getConfigs';
+import Config from '../interfaces/Configs';
 
 export default class Bot implements Tearable {
     private publishers: AbstractPublisher<IMessage>[]
     private messageCommander: ISubscriber<IMessage>
 
     constructor() {
+        let config: Config = getConfigs();
         this.publishers = [
-            new DiscordPublisher(),
-            new TwitchCommander()
+            new DiscordPublisher(config.discord),
+            new TwitchCommander(config.twitch)
         ]
 
         let commands: ICommand[] = Object.values(requireAll(__dirname + '/src/bot/commands'));

@@ -1,3 +1,8 @@
+export default interface Config {
+    discord: DiscordConfig
+    twitch: TwitchConfig
+}
+
 export interface DiscordConfig {
     token: string
 }
