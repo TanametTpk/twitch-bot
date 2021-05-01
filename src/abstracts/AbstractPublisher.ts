@@ -9,9 +9,9 @@ export default abstract class AbstractPublisher<T> implements IPublisher<T>, Tea
         this.subscribers.push(subscriber);
     }
 
-    public publish(data: T): void {
+    public publish(messages: T[]): void {
         this.subscribers.map((subscriber: ISubscriber<T>) => {
-            subscriber.receive(data);
+            messages.map((message) => subscriber.receive(message));
         })
     }
 

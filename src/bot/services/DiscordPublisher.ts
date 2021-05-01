@@ -1,12 +1,32 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import IMessage from "../../interfaces/IMessage";
+import Discord from 'discord.js'
 
 export default class DiscordPublisher extends AbstractPublisher<IMessage> {
+    private token: string;
+    private client: Discord.Client;
+    
+    public constructor(token: string) {
+        super();
+        this.token = token;
+        this.client = new Discord.Client();
+    }
+
     public start(): void {
-        throw new Error("Method not implemented.");
+        this.client.on('message', msg => {
+            let chat: IMessage = {
+                userId: msg.author.id,
+                username: msg.author.username,
+                message: msg.content
+            }
+
+            this.publish([chat]);
+        })
+
+        this.client.login(this.token);
     }
 
     public stop(): void {
-        throw new Error("Method not implemented.");
+        this.client.destroy()
     }
 }
