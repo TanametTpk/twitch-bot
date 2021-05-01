@@ -1,5 +1,4 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
-import IMessage from "../../interfaces/IMessage";
 import Discord from 'discord.js'
 import ICommand from "../../interfaces/ICommand";
 
