@@ -1,15 +1,12 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import IMessage from "../../interfaces/IMessage";
 import Discord from 'discord.js'
-import { DiscordConfig } from "../../interfaces/Configs";
 
 export default class DiscordPublisher extends AbstractPublisher<IMessage> {
-    private token: string;
     private client: Discord.Client;
     
-    public constructor(config: DiscordConfig) {
+    public constructor() {
         super();
-        this.token = config.token;
         this.client = new Discord.Client();
     }
 
@@ -24,7 +21,7 @@ export default class DiscordPublisher extends AbstractPublisher<IMessage> {
             this.publish([chat]);
         })
 
-        this.client.login(this.token);
+        this.client.login(process.env.DISCORD_OAUTH_TOKEN);
     }
 
     public stop(): void {
