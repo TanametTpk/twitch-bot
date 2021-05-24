@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index} from "typeorm";
 
 @Entity()
 export class User extends BaseEntity {
@@ -10,4 +10,10 @@ export class User extends BaseEntity {
         length: 100
     })
     name!: string;
+
+    @Index({ unique: true })
+    @Column({
+        length: 100
+    })
+    hash!: string;
 }
