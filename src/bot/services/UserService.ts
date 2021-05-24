@@ -15,15 +15,15 @@ export default class UserService implements IUserService {
         const user = new User();
         user.name = name;
         user.hash = hash;
-        
+
         return user.save();
     }
 
-    public async getUserById(id: number): Promise<User | undefined> {
+    public getUserById(id: number): Promise<User | undefined> {
         return User.findOne(id)
     }
 
-    public async getUserByHash(hash: string): Promise<User | undefined> {
+    public getUserByHash(hash: string): Promise<User | undefined> {
         return User.findOne({hash})
     }
 }
