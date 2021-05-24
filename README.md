@@ -1,7 +1,8 @@
-# Awesome Project Build with TypeORM
+# Twitch Bot By Techcast feat. Inorin
 
-Steps to run this project:
+## Installation
+1. Click install.bat
+2. Setup Configuration in .env
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+## Running Bot
+Just Click start.bat
