@@ -10,10 +10,12 @@ export default class Bot implements Tearable {
     private publishers: AbstractPublisher<any>[]
 
     constructor() {
-        let commands: any = Object.values(requireAll(__dirname + '\\commands'));
+        let discordCommands: any = Object.values(requireAll(__dirname + '\\commands\\discord'));
+        let twitchCommands: any = Object.values(requireAll(__dirname + '\\commands\\twitch'));
+
         this.publishers = [
-            new DiscordPublisher(commands["discord"] as IDiscordCommand[]),
-            new TwitchCommander(commands["twitch"] as ITwitchCommand[])
+            new DiscordPublisher(discordCommands as IDiscordCommand[]),
+            // new TwitchCommander(twitchCommands as ITwitchCommand[])
         ]
     }
 

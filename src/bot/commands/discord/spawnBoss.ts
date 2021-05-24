@@ -5,7 +5,7 @@ import GameManager from '../../../game/index';
 
 class SpawnBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!spawn";
+        return text === "!boss spawn";
     }
 
     perform(msg: Message): void {

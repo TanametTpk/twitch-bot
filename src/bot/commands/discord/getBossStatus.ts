@@ -10,14 +10,17 @@ class BossStatusCommand implements ICommand, IDiscordCommand {
 
     perform(msg: Message): void {
         const boss = GameManager.bossManager.getBoss();
-        if (!boss) msg.channel.send("boss has not already spawned!")
-
+        if (!boss) {
+            msg.channel.send("boss has not already spawned!")
+            return
+        }
+        
         msg.channel.send(`
             --- Boss Status ---
-            Level: ${boss?.getLevel()}
-            Max Hp: ${boss?.getMaxHp()}
-            Current Hp: ${boss?.getHp()}
-            Reward: ${boss?.getReward()}
+            Level ${boss?.getLevel()}
+            Max Hp ${boss?.getMaxHp()}
+            Current Hp ${boss?.getHp()}
+            Reward ${boss?.getReward()}
         `);
     }
 }
