@@ -1,6 +1,6 @@
-import { Character } from "../../database/entity/Character";
-import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
-import CharacterService from "../services/CharacterService";
+import { Character } from "../database/entity/Character";
+import { CharacterEquipment } from "../database/entity/CharacterEquipment";
+import CharacterService from "../bot/services/CharacterService";
 import moment from 'moment';
 
 export interface Reward {

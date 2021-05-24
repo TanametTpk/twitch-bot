@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import GameManager from '../../core/index';
+import GameManager from '../../../game/index';
 
 class BossStatusCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {

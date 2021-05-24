@@ -1,4 +1,4 @@
-import CharacterService from "../services/CharacterService";
+import CharacterService from "../bot/services/CharacterService";
 import BossManager from "./BossManager";
 import PlayerManager, { Reward } from "./PlayerManager";
 import cron, { ScheduledTask } from 'node-cron';
