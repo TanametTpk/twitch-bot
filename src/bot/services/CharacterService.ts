@@ -1,9 +1,10 @@
+import { IsNull, Not } from "typeorm";
 import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
 import { User } from "../../database/entity/User";
 import ICharacterService from "../../interfaces/ICharacterService";
 
-export default class CharacterService implements ICharacterService {
+class CharacterService implements ICharacterService {
     public createCharacter(user: User): Promise<Character | undefined> {
         const character = new Character();
 
@@ -79,7 +80,18 @@ export default class CharacterService implements ICharacterService {
         const character = await this.getCharacterById(id);
         if (!character) return;
 
+        character.equipment?.remove();
         character.equipment = null;
         return character.save();
     }
+
+    public getAllArmedPlayer(): Promise<[Character[], number]> {
+        return Character.findAndCount({
+            where: {
+                equipment: Not(IsNull())
+            }
+        });
+    }
 }
+
+export default new CharacterService();

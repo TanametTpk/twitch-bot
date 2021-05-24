@@ -1,7 +1,7 @@
 import { User } from "../../database/entity/User";
 import IUserService from "../../interfaces/IUserService";
 
-export default class UserService implements IUserService {
+class UserService implements IUserService {
     private async isUserAlreadyExists(hash: string): Promise<boolean> {
         const user = await this.getUserByHash(hash);
         if (user) return true;
@@ -27,3 +27,5 @@ export default class UserService implements IUserService {
         return User.findOne({hash})
     }
 }
+
+export default new UserService();

@@ -1,4 +1,5 @@
 import { Character } from "../database/entity/Character";
+import { CharacterEquipment } from "../database/entity/CharacterEquipment";
 import { User } from "../database/entity/User";
 
 export default interface ICharacterService {
@@ -9,4 +10,7 @@ export default interface ICharacterService {
     addCoinToCharacter(id: number, coin: number): Promise<Character | undefined>
     removeCoinFromCharacter(id: number, coin: number): Promise<Character | undefined>
     updateCharacterStatus(id: number, max_hp: number, atk: number): Promise<Character | undefined>
+    getAllArmedPlayer(): Promise<[Character[], number]>
+    setEquipment(id: number, equipment: CharacterEquipment): Promise<Character | undefined>
+    removeEquipment(id: number): Promise<Character | undefined>
 }

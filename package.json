@@ -11,12 +11,15 @@
    "license": "ISC",
    "devDependencies": {
       "@types/node": "^8.0.29",
+      "@types/node-cron": "^2.0.3",
       "@types/tmi.js": "^1.7.1",
       "ts-node": "3.3.0",
       "typescript": "3.3.3333"
    },
    "dependencies": {
       "discord.js": "^12.5.3",
+      "moment": "^2.29.1",
+      "node-cron": "^3.0.0",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
       "tmi.js": "^1.8.3",

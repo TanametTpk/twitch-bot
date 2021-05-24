@@ -2,7 +2,7 @@ import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
 import ICharacterEquipmentService from "../../interfaces/ICharacterEquipmentService";
 
-export default class EquipmentService implements ICharacterEquipmentService {
+class EquipmentService implements ICharacterEquipmentService {
     public createEquipment(character: Character, atk: number, expired_time: number): Promise<CharacterEquipment | undefined> {
         const equipment = new CharacterEquipment();
         equipment.character = character;
@@ -24,3 +24,5 @@ export default class EquipmentService implements ICharacterEquipmentService {
         equipment.remove();
     }
 }
+
+export default new EquipmentService();
