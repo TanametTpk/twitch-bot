@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 
-export default class SpawnBossCommand implements ICommand, IDiscordCommand {
+class SpawnBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
         return text === "!spawn";
     }
@@ -11,3 +11,5 @@ export default class SpawnBossCommand implements ICommand, IDiscordCommand {
         msg.channel.send("spawn boss now!");
     }
 }
+
+export default new SpawnBossCommand();

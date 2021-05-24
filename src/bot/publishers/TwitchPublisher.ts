@@ -4,10 +4,10 @@ import client from '../twitch';
 import ITwitchCommand from "../../interfaces/ITwitchCommand";
 import ICommand from "../../interfaces/ICommand";
 
-export default class TwitchCommander extends AbstractPublisher<ITwitchCommand & ICommand> {
+export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
     private client: tmi.Client
 
-    public constructor(commands: (ITwitchCommand & ICommand)[]) {
+    public constructor(commands: ITwitchCommand[]) {
         super(commands)
         this.client = client;
     }

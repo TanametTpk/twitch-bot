@@ -2,7 +2,7 @@ import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 
-export default class GetStatusCommand implements ICommand, ITwitchCommand {
+class GetStatusCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
         return text === "!status";
     }
@@ -11,3 +11,5 @@ export default class GetStatusCommand implements ICommand, ITwitchCommand {
         client.say(channel, `@${tags.username}, status`)
     }
 }
+
+export default new GetStatusCommand();

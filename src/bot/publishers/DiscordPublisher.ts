@@ -4,10 +4,10 @@ import client from '../discord';
 import ICommand from "../../interfaces/ICommand";
 import IDiscordCommand from "../../interfaces/IDiscordCommand";
 
-export default class DiscordPublisher extends AbstractPublisher<IDiscordCommand & ICommand> {
+export default class DiscordPublisher extends AbstractPublisher<IDiscordCommand> {
     private client: Discord.Client;
     
-    public constructor(commands: (IDiscordCommand & ICommand)[]) {
+    public constructor(commands: IDiscordCommand []) {
         super(commands);
         this.client = client;
     }

@@ -2,7 +2,7 @@ import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 
-export default class BuyWeaponCommand implements ICommand, ITwitchCommand {
+class BuyWeaponCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
         return text === "!buy <int>";
     }
@@ -13,3 +13,5 @@ export default class BuyWeaponCommand implements ICommand, ITwitchCommand {
         // set item
     }
 }
+
+export default new BuyWeaponCommand();

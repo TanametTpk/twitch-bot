@@ -2,7 +2,7 @@ import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 
-export default class AttackPlayerCommand implements ICommand, ITwitchCommand {
+class AttackPlayerCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
         return text === "!attack player <string>";
     }
@@ -18,3 +18,5 @@ export default class AttackPlayerCommand implements ICommand, ITwitchCommand {
         // send msg
     }
 }
+
+export default new AttackPlayerCommand();
