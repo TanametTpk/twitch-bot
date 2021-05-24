@@ -1,7 +1,6 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import Discord from 'discord.js';
 import client from '../discord';
-import ICommand from "../../interfaces/ICommand";
 import IDiscordCommand from "../../interfaces/IDiscordCommand";
 
 export default class DiscordPublisher extends AbstractPublisher<IDiscordCommand> {
