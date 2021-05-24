@@ -1,14 +1,14 @@
 import ICommand from "../interfaces/ICommand";
 import Tearable from "../interfaces/Tearable";
 
-export default abstract class AbstractPublisher implements Tearable {
-    private commands!: ICommand[]
+export default abstract class AbstractPublisher<T extends ICommand> implements Tearable {
+    private commands!: T[]
 
-    constructor(commands: ICommand[]) {
+    constructor(commands: T[]) {
         this.commands = commands
     }
 
-    protected findMatchCommand(message: string): ICommand | null {
+    protected findMatchCommand(message: string): T | null {
         for (let i = 0; i < this.commands.length; i++) {
             const command = this.commands[i];
             if (command.match(message)) {

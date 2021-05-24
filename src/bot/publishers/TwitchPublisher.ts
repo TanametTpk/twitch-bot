@@ -1,12 +1,13 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import tmi from 'tmi.js'
 import client from '../twitch';
+import ITwitchCommand from "../../interfaces/ITwitchCommand";
 import ICommand from "../../interfaces/ICommand";
 
-export default class TwitchCommander extends AbstractPublisher {
+export default class TwitchCommander extends AbstractPublisher<ITwitchCommand & ICommand> {
     private client: tmi.Client
 
-    public constructor(commands: ICommand[]) {
+    public constructor(commands: (ITwitchCommand & ICommand)[]) {
         super(commands)
         this.client = client;
     }
@@ -16,7 +17,7 @@ export default class TwitchCommander extends AbstractPublisher {
 
         this.client.on('message', (channel, tags, message, self) => {
             const command = this.findMatchCommand(message);
-            if (command) command.twitchPerform(
+            if (command) command.perform(
                 this.client,
                 channel,
                 tags,
