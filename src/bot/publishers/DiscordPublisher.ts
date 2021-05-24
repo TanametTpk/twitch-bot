@@ -1,5 +1,6 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
-import Discord from 'discord.js'
+import Discord from 'discord.js';
+import client from '../discord';
 import ICommand from "../../interfaces/ICommand";
 
 export default class DiscordPublisher extends AbstractPublisher {
@@ -7,7 +8,7 @@ export default class DiscordPublisher extends AbstractPublisher {
     
     public constructor(commands: ICommand[]) {
         super(commands);
-        this.client = new Discord.Client();
+        this.client = client;
     }
 
     public start(): void {

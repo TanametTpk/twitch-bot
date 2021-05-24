@@ -1,5 +1,5 @@
-import DiscordPublisher from './services/DiscordPublisher';
-import TwitchCommander from './services/TwitchPublisher';
+import DiscordPublisher from './publishers/DiscordPublisher';
+import TwitchCommander from './publishers/TwitchPublisher';
 import AbstractPublisher from '../abstracts/AbstractPublisher';
 import requireAll from './utils/require-all';
 import ICommand from '../interfaces/ICommand';

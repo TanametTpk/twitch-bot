@@ -1,5 +1,6 @@
 import AbstractPublisher from "../../abstracts/AbstractPublisher";
 import tmi from 'tmi.js'
+import client from '../twitch';
 import ICommand from "../../interfaces/ICommand";
 
 export default class TwitchCommander extends AbstractPublisher {
@@ -7,17 +8,7 @@ export default class TwitchCommander extends AbstractPublisher {
 
     public constructor(commands: ICommand[]) {
         super(commands)
-        this.client = new tmi.Client({
-            options: {
-                debug: [undefined, 'development'].includes(process.env.NODE_ENV),
-            },
-            connection: { reconnect: true },
-            identity: {
-                username: process.env.tmi_username,
-                password: process.env.TWITCH_OAUTH_TOKEN,
-            },
-            channels: [process.env.tmi_channel_name as string],
-        })
+        this.client = client;
     }
 
     public start(): void {
