@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
+import GameManager from '../../core/index';
 
 class SpawnBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -8,6 +9,7 @@ class SpawnBossCommand implements ICommand, IDiscordCommand {
     }
 
     perform(msg: Message): void {
+        GameManager.spawnBoss();
         msg.channel.send("spawn boss now!");
     }
 }

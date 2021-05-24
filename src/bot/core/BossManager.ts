@@ -4,6 +4,10 @@ export default class BossManager {
     private boss: Boss | undefined;
     private attacker: Map<number, number>;
 
+    constructor() {
+        this.attacker = new Map();
+    }
+
     private calculateDiffuculty(): number {
         // TODO - do something here
         return 0

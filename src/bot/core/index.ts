@@ -4,9 +4,9 @@ import PlayerManager, { Reward } from "./PlayerManager";
 import cron, { ScheduledTask } from 'node-cron';
 
 class GameManager {
-    private bossManager: BossManager;
-    private playerManager: PlayerManager;
-    private attackPlayerTask: ScheduledTask | undefined;
+    public bossManager: BossManager;
+    public playerManager: PlayerManager;
+    public attackPlayerTask: ScheduledTask | undefined;
 
     constructor() {
         this.bossManager = new BossManager();
@@ -20,7 +20,7 @@ class GameManager {
         cron.schedule('* * 1 * * *', this.spawnBoss)
     }
 
-    private spawnBoss(): void {
+    public spawnBoss(): void {
         this.bossManager.spawnBoss();
         this.attackPlayerTask = cron.schedule('* 15 * * * *', this.bossAttackRandomPlayer)
     }
