@@ -1,8 +1,13 @@
 import Boss from "./Boss";
 
+interface AttackInfo {
+    totalDamage: number
+    last_attack_time: Date
+}
+
 export default class BossManager {
     private boss: Boss | undefined;
-    private attacker: Map<number, number>;
+    public attacker: Map<number, AttackInfo>;
 
     constructor() {
         this.attacker = new Map();
@@ -33,13 +38,24 @@ export default class BossManager {
         return this.boss;
     }
 
+    public clear(): void {
+        this.boss = undefined;
+        this.attacker.clear();
+    }
+
     public rememberAttacker(characterId: number, dmg: number) {
+        let new_info: AttackInfo = {
+            totalDamage: dmg,
+            last_attack_time: new Date()
+        }
+
         if (this.attacker.has(characterId)) {
-            let totalDamage = this.attacker.get(characterId)!;
-            this.attacker.set(characterId, totalDamage + dmg);
+            let prev_info = this.attacker.get(characterId)!;
+            new_info.totalDamage += prev_info.totalDamage
+            this.attacker.set(characterId, new_info);
             return;
         }
 
-        this.attacker.set(characterId, dmg);
+        this.attacker.set(characterId, new_info);
     }
 }

@@ -2,6 +2,7 @@ import { Character } from "../database/entity/Character";
 import { CharacterEquipment } from "../database/entity/CharacterEquipment";
 import CharacterService from "../bot/services/CharacterService";
 import moment from 'moment';
+import { User } from "../database/entity/User";
 
 export interface Reward {
     chracterId: number
@@ -9,6 +10,20 @@ export interface Reward {
 }
 
 export default class PlayerManager {
+    private onlinePlayers: Map<number, User>
+
+    constructor() {
+        this.onlinePlayers = new Map();
+    }
+
+    public addOnlinePlayer(user: User): void {
+        this.onlinePlayers.set(user.id, user);
+    }
+
+    public removeOnlinePlayer(user: User): void {
+        this.onlinePlayers.delete(user.id);
+    }
+
     private isShouldUpdate(equipment: CharacterEquipment): boolean {
         const isSameDay = moment(equipment.last_time_check).isSame(new Date(), 'day');
         if (isSameDay) return false;
@@ -50,5 +65,9 @@ export default class PlayerManager {
         rewards.map((reward) => {
             CharacterService.addCoinToCharacter(reward.chracterId, reward.coin);
         })
+    }
+
+    public getOnlinePlayers(): User[] {
+        return Array.from(this.onlinePlayers.values());
     }
 }
