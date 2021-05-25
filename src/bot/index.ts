@@ -16,7 +16,7 @@ export default class Bot implements Tearable {
         let rewardActions: any = Object.values(requireAll(__dirname + '\\customRewards'));
 
         this.publishers = [
-            // new DiscordPublisher(discordCommands as IDiscordCommand[]),
+            new DiscordPublisher(discordCommands as IDiscordCommand[]),
             new TwitchCommander(twitchCommands as ITwitchCommand[], rewardActions as IChannelPointAction[])
         ]
     }

@@ -18,9 +18,7 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
         this.client.connect();
         console.log("start twitch");
         
-        this.client.on('message', (channel, tags, message, self) => {
-            console.log(tags);
-            
+        this.client.on('message', (channel, tags, message, self) => {            
             if (tags["custom-reward-id"]){
                 this.rewardActions.map((action) => {
                     if (action.match(tags["custom-reward-id"]))
