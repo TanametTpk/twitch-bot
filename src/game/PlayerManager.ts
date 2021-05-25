@@ -10,18 +10,35 @@ export interface Reward {
 }
 
 export default class PlayerManager {
-    private onlinePlayers: Map<number, User>
+    private onlinePlayers: Map<number, User>;
+    private totalOnlineDamage: number;
 
     constructor() {
         this.onlinePlayers = new Map();
+        this.totalOnlineDamage = 0;
     }
 
-    public addOnlinePlayer(user: User): void {
+    public async addOnlinePlayer(user: User) {
         this.onlinePlayers.set(user.id, user);
+        let character = await CharacterService.getCharacterByUserId(user.id);
+
+        if (!character) return;
+        this.totalOnlineDamage += character.atk;
+
+        if (character.equipment)
+            this.totalOnlineDamage += character.equipment.atk;
     }
 
-    public removeOnlinePlayer(user: User): void {
+    public async removeOnlinePlayer(user: User) {
         this.onlinePlayers.delete(user.id);
+
+        let character = await CharacterService.getCharacterByUserId(user.id);
+
+        if (!character) return;
+        this.totalOnlineDamage -= character.atk;
+
+        if (character.equipment)
+            this.totalOnlineDamage -= character.equipment.atk;
     }
 
     private isShouldUpdate(equipment: CharacterEquipment): boolean {
@@ -69,5 +86,9 @@ export default class PlayerManager {
 
     public getOnlinePlayers(): User[] {
         return Array.from(this.onlinePlayers.values());
+    }
+
+    public getTotalOnlineDamage(): number {
+        return this.totalOnlineDamage;
     }
 }

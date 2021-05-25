@@ -1,10 +1,16 @@
-import { IsNull, Not } from "typeorm";
+import { getRepository, IsNull, Not, Repository } from "typeorm";
 import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
 import { User } from "../../database/entity/User";
 import ICharacterService from "../../interfaces/ICharacterService";
 
 class CharacterService implements ICharacterService {
+    private repository: Repository<Character>
+
+    constructor() {
+        this.repository = getRepository(Character)
+    }
+
     public createCharacter(user: User): Promise<Character | undefined> {
         const character = new Character();
 
@@ -19,6 +25,15 @@ class CharacterService implements ICharacterService {
 
     public getCharacterById(id: number): Promise<Character | undefined> {
         return Character.findOne(id);
+    }
+
+    public async getCharacterByUserId(id: number): Promise<Character | undefined> {
+        return this.repository.findOne({
+            where: {
+                user: { id }
+            },
+            relations: ['user']
+        })
     }
 
     public async healCharacter(id: number, heal_power: number): Promise<Character | undefined> {

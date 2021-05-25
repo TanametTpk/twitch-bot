@@ -26,7 +26,8 @@ class GameManager {
     }
 
     public spawnBoss(): void {
-        this.bossManager.spawnBoss();
+        let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
+        this.bossManager.spawnBoss(totalOnlineDamage);
         this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, 15 * 60 * 1000);
     }
 
@@ -77,8 +78,8 @@ class GameManager {
         
         let lasttime = moment(info.last_attack_time);
         let now = moment();
-        let diffMin = now.diff(lasttime, 'minutes', true);
-        return diffMin > 15;
+        let diffMin = now.diff(lasttime, 'seconds', true);
+        return diffMin > 30;
     }
 
     public async attackBoss(characterId: number) {

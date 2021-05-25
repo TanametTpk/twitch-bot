@@ -1,3 +1,4 @@
+import randomIntBetween from "../bot/utils/randomIntBetween";
 import Boss from "./Boss";
 
 interface AttackInfo {
@@ -14,20 +15,17 @@ export default class BossManager {
     }
 
     private calculateDiffuculty(): number {
-        // TODO - do something here
-        return 0
+        return randomIntBetween(1, 10);
     }
 
-    private createBoss(): Boss {
-        // calculate boss difficulty
+    private createBoss(totalOnlineDamage: number): Boss {
         const level = this.calculateDiffuculty()
-        return new Boss(100, 100, level);
+        const max_hp: number = totalOnlineDamage * 4 * (level / 10)
+        return new Boss(max_hp, max_hp, level);
     }
 
-    public spawnBoss(): void {
-        this.boss = this.createBoss();
-
-        // TODO - alert player
+    public spawnBoss(totalOnlineDamage: number): void {
+        this.boss = this.createBoss(totalOnlineDamage);
     }
 
     public isBossHasSpawned(): boolean {
