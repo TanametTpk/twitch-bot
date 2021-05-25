@@ -1,10 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import dotenv from "dotenv";
 import Bot from './bot';
 import './game/index';
-
-dotenv.config();
 
 const bot: Bot = new Bot();
 
