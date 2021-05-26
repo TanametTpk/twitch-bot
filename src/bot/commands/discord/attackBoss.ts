@@ -1,15 +1,20 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
+import IGameService from "../../../interfaces/services/IGameService";
+import GameService from "../../services/GameService";
 
-class AttackBoss implements ICommand, IDiscordCommand {
+class AttackBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player att boss";
+        return text === "!player <name> att boss";
     }
 
     perform(msg: Message): void {
-        msg.channel.send("boss was attacked by player");
+        let game: IGameService = GameService;
+        let playerId = Number(msg.content.split(" ")[1]);
+        game.attackBossBy(playerId)
+        msg.channel.send("บอสโดนจมตีน");
     }
 }
 
-export default new AttackBoss();
+export default new AttackBossCommand();

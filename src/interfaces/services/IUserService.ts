@@ -1,4 +1,4 @@
-import { User } from "../database/entity/User";
+import { User } from "../../database/entity/User";
 
 export default interface IUserService {
     createUser(name: string, hash: string): Promise<User | undefined>

@@ -1,6 +1,6 @@
-import { Character } from "../database/entity/Character";
-import { CharacterEquipment } from "../database/entity/CharacterEquipment";
-import { User } from "../database/entity/User";
+import { Character } from "../../database/entity/Character";
+import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
+import { User } from "../../database/entity/User";
 
 export default interface ICharacterService {
     createCharacter(user: User): Promise<Character | undefined>

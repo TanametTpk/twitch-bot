@@ -13,6 +13,7 @@ class GameManager {
     public bossManager: BossManager;
     public playerManager: PlayerManager;
     public attackPlayerTask: NodeJS.Timer | undefined;
+    private bossNextAttackTime: Date | undefined;
 
     constructor() {
         this.bossManager = new BossManager(this.bossHasEliminated);
@@ -31,6 +32,7 @@ class GameManager {
         this.bossManager.spawnBoss(totalOnlineDamage);
 
         let fiveTeenMinutes: number = 15 * 60 * 1000;
+        this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
         this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, fiveTeenMinutes);
     }
 
@@ -149,6 +151,10 @@ class GameManager {
         if (!newEquipment) return;
 
         await CharacterService.setEquipment(character.id, newEquipment);
+    }
+
+    public getBossNextAttack(): Date | undefined {
+        return this.bossNextAttackTime;
     }
 }
 

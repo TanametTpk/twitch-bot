@@ -1,6 +1,6 @@
 import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
-import ICharacterEquipmentService from "../../interfaces/ICharacterEquipmentService";
+import ICharacterEquipmentService from "../../interfaces/services/ICharacterEquipmentService";
 
 class EquipmentService implements ICharacterEquipmentService {
     public createEquipment(character: Character, atk: number, expired_time: number): Promise<CharacterEquipment | undefined> {
