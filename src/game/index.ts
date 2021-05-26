@@ -7,6 +7,7 @@ import roll from "../bot/utils/roll";
 import sleep from "../bot/utils/sleep";
 import { Character } from "../database/entity/Character";
 import moment from 'moment';
+import EquipmentService from "../bot/services/EquipmentService";
 
 class GameManager {
     public bossManager: BossManager;
@@ -14,7 +15,7 @@ class GameManager {
     public attackPlayerTask: NodeJS.Timer | undefined;
 
     constructor() {
-        this.bossManager = new BossManager();
+        this.bossManager = new BossManager(this.bossHasEliminated);
         this.playerManager = new PlayerManager();
 
         this.playerManager.updateAllPlayerEquipment()
@@ -28,7 +29,9 @@ class GameManager {
     public spawnBoss(): void {
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
-        this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, 15 * 60 * 1000);
+
+        let fiveTeenMinutes: number = 15 * 60 * 1000;
+        this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, fiveTeenMinutes);
     }
 
     private clearBossAttackTask(): void {
@@ -57,12 +60,50 @@ class GameManager {
         client.say(channel_name, `บอสทำการใช้สกิลตีหมู่ มี ${casualties} คนในแชทได้รับบาดเจ็บ....`);
     }
 
-    private bossHasEliminated(totalReward: number): void {
-        this.clearBossAttackTask();
-        // TODO - distribute reward to player based on dealing damage to the boss
-        // calculate reward
-        let rewards: Reward[] = [];
+    private getTopFivePlayer(): number[] {
+        let playerIdList = Array.from(this.bossManager.attacker.keys());
+        let attackListInfo = Array.from(this.bossManager.attacker.values());
+        let damageMapping: Map<number, boolean> = new Map();
+        attackListInfo.map((atkInfo) => {
+            damageMapping.set(atkInfo.totalDamage, true);
+        })
+
+        let topFiveDmg: number[] = Array.from(damageMapping.keys())
+                                    .sort((a, b) => b - a)
+                                    .slice(0,5);
+        
+        let topTierPlayerIdList: number[] = []
+        for (let i = 0; i < playerIdList.length; i++) {
+            const playerId = playerIdList[i];
+            let atkInfo = this.bossManager.attacker.get(playerId);
+            if (atkInfo && topFiveDmg.includes(atkInfo.totalDamage)) {
+                topTierPlayerIdList.push(playerId);
+            }
+        }
+
+        return topTierPlayerIdList;
+    }
+
+    private async bossHasEliminated() {
+        let playerIdList: number[] = Array.from(this.bossManager.attacker.keys());
+        let topFiveDmgId: number[] = this.getTopFivePlayer();
+        let createRewards: Promise<Reward | undefined>[] = playerIdList.map(async(playerId) => {
+            let chracter = await CharacterService.getCharacterByUserId(playerId)
+            let reward: number = 1;
+            if (!chracter) return;
+            if (topFiveDmgId.includes(playerId)) reward = 5;
+
+            return {
+                chracterId: chracter.id,
+                coin: reward
+            }
+        })
+
+        let rawRewards: (Reward | undefined)[] = await Promise.all(createRewards);
+        let rewards: Reward[] = rawRewards.filter(reward => reward) as Reward[]
         this.playerManager.distributeRewards(rewards);
+
+        this.clearBossAttackTask();
     }
 
     private bossAttackRandomPlayer() {
@@ -87,8 +128,27 @@ class GameManager {
         if (!player || !this.bossManager.isBossHasSpawned() || this.canBossAttackedBy(player)) return
 
         let damage: number = this.playerManager.calculateAttackPowerOf(player);
-        this.bossManager.rememberAttacker(player.id, damage);
         this.bossManager.getBoss()?.wasAttack(damage);
+        this.bossManager.rememberAttacker(player.id, damage);
+    }
+
+    private isChracterHaveEnoughCoin(chracter: Character, requireCoin: number): boolean {
+        return chracter.coin < requireCoin;
+    }
+
+    public async buyEquipment(chracterId: number, coin: number) {
+        if (coin < 1) return;
+        if (coin > 20) coin = 20;
+    
+        let character = await CharacterService.getCharacterById(chracterId);
+        if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
+
+        await CharacterService.removeEquipment(character.id);
+
+        let newEquipment = await EquipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
+        if (!newEquipment) return;
+
+        await CharacterService.setEquipment(character.id, newEquipment);
     }
 }
 
