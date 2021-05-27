@@ -5,25 +5,31 @@ import CharacterService from "../../services/CharacterService";
 
 class GetUserCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player status <hash>";
+        return /!player status [^ ]+/.test(text);
     }
 
     async perform(msg: Message) {
         let playerId = msg.content.split(" ")[2]
-        let chracter = await CharacterService.getCharacterByUserHash(playerId)
-        let isHaveEquipment = chracter?.equipment !== undefined
-        let equipmentInfo = "Equipment info "
-        if (isHaveEquipment) {
-            equipmentInfo += `Atk ${chracter?.equipment?.atk} (ใช้ได้อีก ${chracter?.equipment?.expired_time} วัน)`
+        let character = await CharacterService.getCharacterByUserHash(playerId)
+        let equipmentInfo = ""
+
+        if (!character) {
+            msg.channel.send(`ไอ้สันขวาน มึงยังไม่สมัครบัญชี`)
+            return;
+        }
+
+        if (character.equipment) {
+            equipmentInfo += `Atk ${character?.equipment?.atk} (ใช้ได้อีก ${character?.equipment?.expired_time} วัน)`
         }
 
         msg.channel.send(`
         --- ${playerId} Status ---
-            Max Hp ${chracter?.max_hp}
-            Current Hp ${chracter?.hp}
-            Base Atk ${chracter?.atk}
-            haveEquipment ${chracter?.equipment != undefined}
-
+            Max Hp ${character?.max_hp}
+            Current Hp ${character?.hp}
+            Base Atk ${character?.atk}
+            coin ${character.coin}
+            haveEquipment ${character?.equipment !== null}
+            ${equipmentInfo}
         `);
     }
 }

@@ -20,7 +20,6 @@ class BossStatusCommand implements ICommand, IDiscordCommand {
             Level ${boss?.getLevel()}
             Max Hp ${boss?.getMaxHp()}
             Current Hp ${boss?.getHp()}
-            Reward ${boss?.getReward()}
         `);
     }
 }

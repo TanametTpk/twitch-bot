@@ -6,3 +6,4 @@ tmp/
 temp/
 *.ignore.*
 **/*.sqlite
+**/*.dev

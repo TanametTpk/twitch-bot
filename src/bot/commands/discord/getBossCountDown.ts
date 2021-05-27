@@ -19,7 +19,7 @@ class GetBossCountDownCommand implements ICommand, IDiscordCommand {
             return;
         }
 
-        let nextAttackTime = moment().diff(attackTime, 'minutes', true);
+        let nextAttackTime = moment(attackTime).diff(new Date(), 'minutes', true);
         msg.channel.send(`อีก ${nextAttackTime} นาที มึงโดนบอสตีแน่`);
     }
 }

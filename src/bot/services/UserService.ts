@@ -1,5 +1,5 @@
 import { User } from "../../database/entity/User";
-import IUserService from "../../interfaces/IUserService";
+import IUserService from "../../interfaces/services/IUserService";
 
 class UserService implements IUserService {
     private async isUserAlreadyExists(hash: string): Promise<boolean> {

@@ -8,12 +8,10 @@ interface AttackInfo {
 
 export default class BossManager {
     private boss: Boss | undefined;
-    private whenBossHasEliminatedCallback: Function;
     public attacker: Map<number, AttackInfo>;
 
-    constructor(whenBossHasEliminatedCallback: Function) {
+    constructor() {
         this.attacker = new Map();
-        this.whenBossHasEliminatedCallback = whenBossHasEliminatedCallback;
     }
 
     private calculateDiffuculty(): number {
@@ -57,9 +55,5 @@ export default class BossManager {
         }
 
         this.attacker.set(characterId, new_info);
-
-        if (this.isBossHasSpawned() && this.boss?.isDead()) {
-            this.whenBossHasEliminatedCallback();
-        }
     }
 }

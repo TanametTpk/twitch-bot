@@ -1,17 +1,19 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({path:".env.dev"});
 
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import Bot from './bot';
-import './game/index';
 
-const bot: Bot = new Bot();
+let bot: Bot | undefined
 
 createConnection().then(async connection => {
-    console.log("Bot is Running!");
+    bot = new Bot();
+    require('./game/index');
     bot.start();
+    console.log("Bot is Running!");
 }).catch(error => {
     console.log(error)
-    bot.stop();
+    if (bot)
+        bot.stop();
 });

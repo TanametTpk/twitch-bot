@@ -6,7 +6,7 @@ import GameService from "../../services/GameService";
 
 class AttackBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player <hash> att boss";
+        return /!player [^ ]+ atk boss/.test(text);
     }
 
     perform(msg: Message): void {

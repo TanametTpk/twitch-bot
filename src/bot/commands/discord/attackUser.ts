@@ -6,7 +6,7 @@ import GameService from "../../services/GameService";
 
 class AttackPlayerCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player <attackerId> pvp <attackedId>";
+        return /!player [^ ]+ pvp [^ ]+/.test(text);
     }
 
     perform(msg: Message): void {
@@ -15,7 +15,7 @@ class AttackPlayerCommand implements ICommand, IDiscordCommand {
         let attackerId = params[1];
         let attackedId = params[3];
         game.pvp(attackerId, attackedId);
-        msg.channel.send(`player ${attackerId} ถูก ${attackedId} จมตีน`);
+        msg.channel.send(`player ${attackedId} ถูก ${attackerId} จมตีน`);
     }
 }
 

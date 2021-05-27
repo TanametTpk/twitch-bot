@@ -16,7 +16,7 @@ class GameManager {
     private bossNextAttackTime: Date | undefined;
 
     constructor() {
-        this.bossManager = new BossManager(this.bossHasEliminated);
+        this.bossManager = new BossManager();
         this.playerManager = new PlayerManager();
 
         this.playerManager.updateAllPlayerEquipment()
@@ -127,15 +127,20 @@ class GameManager {
 
     public async attackBoss(characterId: number) {
         const player = await CharacterService.getCharacterById(characterId);
-        if (!player || !this.bossManager.isBossHasSpawned() || this.canBossAttackedBy(player)) return
-
+        if (!player || !this.bossManager.isBossHasSpawned() || !this.canBossAttackedBy(player)) return
+        
         let damage: number = this.playerManager.calculateAttackPowerOf(player);
-        this.bossManager.getBoss()?.wasAttack(damage);
+        let boss = this.bossManager.getBoss()
+        if (!boss) return;
+
+        boss.wasAttack(damage);
         this.bossManager.rememberAttacker(player.id, damage);
+
+        if (boss.isDead()) this.bossHasEliminated()
     }
 
     private isChracterHaveEnoughCoin(chracter: Character, requireCoin: number): boolean {
-        return chracter.coin < requireCoin;
+        return chracter.coin >= requireCoin;
     }
 
     public async buyEquipment(chracterId: number, coin: number) {
@@ -143,14 +148,16 @@ class GameManager {
         if (coin > 20) coin = 20;
     
         let character = await CharacterService.getCharacterById(chracterId);
+        console.log(character);
+        
         if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
-
         await CharacterService.removeEquipment(character.id);
 
         let newEquipment = await EquipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
         if (!newEquipment) return;
-
+        
         await CharacterService.setEquipment(character.id, newEquipment);
+        await CharacterService.removeCoinFromCharacter(character.id, coin);
     }
 
     public getBossNextAttack(): Date | undefined {

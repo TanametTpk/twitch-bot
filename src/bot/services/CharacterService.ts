@@ -1,4 +1,4 @@
-import { getRepository, IsNull, Not, Repository } from "typeorm";
+import { getRepository, ILike, IsNull, Not, Repository } from "typeorm";
 import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
 import { User } from "../../database/entity/User";
@@ -24,25 +24,27 @@ class CharacterService implements ICharacterService {
     }
 
     public getCharacterById(id: number): Promise<Character | undefined> {
-        return Character.findOne(id);
+        return this.repository.createQueryBuilder("character")
+            .leftJoinAndSelect("character.user", "user")
+            .leftJoinAndSelect("character.equipment", "equipment")
+            .where("character.id = :id", {id})
+            .getOne();
     }
 
     public async getCharacterByUserId(id: number): Promise<Character | undefined> {
-        return this.repository.findOne({
-            where: {
-                user: { id }
-            },
-            relations: ['user']
-        })
+        return this.repository.createQueryBuilder("character")
+            .leftJoinAndSelect("character.user", "user")
+            .leftJoinAndSelect("character.equipment", "equipment")
+            .where("user.id = :id", {id})
+            .getOne();
     }
 
     public async getCharacterByUserHash(hash: string): Promise<Character | undefined> {
-        return this.repository.findOne({
-            where: {
-                user: { hash }
-            },
-            relations: ['user']
-        })
+        return this.repository.createQueryBuilder("character")
+            .leftJoinAndSelect("character.user", "user")
+            .leftJoinAndSelect("character.equipment", "equipment")
+            .where("user.hash = :hash", {hash})
+            .getOne();
     }
 
     public async healCharacter(id: number, heal_power: number): Promise<Character | undefined> {

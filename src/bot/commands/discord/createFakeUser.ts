@@ -6,7 +6,7 @@ import UserService from "../../services/UserService";
 
 class CreateFakeUserCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player create <name>";
+        return /!player create [a-zA-Z0-9]+/.test(text);
     }
 
     async perform(msg: Message) {
