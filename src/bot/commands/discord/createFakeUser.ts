@@ -25,7 +25,7 @@ class CreateFakeUserCommand implements ICommand, IDiscordCommand {
             return
         }
 
-        msg.channel.send(`สร้าง User(${user.id}) เสร็จแล้ว!`);
+        msg.channel.send(`สร้าง User(${user.hash}) เสร็จแล้ว!`);
     }
 }
 

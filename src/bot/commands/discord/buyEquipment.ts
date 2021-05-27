@@ -6,7 +6,7 @@ import IShopService from "../../../interfaces/services/IShopService";
 import ShopService from "../../services/ShopService";
 
 interface Params {
-    id: number
+    id: string
     coin: number
 }
 
@@ -19,7 +19,7 @@ class BuyEquipmentCommand implements ICommand, IDiscordCommand {
         let splitedMsg = msg.split(" ");
 
         return {
-            id: Number(splitedMsg[1]),
+            id: splitedMsg[1],
             coin: Number(splitedMsg[3])
         }
     }

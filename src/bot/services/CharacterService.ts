@@ -2,7 +2,7 @@ import { getRepository, IsNull, Not, Repository } from "typeorm";
 import { Character } from "../../database/entity/Character";
 import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
 import { User } from "../../database/entity/User";
-import ICharacterService from "../../interfaces/ICharacterService";
+import ICharacterService from "../../interfaces/services/ICharacterService";
 
 class CharacterService implements ICharacterService {
     private repository: Repository<Character>
@@ -31,6 +31,15 @@ class CharacterService implements ICharacterService {
         return this.repository.findOne({
             where: {
                 user: { id }
+            },
+            relations: ['user']
+        })
+    }
+
+    public async getCharacterByUserHash(hash: string): Promise<Character | undefined> {
+        return this.repository.findOne({
+            where: {
+                user: { hash }
             },
             relations: ['user']
         })

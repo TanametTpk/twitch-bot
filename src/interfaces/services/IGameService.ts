@@ -2,8 +2,9 @@ import { Character } from "../../database/entity/Character";
 import Boss from "../../game/Boss";
 
 export default interface IGameService {
-    attackBossBy(playerId: number): void
-    pvp(attackerId: number, attackedId: number): void
+    attackBossBy(playerId: string): void
+    pvp(attackerId: string, attackedId: string): void
     getBoss(): Boss | undefined
     getBossAttackTime(): Date | undefined
+    spawnBoss(): void
 }

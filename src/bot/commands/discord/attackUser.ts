@@ -12,8 +12,8 @@ class AttackPlayerCommand implements ICommand, IDiscordCommand {
     perform(msg: Message): void {
         let game: IGameService = GameService;
         let params = msg.content.split(" ");
-        let attackerId = Number(params[1]);
-        let attackedId = Number(params[3]);
+        let attackerId = params[1];
+        let attackedId = params[3];
         game.pvp(attackerId, attackedId);
         msg.channel.send(`player ${attackerId} ถูก ${attackedId} จมตีน`);
     }

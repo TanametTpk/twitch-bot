@@ -4,18 +4,18 @@ import IGameService from "../../interfaces/services/IGameService";
 import CharacterService from "./CharacterService";
 
 class GameService implements IGameService {
-    async attackBossBy(playerId: number): Promise<void> {
-        let chracter = await CharacterService.getCharacterByUserId(playerId);
+    async attackBossBy(playerId: string): Promise<void> {
+        let chracter = await CharacterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
         
         game.attackBoss(chracter.id)
     }
 
-    async pvp(attackerId: number, attackedId: number): Promise<void> {
-        let attacker = await CharacterService.getCharacterByUserId(attackerId);
+    async pvp(attackerId: string, attackedId: string): Promise<void> {
+        let attacker = await CharacterService.getCharacterByUserHash(attackerId);
         if (!attacker) return;
 
-        await CharacterService.attackCharacter(attackedId, attacker.atk + (attacker.equipment?.atk || 0))
+        await CharacterService.attackCharacter(attacker.id, attacker.atk + (attacker.equipment?.atk || 0))
     }
 
     getBoss(): Boss | undefined {
@@ -24,6 +24,10 @@ class GameService implements IGameService {
 
     getBossAttackTime(): Date | undefined {
         return game.getBossNextAttack();
+    }
+
+    spawnBoss(): void {
+        game.spawnBoss();
     }
 }
 

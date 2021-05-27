@@ -5,12 +5,12 @@ import CharacterService from "../../services/CharacterService";
 
 class GetUserCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!player status <id>";
+        return text === "!player status <hash>";
     }
 
     async perform(msg: Message) {
-        let playerId = Number(msg.content.split(" ")[2])
-        let chracter = await CharacterService.getCharacterByUserId(playerId)
+        let playerId = msg.content.split(" ")[2]
+        let chracter = await CharacterService.getCharacterByUserHash(playerId)
         let isHaveEquipment = chracter?.equipment !== undefined
         let equipmentInfo = "Equipment info "
         if (isHaveEquipment) {
