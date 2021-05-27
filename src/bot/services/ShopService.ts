@@ -1,9 +1,15 @@
 import { Character } from "../../database/entity/Character";
+import game from "../../game";
 import IShopService from "../../interfaces/services/IShopService";
+import CharacterService from "./CharacterService";
 
 class ShopService implements IShopService {
-    buyEquipment(characterId: string, coin: number): Promise<Character | undefined> {
-        throw new Error("Method not implemented.");
+    async buyEquipment(userId: number, coin: number): Promise<Character | undefined> {
+        let chracter = await CharacterService.getCharacterByUserId(userId);
+        if (!chracter) return;
+
+        await game.buyEquipment(chracter.id, coin);
+        return CharacterService.getCharacterByUserId(userId);
     }
 }
 
