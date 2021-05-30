@@ -1,8 +1,13 @@
 import IUserService from "../../interfaces/services/IUserService";
-import prisma from '../../database/client'
-import { User } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 
 class UserService implements IUserService {
+    private client: PrismaClient
+
+    constructor(client: PrismaClient) {
+        this.client = client;
+    }
+
     private async isUserAlreadyExists(hash: string): Promise<boolean> {
         const user = await this.getUserByHash(hash);
         if (user) return true;
@@ -13,7 +18,7 @@ class UserService implements IUserService {
         const isUserExist = await this.isUserAlreadyExists(hash)
         if (isUserExist) return null;
 
-        return prisma.user.create({
+        return this.client.user.create({
             data: {
                 name,
                 hash
@@ -22,16 +27,16 @@ class UserService implements IUserService {
     }
 
     public getUserById(id: number): Promise<User | null> {
-        return prisma.user.findFirst({
+        return this.client.user.findFirst({
             where: {id}
         })
     }
 
     public getUserByHash(hash: string): Promise<User | null> {
-        return prisma.user.findFirst({
+        return this.client.user.findFirst({
             where: {hash}
         })
     }
 }
 
-export default new UserService();
+export default UserService;

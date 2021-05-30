@@ -1,10 +1,15 @@
-import { Character, Equipment } from "@prisma/client";
-import prisma from "../../database/client";
+import { Character, Equipment, PrismaClient } from "@prisma/client";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 
 class EquipmentService implements IEquipmentService {
+    private client: PrismaClient
+
+    constructor(client: PrismaClient) {
+        this.client = client;
+    }
+
     public createEquipment(character: Character, atk: number, expired_time: number): Promise<Equipment | null> {
-        return prisma.equipment.create({
+        return this.client.equipment.create({
             data: {
                 atk,
                 expired_time,
@@ -19,16 +24,16 @@ class EquipmentService implements IEquipmentService {
     }
 
     public getEquipment(id: number): Promise<Equipment | null> {
-        return prisma.equipment.findFirst({
+        return this.client.equipment.findFirst({
             where: {id}
         })
     }
 
     public removeEquipment(id: number): void {
-        prisma.equipment.delete({
+        this.client.equipment.delete({
             where: {id}
         })
     }
 }
 
-export default new EquipmentService();
+export default EquipmentService;

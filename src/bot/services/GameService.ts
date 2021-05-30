@@ -1,21 +1,24 @@
 import game from "../../game";
 import Boss from "../../game/Boss";
+import ICharacterService from "../../interfaces/services/ICharacterService";
 import IGameService from "../../interfaces/services/IGameService";
-import CharacterService from "./CharacterService";
 
 class GameService implements IGameService {
+    private characterService: ICharacterService
+
+    constructor(characterService: ICharacterService) {
+        this.characterService = characterService
+    }
+
     async attackBossBy(playerId: string): Promise<void> {
-        let chracter = await CharacterService.getCharacterByUserHash(playerId);
+        let chracter = await this.characterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
         
         game.attackBoss(chracter.id)
     }
 
     async pvp(attackerId: string, attackedId: string): Promise<void> {
-        let attacker = await CharacterService.getCharacterByUserHash(attackerId);
-        if (!attacker) return;
-
-        await CharacterService.attackCharacter(attacker.id, attacker.atk + (attacker.equipment?.atk || 0))
+        throw new Error("not implement yet");
     }
 
     getBoss(): Boss | undefined {
@@ -31,4 +34,4 @@ class GameService implements IGameService {
     }
 }
 
-export default new GameService();
+export default GameService;

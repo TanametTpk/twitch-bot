@@ -1,10 +1,15 @@
-import { Character, Equipment, User } from "@prisma/client";
-import prisma from "../../database/client";
+import { Character, Equipment, PrismaClient, User } from "@prisma/client";
 import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService";
 
 class CharacterService implements ICharacterService {
+    private client: PrismaClient
+
+    constructor(client: PrismaClient) {
+        this.client = client;
+    }
+
     public createCharacter(user: User): Promise<Character | null> {
-        return prisma.character.create({
+        return this.client.character.create({
             data: {
                 coin: 0,
                 atk: 10,
@@ -18,7 +23,7 @@ class CharacterService implements ICharacterService {
     }
 
     public getCharacterById(id: number): Promise<(Character & IncludeUserAndEquipment) | null>{
-        return prisma.character.findFirst({
+        return this.client.character.findFirst({
             where: {
                 id
             },
@@ -30,7 +35,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async getCharacterByUserId(id: number): Promise<(Character & IncludeUserAndEquipment) | null> {
-        return prisma.character.findFirst({
+        return this.client.character.findFirst({
             where: {
                 userId: id
             },
@@ -42,7 +47,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async getCharacterByUserHash(hash: string): Promise<(Character & IncludeUserAndEquipment) | null> {
-        return prisma.character.findFirst({
+        return this.client.character.findFirst({
             where: {
                 user: {
                     hash
@@ -56,7 +61,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async addCoinToCharacter(id: number, coin: number): Promise<Character | null> {
-        return prisma.character.update({
+        return this.client.character.update({
             where: {
                 id
             },
@@ -69,7 +74,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async removeCoinFromCharacter(id: number, coin: number): Promise<Character | null> {
-        return prisma.character.update({
+        return this.client.character.update({
             where: {
                 id
             },
@@ -82,7 +87,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async updateCharacterStatus(id: number, atk: number): Promise<Character | null> {
-        return prisma.character.update({
+        return this.client.character.update({
             where: {
                 id
             },
@@ -93,7 +98,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async setEquipment(id: number, equipment: Equipment): Promise<Character | null> {
-        return prisma.character.update({
+        return this.client.character.update({
             where: {id},
             data: {
                 equipment: {
@@ -104,7 +109,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async removeEquipment(id: number): Promise<Character | null> {
-        return prisma.character.update({
+        return this.client.character.update({
             where: {id},
             data: {
                 equipment: {
@@ -115,7 +120,7 @@ class CharacterService implements ICharacterService {
     }
 
     public getAllArmedPlayer(): Promise<(Character & IncludeUserAndEquipment)[]> {
-        return prisma.character.findMany({
+        return this.client.character.findMany({
             where: {
                 equipment: {
                     isNot: null
@@ -129,4 +134,4 @@ class CharacterService implements ICharacterService {
     }
 }
 
-export default new CharacterService();
+export default CharacterService;

@@ -2,10 +2,13 @@ import { Character } from "@prisma/client";
 import game from "../../game";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IShopService from "../../interfaces/services/IShopService";
-import CharacterService from "./CharacterService";
 
 class ShopService implements IShopService {
-    private characterService: ICharacterService = CharacterService;
+    private characterService: ICharacterService
+
+    constructor(characterService: ICharacterService) {
+        this.characterService = characterService;
+    }
 
     async buyEquipment(hash: string, coin: number): Promise<Character | null> {
         let chracter = await this.characterService.getCharacterByUserHash(hash);
@@ -16,4 +19,4 @@ class ShopService implements IShopService {
     }
 }
 
-export default new ShopService();
+export default ShopService;
