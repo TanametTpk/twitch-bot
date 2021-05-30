@@ -30,7 +30,7 @@ model Equipment {
   id              Int       @id @default(autoincrement())
   character       Character @relation(fields: [characterId], references: [id])
   characterId     Int
-  expired_time    DateTime
+  expired_time    Int
   last_time_check DateTime
   atk             Int
 }
