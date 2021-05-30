@@ -1,18 +1,18 @@
-import { Character } from "../../database/entity/Character";
-import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
+import { Equipment } from ".prisma/client";
+import { Character } from "@prisma/client";
 import { User } from "../../database/entity/User";
 
 export default interface ICharacterService {
-    createCharacter(user: User): Promise<Character | undefined>
-    getCharacterById(id: number): Promise<Character | undefined>
-    getCharacterByUserId(id: number): Promise<Character | undefined>
-    getCharacterByUserHash(hash: string): Promise<Character | undefined>
-    healCharacter(id: number, heal_power: number): Promise<Character | undefined>
-    attackCharacter(id: number, atk_power: number): Promise<Character | undefined>
-    addCoinToCharacter(id: number, coin: number): Promise<Character | undefined>
-    removeCoinFromCharacter(id: number, coin: number): Promise<Character | undefined>
-    updateCharacterStatus(id: number, max_hp: number, atk: number): Promise<Character | undefined>
+    createCharacter(user: User): Promise<Character | null>
+    getCharacterById(id: number): Promise<Character | null>
+    getCharacterByUserId(id: number): Promise<Character | null>
+    getCharacterByUserHash(hash: string): Promise<Character | null>
+    healCharacter(id: number, heal_power: number): Promise<Character | null>
+    attackCharacter(id: number, atk_power: number): Promise<Character | null>
+    addCoinToCharacter(id: number, coin: number): Promise<Character | null>
+    removeCoinFromCharacter(id: number, coin: number): Promise<Character | null>
+    updateCharacterStatus(id: number, max_hp: number, atk: number): Promise<Character | null>
     getAllArmedPlayer(): Promise<[Character[], number]>
-    setEquipment(id: number, equipment: CharacterEquipment): Promise<Character | undefined>
-    removeEquipment(id: number): Promise<Character | undefined>
+    setEquipment(id: number, equipment: Equipment): Promise<Character | null>
+    removeEquipment(id: number): Promise<Character | null>
 }

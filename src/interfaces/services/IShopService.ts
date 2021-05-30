@@ -1,5 +1,5 @@
-import { Character } from "../../database/entity/Character";
+import { Character } from "@prisma/client";
 
 export default interface IShopService {
-    buyEquipment(hash: string, coin: number): Promise<Character | undefined>
+    buyEquipment(hash: string, coin: number): Promise<Character | null>
 }

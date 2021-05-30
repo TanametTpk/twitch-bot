@@ -1,4 +1,3 @@
-import { Character } from "../../database/entity/Character";
 import Boss from "../../game/Boss";
 
 export default interface IGameService {
