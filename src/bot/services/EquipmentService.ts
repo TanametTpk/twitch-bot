@@ -1,9 +1,8 @@
-import { Character } from "../../database/entity/Character";
-import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
-import ICharacterEquipmentService from "../../interfaces/services/ICharacterEquipmentService";
+import { Character, Equipment } from "@prisma/client";
+import IEquipmentService from "../../interfaces/services/IEquipmentService";
 
-class EquipmentService implements ICharacterEquipmentService {
-    public createEquipment(character: Character, atk: number, expired_time: number): Promise<CharacterEquipment | undefined> {
+class EquipmentService implements IEquipmentService {
+    public createEquipment(character: Character, atk: number, expired_time: number): Promise<Equipment | null> {
         const equipment = new CharacterEquipment();
         equipment.character = character;
         equipment.atk = atk;
@@ -13,7 +12,7 @@ class EquipmentService implements ICharacterEquipmentService {
         return equipment.save();
     }
 
-    public getEquipment(id: number): Promise<CharacterEquipment | undefined> {
+    public getEquipment(id: number): Promise<Equipment | null> {
         return CharacterEquipment.findOne(id);
     }
 
