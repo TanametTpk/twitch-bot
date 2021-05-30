@@ -29,8 +29,8 @@ class EquipmentService implements IEquipmentService {
         })
     }
 
-    public removeEquipment(id: number): void {
-        this.client.equipment.delete({
+    public removeEquipment(id: number): Promise<Equipment | null> {
+        return this.client.equipment.delete({
             where: {id}
         })
     }

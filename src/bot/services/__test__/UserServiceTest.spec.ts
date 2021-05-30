@@ -23,6 +23,19 @@ test('should create new user ', async() => {
     expect(newUser?.hash).toEqual("hash1")
 })
 
+test('should return null when user hash existed', async() => {
+    const user: User = { 
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+
+    prismaMock.user.findFirst.mockResolvedValue(user)
+
+    let newUser = await service.createUser(user.name, user.hash)
+    expect(newUser).toEqual(null)
+})
+
 test('should get user by id', async() => {
     const user: User = { 
         id: 1,
