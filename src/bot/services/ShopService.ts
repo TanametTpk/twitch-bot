@@ -1,15 +1,18 @@
-import { Character } from "../../database/entity/Character";
+import { Character } from "@prisma/client";
 import game from "../../game";
+import ICharacterService from "../../interfaces/services/ICharacterService";
 import IShopService from "../../interfaces/services/IShopService";
 import CharacterService from "./CharacterService";
 
 class ShopService implements IShopService {
-    async buyEquipment(hash: string, coin: number): Promise<Character | undefined> {
-        let chracter = await CharacterService.getCharacterByUserHash(hash);
-        if (!chracter) return;
+    private characterService: ICharacterService = CharacterService;
+
+    async buyEquipment(hash: string, coin: number): Promise<Character | null> {
+        let chracter = await this.characterService.getCharacterByUserHash(hash);
+        if (!chracter) return null;
 
         await game.buyEquipment(chracter.id, coin);
-        return CharacterService.getCharacterByUserHash(hash);
+        return this.characterService.getCharacterByUserHash(hash);
     }
 }
 
