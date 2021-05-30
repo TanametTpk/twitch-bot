@@ -1,5 +1,6 @@
-import { User } from "../../database/entity/User";
 import IUserService from "../../interfaces/services/IUserService";
+import prisma from '../../database/client'
+import { User } from "@prisma/client";
 
 class UserService implements IUserService {
     private async isUserAlreadyExists(hash: string): Promise<boolean> {
@@ -8,23 +9,28 @@ class UserService implements IUserService {
         return false;
     }
 
-    public async createUser(name: string, hash: string): Promise<User | undefined> {
+    public async createUser(name: string, hash: string): Promise<User | null> {
         const isUserExist = await this.isUserAlreadyExists(hash)
-        if (isUserExist) return;
+        if (isUserExist) return null;
 
-        const user = new User();
-        user.name = name;
-        user.hash = hash;
-
-        return user.save();
+        return prisma.user.create({
+            data: {
+                name,
+                hash
+            }
+        })
     }
 
-    public getUserById(id: number): Promise<User | undefined> {
-        return User.findOne(id)
+    public getUserById(id: number): Promise<User | null> {
+        return prisma.user.findFirst({
+            where: {id}
+        })
     }
 
-    public getUserByHash(hash: string): Promise<User | undefined> {
-        return User.findOne({hash})
+    public getUserByHash(hash: string): Promise<User | null> {
+        return prisma.user.findFirst({
+            where: {hash}
+        })
     }
 }
 
