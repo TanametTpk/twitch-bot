@@ -19,10 +19,11 @@ export default class PlayerManager {
     }
 
     public async addOnlinePlayer(user: User) {
-        this.onlinePlayers.set(user.id, user);
         let character = await this.characterService.getCharacterByUserId(user.id);
-
+        
         if (!character) return;
+
+        this.onlinePlayers.set(user.id, user);
         this.totalOnlineDamage += character.atk;
 
         if (character.equipment)
@@ -30,11 +31,10 @@ export default class PlayerManager {
     }
 
     public async removeOnlinePlayer(user: User) {
-        this.onlinePlayers.delete(user.id);
-
         let character = await this.characterService.getCharacterByUserId(user.id);
-
+        
         if (!character) return;
+        this.onlinePlayers.delete(user.id);
         this.totalOnlineDamage -= character.atk;
 
         if (character.equipment)
@@ -42,18 +42,16 @@ export default class PlayerManager {
     }
 
     private isShouldUpdate(equipment: Equipment): boolean {
-        const isSameDay = moment(equipment.last_time_check).isSame(new Date(), 'day');
+        const isSameDay = moment(equipment.last_time_check).isSame(new Date(), 'days');
         if (isSameDay) return false;
         return true;
     }
 
     private updateEquipmentOf(player: Character & IncludeUserAndEquipment) {
-        if (!player.equipment) return
-
-        player.equipment.expired_time -= 1;
-        player.equipment.last_time_check = new Date();
-
-        const isExpired = player.equipment.expired_time < 0
+        player.equipment!.expired_time -= 1;
+        player.equipment!.last_time_check = new Date();
+        
+        const isExpired = player.equipment!.expired_time < 0
         if (isExpired) {
             this.characterService.removeEquipment(player.id);
         }
@@ -64,6 +62,7 @@ export default class PlayerManager {
         let count = players.length;
         for (let i = 0; i < count; i++) {
             let player = players[i]
+            
             if (player.equipment && this.isShouldUpdate(player.equipment)) {
                 this.updateEquipmentOf(player)
             }
