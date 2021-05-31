@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import GameManager from '../../../game/index';
+import services from "../../services";
 
 class BossStatusCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -9,7 +9,8 @@ class BossStatusCommand implements ICommand, IDiscordCommand {
     }
 
     perform(msg: Message): void {
-        const boss = GameManager.bossManager.getBoss();
+        const gameService = services.game
+        const boss = gameService.getGameManager().bossManager.getBoss();
         if (!boss) {
             msg.channel.send("boss has not already spawned!")
             return

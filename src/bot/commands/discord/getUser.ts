@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import CharacterService from "../../services/CharacterService";
+import services from "../../services";
 
 class GetUserCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -10,7 +10,7 @@ class GetUserCommand implements ICommand, IDiscordCommand {
 
     async perform(msg: Message) {
         let playerId = msg.content.split(" ")[2]
-        let character = await CharacterService.getCharacterByUserHash(playerId)
+        let character = await services.character.getCharacterByUserHash(playerId)
         let equipmentInfo = ""
 
         if (!character) {
@@ -24,8 +24,6 @@ class GetUserCommand implements ICommand, IDiscordCommand {
 
         msg.channel.send(`
         --- ${playerId} Status ---
-            Max Hp ${character?.max_hp}
-            Current Hp ${character?.hp}
             Base Atk ${character?.atk}
             coin ${character.coin}
             haveEquipment ${character?.equipment !== null}

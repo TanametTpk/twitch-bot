@@ -1,16 +1,24 @@
-import { Character } from "../../database/entity/Character";
-import game from "../../game";
+import { Character } from "@prisma/client";
+import ICharacterService from "../../interfaces/services/ICharacterService";
+import IGameService from "../../interfaces/services/IGameService";
 import IShopService from "../../interfaces/services/IShopService";
-import CharacterService from "./CharacterService";
 
 class ShopService implements IShopService {
-    async buyEquipment(hash: string, coin: number): Promise<Character | undefined> {
-        let chracter = await CharacterService.getCharacterByUserHash(hash);
-        if (!chracter) return;
+    private characterService: ICharacterService
+    private gameService: IGameService
 
-        await game.buyEquipment(chracter.id, coin);
-        return CharacterService.getCharacterByUserHash(hash);
+    constructor(characterService: ICharacterService, gameService: IGameService) {
+        this.characterService = characterService;
+        this.gameService = gameService;
+    }
+
+    async buyEquipment(hash: string, coin: number): Promise<Character | null> {
+        let chracter = await this.characterService.getCharacterByUserHash(hash);
+        if (!chracter) return null;
+
+        await this.gameService.getGameManager().buyEquipment(chracter.id, coin);
+        return this.characterService.getCharacterByUserHash(hash);
     }
 }
 
-export default new ShopService();
+export default ShopService;

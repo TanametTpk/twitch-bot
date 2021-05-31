@@ -1,23 +1,27 @@
-import CharacterService from "../bot/services/CharacterService";
 import BossManager from "./BossManager";
 import PlayerManager, { Reward } from "./PlayerManager";
 import cron from 'node-cron';
 import client from '../bot/twitch';
 import roll from "../bot/utils/roll";
 import sleep from "../bot/utils/sleep";
-import { Character } from "../database/entity/Character";
 import moment from 'moment';
-import EquipmentService from "../bot/services/EquipmentService";
+import ICharacterService from "../interfaces/services/ICharacterService";
+import IEquipmentService from "../interfaces/services/IEquipmentService";
+import { Character } from "@prisma/client";
 
 class GameManager {
     public bossManager: BossManager;
     public playerManager: PlayerManager;
     public attackPlayerTask: NodeJS.Timer | undefined;
     private bossNextAttackTime: Date | undefined;
+    private characterService: ICharacterService;
+    private equipmentService: IEquipmentService;
 
-    constructor() {
+    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager(characterService);
+        this.characterService = characterService;
+        this.equipmentService = equipmentService;
 
         this.playerManager.updateAllPlayerEquipment()
         this.scheduleEvent()
@@ -90,7 +94,7 @@ class GameManager {
         let playerIdList: number[] = Array.from(this.bossManager.attacker.keys());
         let topFiveDmgId: number[] = this.getTopFivePlayer();
         let createRewards: Promise<Reward | undefined>[] = playerIdList.map(async(playerId) => {
-            let chracter = await CharacterService.getCharacterByUserId(playerId)
+            let chracter = await this.characterService.getCharacterByUserId(playerId)
             let reward: number = 1;
             if (!chracter) return;
             if (topFiveDmgId.includes(playerId)) reward = 5;
@@ -126,7 +130,7 @@ class GameManager {
     }
 
     public async attackBoss(characterId: number) {
-        const player = await CharacterService.getCharacterById(characterId);
+        const player = await this.characterService.getCharacterById(characterId);
         if (!player || !this.bossManager.isBossHasSpawned() || !this.canBossAttackedBy(player)) return
         
         let damage: number = this.playerManager.calculateAttackPowerOf(player);
@@ -147,17 +151,16 @@ class GameManager {
         if (coin < 1) return;
         if (coin > 20) coin = 20;
     
-        let character = await CharacterService.getCharacterById(chracterId);
-        console.log(character);
+        let character = await this.characterService.getCharacterById(chracterId);
         
         if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
-        await CharacterService.removeEquipment(character.id);
+        
+        await this.characterService.removeEquipment(character.id);
 
-        let newEquipment = await EquipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
+        let newEquipment = await this.equipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
         if (!newEquipment) return;
         
-        await CharacterService.setEquipment(character.id, newEquipment);
-        await CharacterService.removeCoinFromCharacter(character.id, coin);
+        await this.characterService.removeCoinFromCharacter(character.id, coin);
     }
 
     public getBossNextAttack(): Date | undefined {
@@ -165,4 +168,4 @@ class GameManager {
     }
 }
 
-export default new GameManager();
+export default GameManager;

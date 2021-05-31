@@ -1,28 +1,39 @@
-import { Character } from "../../database/entity/Character";
-import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
-import ICharacterEquipmentService from "../../interfaces/services/ICharacterEquipmentService";
+import { Character, Equipment, PrismaClient } from "@prisma/client";
+import IEquipmentService from "../../interfaces/services/IEquipmentService";
 
-class EquipmentService implements ICharacterEquipmentService {
-    public createEquipment(character: Character, atk: number, expired_time: number): Promise<CharacterEquipment | undefined> {
-        const equipment = new CharacterEquipment();
-        equipment.character = character;
-        equipment.atk = atk;
-        equipment.expired_time = expired_time;
-        equipment.last_time_check = new Date();
+class EquipmentService implements IEquipmentService {
+    private client: PrismaClient
 
-        return equipment.save();
+    constructor(client: PrismaClient) {
+        this.client = client;
     }
 
-    public getEquipment(id: number): Promise<CharacterEquipment | undefined> {
-        return CharacterEquipment.findOne(id);
+    public createEquipment(character: Character, atk: number, expired_time: number): Promise<Equipment | null> {
+        return this.client.equipment.create({
+            data: {
+                atk,
+                expired_time,
+                last_time_check: new Date(),
+                character: {
+                    connect: {
+                        id: character.id
+                    }
+                }
+            }
+        })
     }
 
-    public async removeEquipment(id: number): Promise<void> {
-        const equipment = await this.getEquipment(id);
-        if (!equipment) return;
+    public getEquipment(id: number): Promise<Equipment | null> {
+        return this.client.equipment.findFirst({
+            where: {id}
+        })
+    }
 
-        equipment.remove();
+    public removeEquipment(id: number): Promise<Equipment | null> {
+        return this.client.equipment.delete({
+            where: {id}
+        })
     }
 }
 
-export default new EquipmentService();
+export default EquipmentService;

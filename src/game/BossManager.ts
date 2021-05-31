@@ -21,7 +21,7 @@ export default class BossManager {
     private createBoss(totalOnlineDamage: number): Boss {
         const level = this.calculateDiffuculty()
         const max_hp: number = totalOnlineDamage * 4 * (level / 10)
-        return new Boss(max_hp, max_hp, level);
+        return new Boss(max_hp, level);
     }
 
     public spawnBoss(totalOnlineDamage: number): void {
@@ -46,6 +46,8 @@ export default class BossManager {
             totalDamage: dmg,
             last_attack_time: new Date()
         }
+
+        if (dmg < 1 || !this.isBossHasSpawned()) return;
 
         if (this.attacker.has(characterId)) {
             let prev_info = this.attacker.get(characterId)!;
