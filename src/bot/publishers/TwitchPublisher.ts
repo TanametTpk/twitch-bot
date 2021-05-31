@@ -29,7 +29,7 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
         this.client.connect();
 
         this.client.on('subscription', (channel: string, username: string, _, message: string, userstate: tmi.SubUserstate) => {
-            this.subscriptionStategy.perform(this.client, channel, message, userstate);
+            this.subscriptionStategy.perform(this.client, channel, message, username, userstate);
         })
         
         this.client.on('message', (channel, tags, message, self) => {            
