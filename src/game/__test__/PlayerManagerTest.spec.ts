@@ -169,7 +169,7 @@ test('should not remove online player when not found character', async() => {
     await playerManager.addOnlinePlayer(user1)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(null)
-    await playerManager.removeOnlinePlayer(user2)
+    await playerManager.removeOnlinePlayer(user1)
 
     expect(playerManager.getOnlinePlayers().length).toEqual(1)
     expect(playerManager.getTotalOnlineDamage()).toEqual(10)

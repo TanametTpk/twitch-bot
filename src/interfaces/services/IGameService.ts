@@ -8,4 +8,7 @@ export default interface IGameService {
     getBossAttackTime(): Date | undefined
     spawnBoss(): void
     getGameManager(): GameManager
+    isPlayerOnline(hash: string): boolean
+    giveRewardToAllPlayer(coin: number): void
+    giveRewardToPlayer(hash: string, coin: number): void
 }

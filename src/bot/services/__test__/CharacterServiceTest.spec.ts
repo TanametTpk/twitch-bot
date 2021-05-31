@@ -177,6 +177,18 @@ test('should not remove coin when coin is negative', async() => {
     expect(newCharacter).toEqual(character)
 })
 
+test('should add coin to all character', async() => {
+    prismaMock.character.updateMany.mockResolvedValue({ count: 1 });
+
+    await service.addCoinToAllCharacter(5)
+    expect(prismaMock.character.updateMany).toHaveBeenCalledTimes(1);
+})
+
+test('should not add coin to all character when coin is negative number', async() => {
+    await service.addCoinToAllCharacter(-5)
+    expect(prismaMock.character.updateMany).toHaveBeenCalledTimes(0);
+})
+
 test('should update character', async() => {
     const character: Character = {
         id: 1,

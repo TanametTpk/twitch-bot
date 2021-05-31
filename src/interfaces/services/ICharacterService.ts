@@ -11,6 +11,7 @@ export default interface ICharacterService {
     getCharacterByUserId(id: number): Promise<(Character & IncludeUserAndEquipment) | null>
     getCharacterByUserHash(hash: string): Promise<(Character & IncludeUserAndEquipment) | null>
     addCoinToCharacter(id: number, coin: number): Promise<Character | null>
+    addCoinToAllCharacter(coin: number): void
     removeCoinFromCharacter(id: number, coin: number): Promise<Character | null>
     updateCharacterStatus(id: number, atk: number): Promise<Character | null>
     removeEquipment(id: number): Promise<Character | null>
