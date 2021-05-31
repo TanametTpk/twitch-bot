@@ -39,6 +39,57 @@ test('should add online player', async() => {
     expect(playerManager.getTotalOnlineDamage()).toEqual(10)
 })
 
+test('should not add online player when same player is added', async() => {
+    const user: User = {
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+    
+    const character: Character & IncludeUserAndEquipment = {
+        id: 1,
+        userId: 1,
+        user,
+        atk: 10,
+        coin: 0,
+        equipment: null
+    }
+
+    const playerManager = new PlayerManager(mockCharacterService)
+
+    mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
+    await playerManager.addOnlinePlayer(user)
+    await playerManager.addOnlinePlayer(user)
+
+    expect(playerManager.getOnlinePlayers().length).toEqual(1)
+    expect(playerManager.getTotalOnlineDamage()).toEqual(10)
+})
+
+test('should not remove online player when player is not added', async() => {
+    const user: User = {
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+    
+    const character: Character & IncludeUserAndEquipment = {
+        id: 1,
+        userId: 1,
+        user,
+        atk: 10,
+        coin: 0,
+        equipment: null
+    }
+
+    const playerManager = new PlayerManager(mockCharacterService)
+
+    mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
+    await playerManager.removeOnlinePlayer(user)
+
+    expect(playerManager.getOnlinePlayers().length).toEqual(0)
+    expect(playerManager.getTotalOnlineDamage()).toEqual(0)
+})
+
 test('should not add online player when not found character', async() => {
     const user: User = {
         id: 1,

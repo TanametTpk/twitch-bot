@@ -19,6 +19,8 @@ export default class PlayerManager {
     }
 
     public async addOnlinePlayer(user: User) {
+        if (this.onlinePlayers.has(user.id)) return;
+
         let character = await this.characterService.getCharacterByUserId(user.id);
         
         if (!character) return;
@@ -31,6 +33,8 @@ export default class PlayerManager {
     }
 
     public async removeOnlinePlayer(user: User) {
+        if (!this.onlinePlayers.has(user.id)) return;
+        
         let character = await this.characterService.getCharacterByUserId(user.id);
         
         if (!character) return;
