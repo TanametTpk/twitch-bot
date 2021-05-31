@@ -14,6 +14,41 @@ test('should create player manager', async() => {
     expect(playerManager.getTotalOnlineDamage()).toEqual(0)
 })
 
+test('should return true when player online', async() => {
+    const user: User = {
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+    
+    const character: Character & IncludeUserAndEquipment = {
+        id: 1,
+        userId: 1,
+        user,
+        atk: 10,
+        coin: 0,
+        equipment: null
+    }
+
+    const playerManager = new PlayerManager(mockCharacterService)
+
+    mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
+    await playerManager.addOnlinePlayer(user)
+
+    expect(playerManager.isPlayerOnline(user.hash)).toEqual(true)
+})
+
+test('should return false when player not online', async() => {
+    const user: User = {
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+
+    const playerManager = new PlayerManager(mockCharacterService)
+    expect(playerManager.isPlayerOnline(user.hash)).toEqual(false)
+})
+
 test('should add online player', async() => {
     const user: User = {
         id: 1,
