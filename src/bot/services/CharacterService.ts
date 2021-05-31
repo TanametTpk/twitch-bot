@@ -97,23 +97,12 @@ class CharacterService implements ICharacterService {
         })
     }
 
-    public async setEquipment(id: number, equipment: Equipment): Promise<Character | null> {
-        return this.client.character.update({
-            where: {id},
-            data: {
-                equipment: {
-                    connect: {id: equipment.id}
-                }
-            }
-        })
-    }
-
     public async removeEquipment(id: number): Promise<Character | null> {
         return this.client.character.update({
             where: {id},
             data: {
                 equipment: {
-                    disconnect: true
+                    delete: true
                 }
             }
         })

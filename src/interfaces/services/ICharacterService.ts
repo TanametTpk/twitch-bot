@@ -13,7 +13,6 @@ export default interface ICharacterService {
     addCoinToCharacter(id: number, coin: number): Promise<Character | null>
     removeCoinFromCharacter(id: number, coin: number): Promise<Character | null>
     updateCharacterStatus(id: number, atk: number): Promise<Character | null>
-    setEquipment(id: number, equipment: Equipment): Promise<Character | null>
     removeEquipment(id: number): Promise<Character | null>
     getAllArmedPlayer(): Promise<(Character & IncludeUserAndEquipment)[]>
 }

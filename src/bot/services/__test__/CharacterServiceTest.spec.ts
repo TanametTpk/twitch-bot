@@ -191,28 +191,6 @@ test('should update character', async() => {
     expect(newCharacter).toEqual(character)
 })
 
-test('should return character when set equipment', async() => {
-    const character: Character = {
-        id: 1,
-        coin: 0,
-        atk: 10,
-        userId: 1
-    }
-
-    const equipment: Equipment = {
-        id: 1,
-        atk: 3,
-        expired_time: 1,
-        last_time_check: new Date(),
-        characterId: 1
-    }
-
-    prismaMock.character.update.mockResolvedValue(character)
-
-    let newCharacter = await service.setEquipment(1, equipment)
-    expect(newCharacter).toEqual(character)
-})
-
 test('should return character when remove equipment', async() => {
     const character: Character = {
         id: 1,

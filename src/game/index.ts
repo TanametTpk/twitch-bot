@@ -152,15 +152,14 @@ class GameManager {
         if (coin > 20) coin = 20;
     
         let character = await this.characterService.getCharacterById(chracterId);
-        console.log(character);
         
         if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
+        
         await this.characterService.removeEquipment(character.id);
 
         let newEquipment = await this.equipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
         if (!newEquipment) return;
         
-        await this.characterService.setEquipment(character.id, newEquipment);
         await this.characterService.removeCoinFromCharacter(character.id, coin);
     }
 
