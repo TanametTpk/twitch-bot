@@ -9,6 +9,8 @@ export default abstract class AbstractPublisher<T extends ICommand> implements T
     }
 
     protected findMatchCommand(message: string): T | null {
+        if (!message.startsWith("!")) return null;
+
         for (let i = 0; i < this.commands.length; i++) {
             const command = this.commands[i];
             if (command.match(message)) {
