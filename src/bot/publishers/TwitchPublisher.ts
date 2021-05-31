@@ -36,7 +36,7 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
             if (tags["custom-reward-id"]){
                 this.rewardActions.map((action) => {
                     if (action.match(tags["custom-reward-id"]))
-                        action.perform();
+                        action.perform(this.client, channel, tags, message);
                 })
             }
 
