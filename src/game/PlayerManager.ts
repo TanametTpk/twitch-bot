@@ -1,8 +1,6 @@
-import { Character } from "../database/entity/Character";
-import { CharacterEquipment } from "../database/entity/CharacterEquipment";
-import CharacterService from "../bot/services/CharacterService";
 import moment from 'moment';
-import { User } from "../database/entity/User";
+import { Equipment, User, Character } from "@prisma/client";
+import ICharacterService, { IncludeUserAndEquipment } from "../interfaces/services/ICharacterService";
 
 export interface Reward {
     chracterId: number
@@ -12,15 +10,17 @@ export interface Reward {
 export default class PlayerManager {
     private onlinePlayers: Map<number, User>;
     private totalOnlineDamage: number;
+    private characterService: ICharacterService;
 
-    constructor() {
+    constructor(characterService: ICharacterService) {
         this.onlinePlayers = new Map();
         this.totalOnlineDamage = 0;
+        this.characterService = characterService;
     }
 
     public async addOnlinePlayer(user: User) {
         this.onlinePlayers.set(user.id, user);
-        let character = await CharacterService.getCharacterByUserId(user.id);
+        let character = await this.characterService.getCharacterByUserId(user.id);
 
         if (!character) return;
         this.totalOnlineDamage += character.atk;
@@ -32,7 +32,7 @@ export default class PlayerManager {
     public async removeOnlinePlayer(user: User) {
         this.onlinePlayers.delete(user.id);
 
-        let character = await CharacterService.getCharacterByUserId(user.id);
+        let character = await this.characterService.getCharacterByUserId(user.id);
 
         if (!character) return;
         this.totalOnlineDamage -= character.atk;
@@ -41,13 +41,13 @@ export default class PlayerManager {
             this.totalOnlineDamage -= character.equipment.atk;
     }
 
-    private isShouldUpdate(equipment: CharacterEquipment): boolean {
+    private isShouldUpdate(equipment: Equipment): boolean {
         const isSameDay = moment(equipment.last_time_check).isSame(new Date(), 'day');
         if (isSameDay) return false;
         return true;
     }
 
-    private updateEquipmentOf(player: Character) {
+    private updateEquipmentOf(player: Character & IncludeUserAndEquipment) {
         if (!player.equipment) return
 
         player.equipment.expired_time -= 1;
@@ -55,12 +55,13 @@ export default class PlayerManager {
 
         const isExpired = player.equipment.expired_time < 0
         if (isExpired) {
-            CharacterService.removeEquipment(player.id);
+            this.characterService.removeEquipment(player.id);
         }
     }
 
     public async updateAllPlayerEquipment() {
-        let [players, count] = await CharacterService.getAllArmedPlayer();
+        let players = await this.characterService.getAllArmedPlayer();
+        let count = players.length;
         for (let i = 0; i < count; i++) {
             let player = players[i]
             if (player.equipment && this.isShouldUpdate(player.equipment)) {
@@ -69,7 +70,7 @@ export default class PlayerManager {
         }
     }
 
-    public calculateAttackPowerOf(player: Character): number {
+    public calculateAttackPowerOf(player: Character & IncludeUserAndEquipment): number {
         let attackPower: number = player.atk;
         if (player.equipment) {
             attackPower += player.equipment.atk
@@ -80,7 +81,7 @@ export default class PlayerManager {
 
     public distributeRewards(rewards: Reward[]): void {
         rewards.map((reward) => {
-            CharacterService.addCoinToCharacter(reward.chracterId, reward.coin);
+            this.characterService.addCoinToCharacter(reward.chracterId, reward.coin);
         })
     }
 
