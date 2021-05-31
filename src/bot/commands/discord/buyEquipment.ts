@@ -1,10 +1,8 @@
 import { Message } from "discord.js";
-import { Character } from "../../../database/entity/Character";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IShopService from "../../../interfaces/services/IShopService";
-import CharacterService from "../../services/CharacterService";
-import ShopService from "../../services/ShopService";
+import services from "../../services";
 
 interface Params {
     id: string
@@ -26,9 +24,9 @@ class BuyEquipmentCommand implements ICommand, IDiscordCommand {
     }
 
     async perform(msg: Message) {
-        let shop: IShopService = ShopService;
+        let shop: IShopService = services.shop;
         let params: Params = this.getParams(msg.content)
-        let character = await CharacterService.getCharacterByUserHash(params.id);
+        let character = await services.character.getCharacterByUserHash(params.id);
 
         if (!character) return;
 
@@ -37,7 +35,8 @@ class BuyEquipmentCommand implements ICommand, IDiscordCommand {
             return;
         }
         
-        character = await shop.buyEquipment(params.id, params.coin);
+        await shop.buyEquipment(params.id, params.coin);
+        character = await services.character.getCharacterByUserHash(params.id);
         if (!character || !character.equipment) {
             msg.channel.send("ซื้อของไม่ได้ อะไรวะเนี่ย");
             return;

@@ -1,3 +1,4 @@
+import { ChatUserstate, Client } from "tmi.js";
 import IChannelPointAction from "../interfaces/IChannelPointAction";
 
 export default abstract class AbstractChannelPointAction implements IChannelPointAction {
@@ -11,5 +12,5 @@ export default abstract class AbstractChannelPointAction implements IChannelPoin
         return this.id === customRewardId;
     }
 
-    abstract perform(): void
+    abstract perform(client: Client, channel: string, userstate: ChatUserstate, message: string): void
 }

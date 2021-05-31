@@ -1,39 +1,50 @@
-import CharacterService from "../bot/services/CharacterService";
 import BossManager from "./BossManager";
 import PlayerManager, { Reward } from "./PlayerManager";
 import cron from 'node-cron';
 import client from '../bot/twitch';
 import roll from "../bot/utils/roll";
 import sleep from "../bot/utils/sleep";
-import { Character } from "../database/entity/Character";
 import moment from 'moment';
-import EquipmentService from "../bot/services/EquipmentService";
+import ICharacterService from "../interfaces/services/ICharacterService";
+import IEquipmentService from "../interfaces/services/IEquipmentService";
+import { Character } from "@prisma/client";
+import { setTimeout } from "timers";
 
 class GameManager {
     public bossManager: BossManager;
     public playerManager: PlayerManager;
     public attackPlayerTask: NodeJS.Timer | undefined;
     private bossNextAttackTime: Date | undefined;
+    private characterService: ICharacterService;
+    private equipmentService: IEquipmentService;
 
-    constructor() {
+    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager(characterService);
+        this.characterService = characterService;
+        this.equipmentService = equipmentService;
 
         this.playerManager.updateAllPlayerEquipment()
         this.scheduleEvent()
     }
 
     private scheduleEvent(): void {
-        cron.schedule('* * 1 * * *', this.spawnBoss)
+        cron.schedule('0 0 * * * *', () => {
+            this.spawnBoss()
+        })
     }
 
     public spawnBoss(): void {
+        this.clearBossAttackTask();
+
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
 
-        let fiveTeenMinutes: number = 15 * 60 * 1000;
+        let fiveTeenMinutes: number = 1 * 60 * 1000;
         this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
-        this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, fiveTeenMinutes);
+        this.attackPlayerTask = setTimeout(() => {
+            this.bossAttackRandomPlayer()
+        }, fiveTeenMinutes);
     }
 
     private clearBossAttackTask(): void {
@@ -50,6 +61,8 @@ class GameManager {
         console.log(`Boss: I am inevitible..`)
 
         let players = this.playerManager.getOnlinePlayers()
+        console.log(players);
+        
         for (let player of players) {
             let username = player.name
             if (roll(50)) {
@@ -90,7 +103,7 @@ class GameManager {
         let playerIdList: number[] = Array.from(this.bossManager.attacker.keys());
         let topFiveDmgId: number[] = this.getTopFivePlayer();
         let createRewards: Promise<Reward | undefined>[] = playerIdList.map(async(playerId) => {
-            let chracter = await CharacterService.getCharacterByUserId(playerId)
+            let chracter = await this.characterService.getCharacterByUserId(playerId)
             let reward: number = 1;
             if (!chracter) return;
             if (topFiveDmgId.includes(playerId)) reward = 5;
@@ -106,6 +119,7 @@ class GameManager {
         this.playerManager.distributeRewards(rewards);
 
         this.clearBossAttackTask();
+        client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
     }
 
     private bossAttackRandomPlayer() {
@@ -115,7 +129,7 @@ class GameManager {
         this.randomMutePlayers();
     }
 
-    private canBossAttackedBy(character: Character): boolean {
+    public canBossAttackedBy(character: Character): boolean {
         let info = this.bossManager.attacker.get(character.id);
         if (!info) return true;
         
@@ -126,7 +140,7 @@ class GameManager {
     }
 
     public async attackBoss(characterId: number) {
-        const player = await CharacterService.getCharacterById(characterId);
+        const player = await this.characterService.getCharacterById(characterId);
         if (!player || !this.bossManager.isBossHasSpawned() || !this.canBossAttackedBy(player)) return
         
         let damage: number = this.playerManager.calculateAttackPowerOf(player);
@@ -147,17 +161,19 @@ class GameManager {
         if (coin < 1) return;
         if (coin > 20) coin = 20;
     
-        let character = await CharacterService.getCharacterById(chracterId);
-        console.log(character);
+        let character = await this.characterService.getCharacterById(chracterId);
         
         if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
-        await CharacterService.removeEquipment(character.id);
+        
+        if (character.equipment)
+            await this.characterService.removeEquipment(character.id);
 
-        let newEquipment = await EquipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
+        let newEquipment = await this.equipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
         if (!newEquipment) return;
         
-        await CharacterService.setEquipment(character.id, newEquipment);
-        await CharacterService.removeCoinFromCharacter(character.id, coin);
+        await this.characterService.removeCoinFromCharacter(character.id, coin);
+        await this.playerManager.removeOnlinePlayer(character.user)
+        await this.playerManager.addOnlinePlayer(character.user)
     }
 
     public getBossNextAttack(): Date | undefined {
@@ -165,4 +181,4 @@ class GameManager {
     }
 }
 
-export default new GameManager();
+export default GameManager;

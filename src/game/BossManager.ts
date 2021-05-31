@@ -1,3 +1,4 @@
+import client from "../bot/twitch";
 import randomIntBetween from "../bot/utils/randomIntBetween";
 import Boss from "./Boss";
 
@@ -20,12 +21,13 @@ export default class BossManager {
 
     private createBoss(totalOnlineDamage: number): Boss {
         const level = this.calculateDiffuculty()
-        const max_hp: number = totalOnlineDamage * 4 * (level / 10)
-        return new Boss(max_hp, max_hp, level);
+        const max_hp: number = totalOnlineDamage * 4 * ((level + 5) / 10)
+        return new Boss(max_hp, level);
     }
 
     public spawnBoss(totalOnlineDamage: number): void {
         this.boss = this.createBoss(totalOnlineDamage);
+        client.say(process.env.tmi_channel_name as string, `บอสเกิดแล้ววววว`)
     }
 
     public isBossHasSpawned(): boolean {
@@ -46,6 +48,8 @@ export default class BossManager {
             totalDamage: dmg,
             last_attack_time: new Date()
         }
+
+        if (dmg < 1 || !this.isBossHasSpawned()) return;
 
         if (this.attacker.has(characterId)) {
             let prev_info = this.attacker.get(characterId)!;

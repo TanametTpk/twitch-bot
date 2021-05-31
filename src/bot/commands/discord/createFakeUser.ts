@@ -1,8 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import CharacterService from "../../services/CharacterService";
-import UserService from "../../services/UserService";
+import services from "../../services";
 
 class CreateFakeUserCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -11,14 +10,14 @@ class CreateFakeUserCommand implements ICommand, IDiscordCommand {
 
     async perform(msg: Message) {
         let name = msg.content.split(" ")[2];
-        let user = await UserService.createUser(name, `${Math.random()}`)
+        let user = await services.user.createUser(name, `${Math.random()}`)
 
         if (!user) {
             msg.channel.send(`can't create user`)
             return
         }
 
-        let character = await CharacterService.createCharacter(user);
+        let character = await services.character.createCharacter(user);
 
         if (!character) {
             msg.channel.send(`can't create character`)

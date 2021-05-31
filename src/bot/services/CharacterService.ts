@@ -1,123 +1,137 @@
-import { getRepository, ILike, IsNull, Not, Repository } from "typeorm";
-import { Character } from "../../database/entity/Character";
-import { CharacterEquipment } from "../../database/entity/CharacterEquipment";
-import { User } from "../../database/entity/User";
-import ICharacterService from "../../interfaces/services/ICharacterService";
+import { Character, Equipment, PrismaClient, User } from "@prisma/client";
+import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService";
 
 class CharacterService implements ICharacterService {
-    private repository: Repository<Character>
+    private client: PrismaClient
 
-    constructor() {
-        this.repository = getRepository(Character)
+    constructor(client: PrismaClient) {
+        this.client = client;
     }
 
-    public createCharacter(user: User): Promise<Character | undefined> {
-        const character = new Character();
-
-        character.user = user;
-        character.coin = 0;
-        character.hp = 100;
-        character.max_hp = 100;
-        character.atk = 10;
-
-        return character.save();
-    }
-
-    public getCharacterById(id: number): Promise<Character | undefined> {
-        return this.repository.createQueryBuilder("character")
-            .leftJoinAndSelect("character.user", "user")
-            .leftJoinAndSelect("character.equipment", "equipment")
-            .where("character.id = :id", {id})
-            .getOne();
-    }
-
-    public async getCharacterByUserId(id: number): Promise<Character | undefined> {
-        return this.repository.createQueryBuilder("character")
-            .leftJoinAndSelect("character.user", "user")
-            .leftJoinAndSelect("character.equipment", "equipment")
-            .where("user.id = :id", {id})
-            .getOne();
-    }
-
-    public async getCharacterByUserHash(hash: string): Promise<Character | undefined> {
-        return this.repository.createQueryBuilder("character")
-            .leftJoinAndSelect("character.user", "user")
-            .leftJoinAndSelect("character.equipment", "equipment")
-            .where("user.hash = :hash", {hash})
-            .getOne();
-    }
-
-    public async healCharacter(id: number, heal_power: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character || heal_power < 1) return character;
-
-        character.hp += heal_power;
-        if (character.hp > character.max_hp)
-            character.hp = character.max_hp;
-
-        return character.save();
-    }
-
-    public async attackCharacter(id: number, atk_power: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character || atk_power < 1) return character;
-
-        character.hp -= atk_power;
-        if (character.hp < 0)
-            character.hp = 0;
-
-        return character.save();
-    }
-
-    public async addCoinToCharacter(id: number, coin: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character || coin < 1) return character;
-
-        character.coin += coin;
-        return character.save();
-    }
-
-    public async removeCoinFromCharacter(id: number, coin: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character || coin < 1) return character;
-
-        character.coin -= coin;
-        return character.save();
-    }
-
-    public async updateCharacterStatus(id: number, max_hp: number, atk: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character) return;
-
-        character.max_hp = max_hp;
-        character.atk = atk;
-        return character.save();
-    }
-
-    public async setEquipment(id: number, equipment: CharacterEquipment): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character) return;
-
-        character.equipment = equipment;
-        return character.save();
-    }
-
-    public async removeEquipment(id: number): Promise<Character | undefined> {
-        const character = await this.getCharacterById(id);
-        if (!character) return;
-
-        character.equipment?.remove();
-        character.equipment = null;
-        return character.save();
-    }
-
-    public getAllArmedPlayer(): Promise<[Character[], number]> {
-        return Character.findAndCount({
-            where: {
-                equipment: Not(IsNull())
+    public createCharacter(user: User): Promise<Character | null> {
+        return this.client.character.create({
+            data: {
+                coin: 0,
+                atk: 10,
+                user: {
+                    connect: {
+                        hash: user.hash
+                    }
+                }
             }
-        });
+        })
+    }
+
+    public getCharacterById(id: number): Promise<(Character & IncludeUserAndEquipment) | null>{
+        return this.client.character.findFirst({
+            where: {
+                id
+            },
+            include: {
+                user: true,
+                equipment: true
+            }
+        })
+    }
+
+    public async getCharacterByUserId(id: number): Promise<(Character & IncludeUserAndEquipment) | null> {
+        return this.client.character.findFirst({
+            where: {
+                userId: id
+            },
+            include: {
+                user: true,
+                equipment: true
+            }
+        })
+    }
+
+    public async getCharacterByUserHash(hash: string): Promise<(Character & IncludeUserAndEquipment) | null> {
+        return this.client.character.findFirst({
+            where: {
+                user: {
+                    hash
+                }
+            },
+            include: {
+                user: true,
+                equipment: true
+            }
+        })
+    }
+
+    public async addCoinToCharacter(id: number, coin: number): Promise<Character | null> {
+        return this.client.character.update({
+            where: {
+                id
+            },
+            data: {
+                coin: {
+                    increment: coin
+                }
+            }
+        })
+    }
+
+    public async addCoinToAllCharacter(coin: number): Promise<void> {
+        if (coin < 1) return;
+        await this.client.character.updateMany({
+            data: {
+                coin: {
+                    increment: coin
+                }
+            }
+        })
+    }
+
+    public async removeCoinFromCharacter(id: number, coin: number): Promise<Character | null> {
+        return this.client.character.update({
+            where: {
+                id
+            },
+            data: {
+                coin: {
+                    decrement: coin
+                }
+            }
+        })
+    }
+
+    public async updateCharacterStatus(id: number, atk: number): Promise<Character | null> {
+        return this.client.character.update({
+            where: {
+                id
+            },
+            data: {
+                atk
+            }
+        })
+    }
+
+    public async removeEquipment(id: number): Promise<Character | null> {
+        return this.client.character.update({
+            where: {id},
+            data: {
+                equipment: {
+                    delete: true
+                }
+            }
+        })
+    }
+
+    public getAllArmedPlayer(): Promise<(Character & IncludeUserAndEquipment)[]> {
+        return this.client.character.findMany({
+            where: {
+                equipment: {
+                    isNot: null
+                }
+            },
+            include: {
+                equipment: true,
+                user: true
+            }
+        })
     }
 }
 
-export default new CharacterService();
+export default CharacterService;

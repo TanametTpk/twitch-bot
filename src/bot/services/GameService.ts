@@ -1,34 +1,60 @@
-import game from "../../game";
+import GameManager from "../../game";
 import Boss from "../../game/Boss";
+import ICharacterService from "../../interfaces/services/ICharacterService";
+import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
-import CharacterService from "./CharacterService";
+import services from "../services";
 
 class GameService implements IGameService {
-    async attackBossBy(playerId: string): Promise<void> {
-        let chracter = await CharacterService.getCharacterByUserHash(playerId);
+    private characterService: ICharacterService
+    private game: GameManager
+
+    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
+        this.characterService = characterService
+        this.game = new GameManager(characterService, equipmentService)
+    }
+
+    public async attackBossBy(playerId: string): Promise<void> {
+        let chracter = await this.characterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
         
-        game.attackBoss(chracter.id)
+        this.game.attackBoss(chracter.id)
     }
 
-    async pvp(attackerId: string, attackedId: string): Promise<void> {
-        let attacker = await CharacterService.getCharacterByUserHash(attackerId);
-        if (!attacker) return;
-
-        await CharacterService.attackCharacter(attacker.id, attacker.atk + (attacker.equipment?.atk || 0))
+    public async pvp(attackerId: string, attackedId: string): Promise<void> {
+        throw new Error("not implement yet");
     }
 
-    getBoss(): Boss | undefined {
-        return game.bossManager.getBoss();
+    public getBoss(): Boss | undefined {
+        return this.game.bossManager.getBoss();
     }
 
-    getBossAttackTime(): Date | undefined {
-        return game.getBossNextAttack();
+    public getBossAttackTime(): Date | undefined {
+        return this.game.getBossNextAttack();
     }
 
-    spawnBoss(): void {
-        game.spawnBoss();
+    public spawnBoss(): void {
+        this.game.spawnBoss();
+    }
+
+    public getGameManager(): GameManager {
+        return this.game;
+    }
+
+    public isPlayerOnline(hash: string) {
+        return this.game.playerManager.isPlayerOnline(hash);
+    }
+
+    public giveRewardToAllPlayer(coin: number): void {
+        services.character.addCoinToAllCharacter(coin);
+    }
+
+    public async giveRewardToPlayer(hash: string, coin: number): Promise<void> {
+        let character = await services.character.getCharacterByUserHash(hash);
+        if (!character) return;
+
+        services.character.addCoinToCharacter(character.id, coin);
     }
 }
 
-export default new GameService();
+export default GameService;
