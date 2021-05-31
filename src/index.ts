@@ -16,10 +16,11 @@ async function main() {
 
 main()
     .catch(e => {
+        console.log(e);
+        if (bot)
+            bot.stop();
         throw e
     })
     .finally(async() => {
-        if (bot)
-            bot.stop();
         await prisma.$disconnect()
     })

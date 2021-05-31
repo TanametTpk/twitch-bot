@@ -1,5 +1,4 @@
 import { Message } from "discord.js";
-import { Character } from "../../../database/entity/Character";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IShopService from "../../../interfaces/services/IShopService";
