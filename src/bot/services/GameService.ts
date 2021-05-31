@@ -1,36 +1,43 @@
-import game from "../../game";
+import GameManager from "../../game";
 import Boss from "../../game/Boss";
 import ICharacterService from "../../interfaces/services/ICharacterService";
+import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
 
 class GameService implements IGameService {
     private characterService: ICharacterService
+    private game: GameManager
 
-    constructor(characterService: ICharacterService) {
+    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.characterService = characterService
+        this.game = new GameManager(characterService, equipmentService)
     }
 
-    async attackBossBy(playerId: string): Promise<void> {
+    public async attackBossBy(playerId: string): Promise<void> {
         let chracter = await this.characterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
         
-        game.attackBoss(chracter.id)
+        this.game.attackBoss(chracter.id)
     }
 
-    async pvp(attackerId: string, attackedId: string): Promise<void> {
+    public async pvp(attackerId: string, attackedId: string): Promise<void> {
         throw new Error("not implement yet");
     }
 
-    getBoss(): Boss | undefined {
-        return game.bossManager.getBoss();
+    public getBoss(): Boss | undefined {
+        return this.game.bossManager.getBoss();
     }
 
-    getBossAttackTime(): Date | undefined {
-        return game.getBossNextAttack();
+    public getBossAttackTime(): Date | undefined {
+        return this.game.getBossNextAttack();
     }
 
-    spawnBoss(): void {
-        game.spawnBoss();
+    public spawnBoss(): void {
+        this.game.spawnBoss();
+    }
+
+    public getGameManager(): GameManager {
+        return this.game;
     }
 }
 

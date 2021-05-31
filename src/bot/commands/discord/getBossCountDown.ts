@@ -3,7 +3,7 @@ import moment from "moment";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IGameService from "../../../interfaces/services/IGameService";
-import GameService from '../../services/GameService';
+import services from "../../services";
 
 class GetBossCountDownCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -11,7 +11,7 @@ class GetBossCountDownCommand implements ICommand, IDiscordCommand {
     }
 
     perform(msg: Message): void {
-        let game: IGameService = GameService;
+        let game: IGameService = services.game;
         let attackTime = game.getBossAttackTime();
 
         if (!attackTime) {

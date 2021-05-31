@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IGameService from "../../../interfaces/services/IGameService";
-import GameService from "../../services/GameService";
+import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -10,7 +10,7 @@ class AttackPlayerCommand implements ICommand, IDiscordCommand {
     }
 
     perform(msg: Message): void {
-        let game: IGameService = GameService;
+        let game: IGameService = services.game;
         let params = msg.content.split(" ");
         let attackerId = params[1];
         let attackedId = params[3];

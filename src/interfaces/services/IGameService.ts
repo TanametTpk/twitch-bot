@@ -1,3 +1,4 @@
+import GameManager from "../../game";
 import Boss from "../../game/Boss";
 
 export default interface IGameService {
@@ -6,4 +7,5 @@ export default interface IGameService {
     getBoss(): Boss | undefined
     getBossAttackTime(): Date | undefined
     spawnBoss(): void
+    getGameManager(): GameManager
 }
