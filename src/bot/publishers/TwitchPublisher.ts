@@ -32,16 +32,9 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
             this.subscriptionStategy.perform(this.client, channel, message, username, userstate);
         })
         
-        this.client.on('message', (channel, tags, message, self) => {            
-            if (tags["custom-reward-id"]){
-                this.rewardActions.map((action) => {
-                    if (action.match(tags["custom-reward-id"]))
-                        action.perform(this.client, channel, tags, message);
-                })
-            }
-
-            this.middlewareActions.map(
-                (middleware: IMiddleware) => 
+        this.client.on('message', async(channel, tags, message, self) => {            
+            let middlewareTasks = this.middlewareActions.map(
+                async (middleware: IMiddleware) => 
                     middleware.perform(
                         this.client,
                         channel,
@@ -49,6 +42,19 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
                         message
                     )
             )
+
+            await Promise.all(middlewareTasks)
+
+            if (tags["custom-reward-id"]){
+                let rewardActionTasks = this.rewardActions.map(
+                    async (action) => {
+                        if (action.match(tags["custom-reward-id"]))
+                            action.perform(this.client, channel, tags, message);
+                    }
+                )
+
+                await Promise.all(rewardActionTasks)
+            }
 
             const command = this.findMatchCommand(message);
             if (command) command.perform(
