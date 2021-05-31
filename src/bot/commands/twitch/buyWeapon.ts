@@ -15,13 +15,6 @@ class BuyWeaponCommand implements ICommand, ITwitchCommand {
 
         let coin: number = Number(message.split(" ")[1])
 
-        if (coin < 0) {
-            client.say(channel, `
-                @${tags.username} เงินติดลบ คุณจะซื้อได้งายยยย ถามจริง!!!
-            `)
-            return
-        }
-
         if (coin === 0) {
             client.say(channel, `
                 @${tags.username} ของฟรีมันไม่มีในโลกโว้ยยยยย

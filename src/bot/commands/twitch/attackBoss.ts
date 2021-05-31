@@ -25,7 +25,7 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
         return text === "!attack boss";
     }
 
-    perform(client: Client, channel: string, tags: ChatUserstate, message: string): void {
+    async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let game: IGameService = services.game;
 
@@ -34,8 +34,15 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
             return;
         }
 
-        game.attackBossBy(tags["user-id"])
+        let character = await services.character.getCharacterByUserHash(tags["user-id"]);
+        if (!character) throw new Error("not found character")
 
+        if (!game.getGameManager().canBossAttackedBy(character)) {
+            client.say(channel, `@${tags.username} ตีเร็วไปแล้ว -> รอให้ครบ 30 วิแล้วค่อยตีใหม่`);
+            return;
+        }
+
+        game.attackBossBy(tags["user-id"])
         client.say(channel, `@${tags.username} ${this.randomWord()}`);
     }
 }

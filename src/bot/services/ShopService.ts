@@ -1,5 +1,5 @@
 import { Character } from "@prisma/client";
-import ICharacterService from "../../interfaces/services/ICharacterService";
+import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService";
 import IGameService from "../../interfaces/services/IGameService";
 import IShopService from "../../interfaces/services/IShopService";
 
@@ -12,7 +12,7 @@ class ShopService implements IShopService {
         this.gameService = gameService;
     }
 
-    async buyEquipment(hash: string, coin: number): Promise<Character | null> {
+    async buyEquipment(hash: string, coin: number): Promise<Character & IncludeUserAndEquipment | null> {
         let chracter = await this.characterService.getCharacterByUserHash(hash);
         if (!chracter) return null;
 

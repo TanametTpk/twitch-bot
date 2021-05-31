@@ -23,7 +23,7 @@ test('boss should have hp related to online player damage', async() => {
     bossManager.spawnBoss(100)
     let boss = bossManager.getBoss()
 
-    expect(boss!.getMaxHp()).toEqual(100 * 4 * boss!.getLevel() / 10)
+    expect(boss!.getMaxHp()).toEqual(100 * 4 * (boss!.getLevel() + 5) / 10)
 })
 
 test('boss should have level between 1 to 10', async() => {

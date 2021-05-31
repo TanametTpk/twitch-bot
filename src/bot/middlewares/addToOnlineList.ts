@@ -7,7 +7,13 @@ class AddToOnlineListMiddleware implements IMiddleware {
         if (!tags["user-id"] || !tags.username) return;
         if (services.game.isPlayerOnline(tags["user-id"])) return;
 
-        let user = await services.user.createUser(tags.username, tags["user-id"]);
+        let user = await services.user.getUserByHash(tags["user-id"]);
+        if (user) {
+            services.game.getGameManager().playerManager.addOnlinePlayer(user)
+            return;
+        }
+
+        user = await services.user.createUser(tags.username, tags["user-id"]);
         if (!user) {
             throw new Error("Can't not Create User");
         }
