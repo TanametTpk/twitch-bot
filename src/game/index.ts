@@ -40,7 +40,7 @@ class GameManager {
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
 
-        let fiveTeenMinutes: number = 1 * 60 * 1000;
+        let fiveTeenMinutes: number = 15 * 60 * 1000;
         this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
         this.attackPlayerTask = setTimeout(() => {
             this.bossAttackRandomPlayer()
