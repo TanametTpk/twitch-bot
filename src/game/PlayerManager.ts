@@ -8,7 +8,7 @@ export interface Reward {
 }
 
 export default class PlayerManager {
-    private onlinePlayers: Map<number, User>;
+    private onlinePlayers: Map<string, User>;
     private totalOnlineDamage: number;
     private characterService: ICharacterService;
 
@@ -19,11 +19,13 @@ export default class PlayerManager {
     }
 
     public async addOnlinePlayer(user: User) {
+        if (this.onlinePlayers.has(user.hash)) return;
+
         let character = await this.characterService.getCharacterByUserId(user.id);
         
         if (!character) return;
 
-        this.onlinePlayers.set(user.id, user);
+        this.onlinePlayers.set(user.hash, user);
         this.totalOnlineDamage += character.atk;
 
         if (character.equipment)
@@ -31,10 +33,12 @@ export default class PlayerManager {
     }
 
     public async removeOnlinePlayer(user: User) {
+        if (!this.onlinePlayers.has(user.hash)) return;
+
         let character = await this.characterService.getCharacterByUserId(user.id);
         
         if (!character) return;
-        this.onlinePlayers.delete(user.id);
+        this.onlinePlayers.delete(user.hash);
         this.totalOnlineDamage -= character.atk;
 
         if (character.equipment)
@@ -90,5 +94,9 @@ export default class PlayerManager {
 
     public getTotalOnlineDamage(): number {
         return this.totalOnlineDamage;
+    }
+
+    public isPlayerOnline(hash: string): boolean {
+        return this.onlinePlayers.has(hash);
     }
 }

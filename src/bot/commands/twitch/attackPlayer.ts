@@ -1,21 +1,28 @@
 import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
+import IGameService from "../../../interfaces/services/IGameService";
+import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
-        return text === "!attack player <string>";
+        return false;
+        // return /!pvp [^ ]+/.test(text);
     }
 
     perform(client: Client, channel: string, tags: ChatUserstate, message: string): void {
-        // get attacker player
-        // get attacked player
+        // let game: IGameService = services.game;
+        // let params = message.split(" ");
+        // let attackedName = params[1];
 
-        // attack
+        // // find attacker
+        // let attackerPlayer = ""
 
-        // check death and mute
+        // // find by name
+        // let attackedPlayer = ""
 
-        // send msg
+        // game.pvp(attackerId, attackedId);
+        // client.say(channel, `@${attackedName} ถูกกระทืบโดย ${tags.username}`);
     }
 }
 

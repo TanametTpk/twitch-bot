@@ -8,6 +8,7 @@ import moment from 'moment';
 import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
 import { Character } from "@prisma/client";
+import { setTimeout } from "timers";
 
 class GameManager {
     public bossManager: BossManager;
@@ -28,16 +29,22 @@ class GameManager {
     }
 
     private scheduleEvent(): void {
-        cron.schedule('* * 1 * * *', this.spawnBoss)
+        cron.schedule('0 0 * * * *', () => {
+            this.spawnBoss()
+        })
     }
 
     public spawnBoss(): void {
+        this.clearBossAttackTask();
+
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
 
-        let fiveTeenMinutes: number = 15 * 60 * 1000;
+        let fiveTeenMinutes: number = 1 * 60 * 1000;
         this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
-        this.attackPlayerTask = setTimeout(this.bossAttackRandomPlayer, fiveTeenMinutes);
+        this.attackPlayerTask = setTimeout(() => {
+            this.bossAttackRandomPlayer()
+        }, fiveTeenMinutes);
     }
 
     private clearBossAttackTask(): void {
@@ -54,6 +61,8 @@ class GameManager {
         console.log(`Boss: I am inevitible..`)
 
         let players = this.playerManager.getOnlinePlayers()
+        console.log(players);
+        
         for (let player of players) {
             let username = player.name
             if (roll(50)) {
@@ -110,6 +119,7 @@ class GameManager {
         this.playerManager.distributeRewards(rewards);
 
         this.clearBossAttackTask();
+        client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
     }
 
     private bossAttackRandomPlayer() {
@@ -119,7 +129,7 @@ class GameManager {
         this.randomMutePlayers();
     }
 
-    private canBossAttackedBy(character: Character): boolean {
+    public canBossAttackedBy(character: Character): boolean {
         let info = this.bossManager.attacker.get(character.id);
         if (!info) return true;
         
@@ -155,12 +165,15 @@ class GameManager {
         
         if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
         
-        await this.characterService.removeEquipment(character.id);
+        if (character.equipment)
+            await this.characterService.removeEquipment(character.id);
 
         let newEquipment = await this.equipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
         if (!newEquipment) return;
         
         await this.characterService.removeCoinFromCharacter(character.id, coin);
+        await this.playerManager.removeOnlinePlayer(character.user)
+        await this.playerManager.addOnlinePlayer(character.user)
     }
 
     public getBossNextAttack(): Date | undefined {
