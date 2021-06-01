@@ -20,7 +20,7 @@ class GameManager {
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager(characterService);
+        this.playerManager = new PlayerManager(characterService, equipmentService);
         this.characterService = characterService;
         this.equipmentService = equipmentService;
 
@@ -56,7 +56,7 @@ class GameManager {
 
     private async randomMutePlayers() {
         let channel_name = process.env.tmi_channel_name as string
-        let timeoutSeconds = 180;
+        let timeoutSeconds = 60;
         let casualties = 0;
         console.log(`Boss: I am inevitible..`)
 
