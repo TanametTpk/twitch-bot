@@ -114,6 +114,28 @@ test('should get character by user hash', async() => {
     expect(newCharacter).toEqual(character)
 })
 
+test('should get character by name', async() => {
+    const user: User = { 
+        id: 1,
+        name: "user1",
+        hash: "hash1"
+    }
+
+    const character: Character & IncludeUserAndEquipment = {
+        id: 1,
+        coin: 0,
+        atk: 10,
+        userId: user.id,
+        user,
+        equipment: null
+    }
+
+    prismaMock.character.findFirst.mockResolvedValue(character)
+
+    let newCharacter = await service.getCharacterByName('user1')
+    expect(newCharacter).toEqual(character)
+})
+
 test('should return null when user hash not exist', async() => {
     prismaMock.character.findFirst.mockResolvedValue(null)
 

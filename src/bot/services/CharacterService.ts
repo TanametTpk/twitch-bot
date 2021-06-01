@@ -46,6 +46,20 @@ class CharacterService implements ICharacterService {
         })
     }
 
+    public async getCharacterByName(name: string): Promise<(Character & IncludeUserAndEquipment) | null> {
+        return this.client.character.findFirst({
+            where: {
+                user: {
+                    name
+                }
+            },
+            include: {
+                user: true,
+                equipment: true
+            }
+        })
+    }
+
     public async getCharacterByUserHash(hash: string): Promise<(Character & IncludeUserAndEquipment) | null> {
         return this.client.character.findFirst({
             where: {
