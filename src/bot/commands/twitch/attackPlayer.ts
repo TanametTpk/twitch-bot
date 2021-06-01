@@ -6,11 +6,15 @@ import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
-        return false;
-        // return /!pvp [^ ]+/.test(text);
+        // return false;
+        return /!pvp [^ ]+/.test(text);
     }
 
     perform(client: Client, channel: string, tags: ChatUserstate, message: string): void {
+        let nameTag = message.split(" ")[1]
+        let name = nameTag.substring(1)
+        console.log(name);
+        
         // let game: IGameService = services.game;
         // let params = message.split(" ");
         // let attackedName = params[1];

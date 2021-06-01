@@ -1,14 +1,21 @@
 import PlayerManager, { Reward } from "../PlayerManager"
-import { mock } from "jest-mock-extended"
+import { mock, MockProxy } from "jest-mock-extended"
 import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService"
 import { Character, Equipment } from ".prisma/client"
 import { User } from "@prisma/client"
 import moment from "moment"
+import IEquipmentService from "../../interfaces/services/IEquipmentService"
 
-const mockCharacterService = mock<ICharacterService>()
+let mockCharacterService: MockProxy<ICharacterService>
+let mockEquipmentService: MockProxy<IEquipmentService>
+
+beforeEach(() => {
+    mockCharacterService = mock<ICharacterService>()
+    mockEquipmentService = mock<IEquipmentService>()
+})
 
 test('should create player manager', async() => {
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     expect(playerManager.getOnlinePlayers().length).toEqual(0)
     expect(playerManager.getTotalOnlineDamage()).toEqual(0)
@@ -30,7 +37,7 @@ test('should return true when player online', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user)
@@ -45,7 +52,7 @@ test('should return false when player not online', async() => {
         hash: "hash1"
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
     expect(playerManager.isPlayerOnline(user.hash)).toEqual(false)
 })
 
@@ -65,7 +72,7 @@ test('should add online player', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user)
@@ -90,7 +97,7 @@ test('should not add online player when same player is added', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user)
@@ -116,7 +123,7 @@ test('should not remove online player when player is not added', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.removeOnlinePlayer(user)
@@ -132,7 +139,7 @@ test('should not add online player when not found character', async() => {
         hash: "hash1"
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(null)
     await playerManager.addOnlinePlayer(user)
@@ -163,7 +170,7 @@ test('should not remove online player when not found character', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user1)
@@ -199,7 +206,7 @@ test('should add equipment atk to total online damage', async() => {
         equipment: equipment
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user)
@@ -247,7 +254,7 @@ test('should add multiple player', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character1)
     await playerManager.addOnlinePlayer(user1)
@@ -275,7 +282,7 @@ test('should remove player', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character)
     await playerManager.addOnlinePlayer(user)
@@ -325,7 +332,7 @@ test('should remove right player', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getCharacterByUserId.mockResolvedValue(character1)
     await playerManager.addOnlinePlayer(user1)
@@ -357,7 +364,7 @@ test('should return only player base atk', async() => {
         equipment: null
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
     let dmg = playerManager.calculateAttackPowerOf(character)
 
     expect(dmg).toEqual(10)
@@ -387,13 +394,13 @@ test('should return player base atk and equipment', async() => {
         equipment
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
     let dmg = playerManager.calculateAttackPowerOf(character)
 
     expect(dmg).toEqual(20)
 })
 
-test('should remove right player', async() => {
+test('should remove expired equipment from player', async() => {
     const user1: User = {
         id: 1,
         name: "user1",
@@ -463,7 +470,7 @@ test('should remove right player', async() => {
         equipment: uncheckEquipment
     }
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
 
     mockCharacterService.getAllArmedPlayer.mockResolvedValue([character1, character2, character3])
     mockCharacterService.removeEquipment.mockResolvedValue(character2)
@@ -473,6 +480,7 @@ test('should remove right player', async() => {
     expect(mockCharacterService.removeEquipment).toHaveBeenCalledWith(2)
     expect(mockCharacterService.removeEquipment).not.toHaveBeenCalledWith(1)
     expect(mockCharacterService.removeEquipment).not.toHaveBeenCalledWith(3)
+    expect(mockEquipmentService.updateExpiredEquipment).toHaveBeenCalledTimes(2)
 })
 
 test('should give reward to players', async() => {
@@ -487,7 +495,7 @@ test('should give reward to players', async() => {
         }
     ]
 
-    const playerManager = new PlayerManager(mockCharacterService)
+    const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
     playerManager.distributeRewards(rewards)
 
     expect(mockCharacterService.addCoinToCharacter).toHaveBeenCalledTimes(2)

@@ -34,6 +34,16 @@ class EquipmentService implements IEquipmentService {
             where: {id}
         })
     }
+
+    public updateExpiredEquipment(id: number, last_time_check: Date, expired_time: number): Promise<Equipment | null> {
+        return this.client.equipment.update({
+            where: {id},
+            data: {
+                last_time_check,
+                expired_time
+            }
+        })
+    }
 }
 
 export default EquipmentService;

@@ -60,3 +60,18 @@ test('should get Equipment when delete', async() => {
     let targetEquipment = await service.removeEquipment(1)
     expect(targetEquipment).toEqual(equipment)
 })
+
+test('should update Equipment expired date', async() => {
+    const equipment: Equipment = {
+        id: 1,
+        atk: 2,
+        characterId: 1,
+        expired_time: 3,
+        last_time_check: new Date()
+    }
+
+    prismaMock.equipment.update.mockResolvedValue(equipment)
+
+    let targetEquipment = await service.updateExpiredEquipment(1, new Date(), 3);
+    expect(targetEquipment).toEqual(equipment)
+})

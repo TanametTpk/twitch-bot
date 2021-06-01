@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Equipment, User, Character } from "@prisma/client";
 import ICharacterService, { IncludeUserAndEquipment } from "../interfaces/services/ICharacterService";
+import IEquipmentService from '../interfaces/services/IEquipmentService';
 
 export interface Reward {
     chracterId: number
@@ -11,11 +12,13 @@ export default class PlayerManager {
     private onlinePlayers: Map<string, User>;
     private totalOnlineDamage: number;
     private characterService: ICharacterService;
+    private equipmentService: IEquipmentService;
 
-    constructor(characterService: ICharacterService) {
+    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.onlinePlayers = new Map();
         this.totalOnlineDamage = 0;
         this.characterService = characterService;
+        this.equipmentService = equipmentService;
     }
 
     public async addOnlinePlayer(user: User) {
@@ -59,6 +62,7 @@ export default class PlayerManager {
         if (isExpired) {
             this.characterService.removeEquipment(player.id);
         }
+        this.equipmentService.updateExpiredEquipment(player.id, player.equipment!.last_time_check, player.equipment!.expired_time)
     }
 
     public async updateAllPlayerEquipment() {

@@ -6,4 +6,5 @@ export default interface IEquipmentService {
     createEquipment(character: Character, atk: number, expired_time: number): Promise<Equipment | null>
     getEquipment(character_id: number): Promise<Equipment | null>
     removeEquipment(id: number): Promise<Equipment | null>;
+    updateExpiredEquipment(id: number, last_time_check: Date, expired_time: number): Promise<Equipment | null>
 }
