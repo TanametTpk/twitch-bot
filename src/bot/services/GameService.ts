@@ -1,9 +1,11 @@
+import { User } from "@prisma/client";
 import GameManager from "../../game";
 import Boss from "../../game/Boss";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
 import services from "../services";
+import roll from "../utils/roll";
 
 class GameService implements IGameService {
     private characterService: ICharacterService
@@ -21,8 +23,20 @@ class GameService implements IGameService {
         this.game.attackBoss(chracter.id)
     }
 
-    public async pvp(attackerId: string, attackedId: string): Promise<void> {
-        throw new Error("not implement yet");
+    public async pvp(attackerId: string, attackedId: string): Promise<User | null> {
+        let attacker = await this.characterService.getCharacterByUserHash(attackerId)
+        let attacked = await this.characterService.getCharacterByUserHash(attackedId)
+
+        if (!attacker || !attacked) return null
+
+        let attackerDmg = this.game.playerManager.calculateAttackPowerOf(attacker)
+        let attackedDmg = this.game.playerManager.calculateAttackPowerOf(attacked)
+        let attackDiffRatio = attackedDmg / attackerDmg
+        if (attackDiffRatio < 1) return attacked.user
+
+        let successRate = 100 / attackDiffRatio
+        if (roll(successRate)) return attacked.user
+        return attacker.user
     }
 
     public getBoss(): Boss | undefined {
