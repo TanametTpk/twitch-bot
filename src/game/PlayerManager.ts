@@ -54,15 +54,15 @@ export default class PlayerManager {
         return true;
     }
 
-    private updateEquipmentOf(player: Character & IncludeUserAndEquipment) {
+    private async updateEquipmentOf(player: Character & IncludeUserAndEquipment) {
         player.equipment!.expired_time -= 1;
         player.equipment!.last_time_check = new Date();
-        
+
         const isExpired = player.equipment!.expired_time < 0
         if (isExpired) {
             this.characterService.removeEquipment(player.id);
         }
-        this.equipmentService.updateExpiredEquipment(player.id, player.equipment!.last_time_check, player.equipment!.expired_time)
+        await this.equipmentService.updateExpiredEquipment(player.equipment!.id, player.equipment!.last_time_check, player.equipment!.expired_time)
     }
 
     public async updateAllPlayerEquipment() {

@@ -20,7 +20,7 @@ class GameManager {
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager(characterService);
+        this.playerManager = new PlayerManager(characterService, equipmentService);
         this.characterService = characterService;
         this.equipmentService = equipmentService;
 
