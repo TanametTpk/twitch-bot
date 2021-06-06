@@ -28,7 +28,7 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         let attackerId = tags["user-id"]
         let attackedId = attackedCharacter.user.hash
 
-        if (attackedId === attackedId) {
+        if (attackedId === attackerId) {
             this.timeoutAndMessage(
                 client,
                 channel,
