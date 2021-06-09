@@ -23,7 +23,7 @@ app.get("*", (req, res) => {
 })
 
 export const start = () => {
-    server.listen(port, () => console.log(`Example app listening on port ${port}!`));
+    server.listen(port, () => console.log(`web server listening on port ${port}!`));
     // setInterval(test, 5000)
 }
 
