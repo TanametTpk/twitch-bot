@@ -1,12 +1,14 @@
-import { Client, ChatUserstate } from "tmi.js";
-import ICommand from "../../../interfaces/ICommand";
-import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import services from "../../services";
+import { ChatUserstate, Client } from "tmi.js";
+import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import services from "../services";
 
-class BuyWeaponCommand implements ICommand, ITwitchCommand {
-    match(text: string): boolean {
-        return false;
-        // return /!buy \d/.test(text);
+class BuyWeaponCommand extends AbstractChannelPointAction {
+    constructor() {
+        super("a4f70123-8adf-4b1b-83a0-2add5094336a");
+    }
+
+    private isNumber(msg: string): boolean {
+        return /^\d+$/.test(msg)
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
@@ -14,7 +16,14 @@ class BuyWeaponCommand implements ICommand, ITwitchCommand {
         let character = await services.character.getCharacterByUserHash(tags["user-id"]);
         if (!character) throw new Error("not found character")
 
-        let coin: number = Number(message.split(" ")[1])
+        if (!this.isNumber(message)) {
+            client.say(channel, `
+                @${tags.username} ใส่ตัวเลยมาดีๆหน่อย เสีย point ฟรีๆ เลยเห็นไหม
+            `)
+            return;
+        }
+
+        let coin: number = Number(message)
 
         if (coin === 0) {
             client.say(channel, `

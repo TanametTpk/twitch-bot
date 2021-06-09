@@ -1,11 +1,13 @@
-import { Client, ChatUserstate } from "tmi.js";
-import ICommand from "../../../interfaces/ICommand";
-import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import IGameService from "../../../interfaces/services/IGameService";
-import services from "../../services";
-import randomIntBetween from "../../utils/randomIntBetween";
+import { ChatUserstate, Client } from "tmi.js";
+import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import services from "../services";
+import randomIntBetween from "../utils/randomIntBetween";
 
-class AttackBossCommand implements ICommand, ITwitchCommand {
+class AttackBossCommand extends AbstractChannelPointAction {
+    constructor() {
+        super("6caf7630-92a6-4484-9873-e1bc3609fe42");
+    }
+
     private randomWord(): string {
         let attackWords = [
             "กระโดดเข้าไปตบบอส",
@@ -21,14 +23,9 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
         return attackWords[randomIntBetween(0, attackWords.length - 1)]
     }
 
-    match(text: string): boolean {
-        return false;
-        // return text === "!attack boss";
-    }
-
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
-        let game: IGameService = services.game;
+        let game = services.game;
 
         if (!game.getGameManager().bossManager.isBossHasSpawned()) {
             client.say(channel, `@${tags.username} ใจเย็นหนุ่มบอสยังไม่เกิด`);
