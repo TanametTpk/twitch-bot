@@ -1,13 +1,10 @@
-import { Client, ChatUserstate } from "tmi.js";
-import ICommand from "../../../interfaces/ICommand";
-import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import IGameService from "../../../interfaces/services/IGameService";
-import services from "../../services";
+import { ChatUserstate, Client } from "tmi.js";
+import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import services from "../services";
 
-class AttackPlayerCommand implements ICommand, ITwitchCommand {
-    match(text: string): boolean {
-        return false;
-        // return /!pvp [^ ]+/.test(text);
+class AttackPlayerCommand extends AbstractChannelPointAction {
+    constructor() {
+        super("68d5382c-f30b-45bf-842b-da7f50811eeb");
     }
 
     private timeoutAndMessage(client: Client, channel: string, username: string, message: string, duration: number) {
@@ -19,7 +16,7 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         let nameTag = message.split(" ")[1]
         let attackedName = nameTag.substring(1)
         
-        let game: IGameService = services.game
+        let game = services.game
         let attackedCharacter = await services.character.getCharacterByName(attackedName)
 
         if (!attackedCharacter) throw new Error("not found attacked character")

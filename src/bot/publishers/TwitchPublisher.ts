@@ -47,7 +47,7 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
 
             if (tags["custom-reward-id"]){
                 if (process.env.DEBUG_CUSTOM_REWARD) {
-                    console.debug(tags["custom-reward-id"]);
+                    console.log(tags["custom-reward-id"]);
                 }
 
                 let rewardActionTasks = this.rewardActions.map(

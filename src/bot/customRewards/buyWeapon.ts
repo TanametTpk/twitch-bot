@@ -1,12 +1,10 @@
-import { Client, ChatUserstate } from "tmi.js";
-import ICommand from "../../../interfaces/ICommand";
-import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import services from "../../services";
+import { ChatUserstate, Client } from "tmi.js";
+import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import services from "../services";
 
-class BuyWeaponCommand implements ICommand, ITwitchCommand {
-    match(text: string): boolean {
-        return false;
-        // return /!buy \d/.test(text);
+class BuyWeaponCommand extends AbstractChannelPointAction {
+    constructor() {
+        super("a4f70123-8adf-4b1b-83a0-2add5094336a");
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {

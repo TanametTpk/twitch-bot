@@ -1,12 +1,10 @@
-import { Client, ChatUserstate } from "tmi.js";
-import ICommand from "../../../interfaces/ICommand";
-import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import services from "../../services";
+import { ChatUserstate, Client } from "tmi.js";
+import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import services from "../services";
 
-class GetStatusCommand implements ICommand, ITwitchCommand {
-    match(text: string): boolean {
-        return false;
-        // return text === "!stat";
+class GetStatusCommand extends AbstractChannelPointAction {
+    constructor() {
+        super("2d7efc80-44f1-4ca0-ba01-b1c399151674");
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
