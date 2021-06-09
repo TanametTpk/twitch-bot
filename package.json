@@ -7,15 +7,18 @@
       "test:unit": "jest",
       "test:coverage": "jest --coverage",
       "test:unit-watch": "npm run test:unit -- --watch",
-      "start": "ts-node src/index.ts"
+      "start": "ts-node src/index.ts",
+      "start:server": "ts-node src/webserver/server.ts"
    },
    "author": "",
    "license": "ISC",
    "devDependencies": {
       "@prisma/client": "^2.23.0",
+      "@types/express": "^4.17.12",
       "@types/jest": "^26.0.23",
       "@types/node": "^8.0.29",
       "@types/node-cron": "^2.0.3",
+      "@types/socket.io": "^3.0.2",
       "@types/tmi.js": "^1.7.1",
       "jest": "^27.0.3",
       "jest-mock-extended": "^1.0.15",
@@ -28,9 +31,11 @@
    "dependencies": {
       "discord.js": "^12.5.3",
       "dotenv": "^10.0.0",
+      "express": "^4.17.1",
       "moment": "^2.29.1",
       "node-cron": "^3.0.0",
       "reflect-metadata": "^0.1.10",
+      "socket.io": "^4.1.2",
       "sqlite3": "^4.0.3",
       "tmi.js": "^1.8.3",
       "tslib": "^2.2.0"
