@@ -8,7 +8,7 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
     }
 
     private isNumber(msg: string): boolean {
-        return /d+/.test(msg)
+        return /^\d+$/.test(msg)
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
