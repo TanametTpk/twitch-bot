@@ -46,6 +46,10 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
             await Promise.all(middlewareTasks)
 
             if (tags["custom-reward-id"]){
+                if (process.env.DEBUG_CUSTOM_REWARD) {
+                    console.log(tags["custom-reward-id"]);
+                }
+
                 let rewardActionTasks = this.rewardActions.map(
                     async (action) => {
                         if (action.match(tags["custom-reward-id"]))
