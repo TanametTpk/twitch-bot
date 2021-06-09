@@ -40,5 +40,3 @@ export const stop = () => {
 //     api.showFeed("test", 'topLeft', 1.5)
 //     api.updateBoss(boss)
 // }
-
-start()
