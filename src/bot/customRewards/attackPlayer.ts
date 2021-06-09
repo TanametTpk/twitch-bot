@@ -13,8 +13,8 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
-        let nameTag = message.split(" ")[1]
-        let attackedName = nameTag.substring(1)
+        let name = message
+        let attackedName = name.startsWith("@") ? name.substring(1) : name
         
         let game = services.game
         let attackedCharacter = await services.character.getCharacterByName(attackedName)

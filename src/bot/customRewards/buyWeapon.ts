@@ -7,12 +7,23 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
         super("a4f70123-8adf-4b1b-83a0-2add5094336a");
     }
 
+    private isNumber(msg: string): boolean {
+        return /d+/.test(msg)
+    }
+
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let character = await services.character.getCharacterByUserHash(tags["user-id"]);
         if (!character) throw new Error("not found character")
 
-        let coin: number = Number(message.split(" ")[1])
+        if (!this.isNumber(message)) {
+            client.say(channel, `
+                @${tags.username} ใส่ตัวเลยมาดีๆหน่อย เสีย point ฟรีๆ เลยเห็นไหม
+            `)
+            return;
+        }
+
+        let coin: number = Number(message)
 
         if (coin === 0) {
             client.say(channel, `

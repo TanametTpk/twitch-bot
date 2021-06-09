@@ -23,10 +23,6 @@ class AttackBossCommand extends AbstractChannelPointAction {
         return attackWords[randomIntBetween(0, attackWords.length - 1)]
     }
 
-    match(text: string): boolean {
-        return text === "!attack boss";
-    }
-
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let game = services.game;
