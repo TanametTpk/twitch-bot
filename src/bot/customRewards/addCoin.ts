@@ -4,7 +4,7 @@ import services from "../services";
 
 class AddCoinAction extends AbstractChannelPointAction {
     constructor() {
-        super("68d5382c-f30b-45bf-842b-da7f50811eeb");
+        super("d94548d4-52cf-47c3-ac0a-bc16d53c8f8a");
     }
 
     async perform(client: Client, channel: string, userstate: ChatUserstate, message: string): Promise<void> {
@@ -13,6 +13,10 @@ class AddCoinAction extends AbstractChannelPointAction {
 
         if (!character) return;
         await services.character.addCoinToCharacter(character.id, 1)
+
+        client.say(channel, `
+            @${userstate.username} แลกเงินสำเร็จแล้ว
+        `)
     }
 }
 
