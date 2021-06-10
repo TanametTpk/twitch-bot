@@ -1,5 +1,6 @@
 import client from "../bot/twitch";
 import randomIntBetween from "../bot/utils/randomIntBetween";
+import WebSocketApi from "../webserver/socket/api";
 import Boss from "./Boss";
 
 interface AttackInfo {
@@ -27,7 +28,10 @@ export default class BossManager {
 
     public spawnBoss(totalOnlineDamage: number): void {
         this.boss = this.createBoss(totalOnlineDamage);
+        let webUI = WebSocketApi.getInstance();
+
         client.say(process.env.tmi_channel_name as string, `บอสเกิดแล้ววววว`)
+        webUI.updateBoss(this.boss);
     }
 
     public isBossHasSpawned(): boolean {
@@ -59,5 +63,10 @@ export default class BossManager {
         }
 
         this.attacker.set(characterId, new_info);
+        
+        if (this.boss) {
+            let webUI = WebSocketApi.getInstance();
+            webUI.updateBoss(this.boss);
+        }
     }
 }
