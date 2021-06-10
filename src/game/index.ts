@@ -104,10 +104,11 @@ class GameManager {
         let playerIdList: number[] = Array.from(this.bossManager.attacker.keys());
         let topFiveDmgId: number[] = this.getTopFivePlayer();
         let createRewards: Promise<Reward | undefined>[] = playerIdList.map(async(playerId) => {
+            let isExtraReward = roll(5)
             let chracter = await this.characterService.getCharacterByUserId(playerId)
-            let reward: number = 1;
+            let reward: number = isExtraReward ? 2 : 1;
             if (!chracter) return;
-            if (topFiveDmgId.includes(playerId)) reward = 5;
+            if (topFiveDmgId.includes(playerId)) reward = 3;
 
             return {
                 chracterId: chracter.id,
