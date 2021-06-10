@@ -1,5 +1,6 @@
 import { ChatUserstate, Client } from "tmi.js";
 import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import WebSocketApi from "../../webserver/socket/api";
 import services from "../services";
 import randomIntBetween from "../utils/randomIntBetween";
 
@@ -8,24 +9,10 @@ class AttackBossCommand extends AbstractChannelPointAction {
         super("6caf7630-92a6-4484-9873-e1bc3609fe42");
     }
 
-    private randomWord(): string {
-        let attackWords = [
-            "กระโดดเข้าไปตบบอส",
-            "จับบอสกระแทกเข่า",
-            "รังแกบอส",
-            "เอาบอสจับกดน้ำ",
-            "โยนหินใส่บอส",
-            "กระทืบบอส",
-            "ยืนด่าบอส",
-            "ใช้ความหล่อโจมตีบอส"
-        ]
-
-        return attackWords[randomIntBetween(0, attackWords.length - 1)]
-    }
-
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let game = services.game;
+        let webUI = WebSocketApi.getInstance()
 
         if (!game.getGameManager().bossManager.isBossHasSpawned()) {
             client.say(channel, `@${tags.username} ใจเย็นหนุ่มบอสยังไม่เกิด`);
@@ -41,7 +28,7 @@ class AttackBossCommand extends AbstractChannelPointAction {
         }
 
         game.attackBossBy(tags["user-id"])
-        client.say(channel, `@${tags.username} ${this.randomWord()}`);
+        webUI.showFeed(`${tags.username} 🗡️🐲`, 'topRight', 1.5)
     }
 }
 

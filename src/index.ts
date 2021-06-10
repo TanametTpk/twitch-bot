@@ -5,10 +5,13 @@ import "reflect-metadata";
 import prisma from './database/client';
 import Bot from './bot';
 import "./bot/services";
+import * as WebServer from './webserver/server';
 
 let bot: Bot | undefined
 
 async function main() {
+    WebServer.start();
+
     bot = new Bot();
     bot.start();
     console.log("Bot is Running!");
@@ -21,5 +24,5 @@ main()
             bot.stop();
 
         await prisma.$disconnect()
-        throw e
+        WebServer.stop();
     })
