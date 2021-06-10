@@ -9,6 +9,7 @@ import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
 import { Character } from "@prisma/client";
 import { setTimeout } from "timers";
+import WebSocketApi from "../webserver/socket/api";
 
 class GameManager {
     public bossManager: BossManager;
@@ -119,6 +120,9 @@ class GameManager {
         this.playerManager.distributeRewards(rewards);
 
         this.clearBossAttackTask();
+        
+        let webUI = WebSocketApi.getInstance()
+        webUI.bossEliminated()
         client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
     }
 

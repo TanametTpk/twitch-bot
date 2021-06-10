@@ -1,5 +1,6 @@
 import { ChatUserstate, Client } from "tmi.js";
 import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import WebSocketApi from "../../webserver/socket/api";
 import services from "../services";
 
 class AttackPlayerCommand extends AbstractChannelPointAction {
@@ -25,15 +26,10 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
 
         let attackerId = tags["user-id"]
         let attackedId = attackedCharacter.user.hash
+        let webUI = WebSocketApi.getInstance()
 
         if (attackedId === attackerId) {
-            this.timeoutAndMessage(
-                client,
-                channel,
-                tags.username,
-                `@${tags.username} ฆ่าตัวตาย`,
-                60
-            )
+            webUI.showFeed(`${tags.username} ☠️`, 'topRight', 1.5)
             return;
         }
 
@@ -48,16 +44,11 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
                 `@${attackedName} ถูกกระทืบโดย ${tags.username}`,
                 60
             )
+            webUI.showFeed(`${attackedName} 🗡️ ${tags.username}`, 'topRight', 1.5)
             return
         }
 
-        this.timeoutAndMessage(
-            client,
-            channel,
-            tags.username,
-            `อะไรกัน!! @${tags.username} โดน ${attackedName} counter attack ว่ะ!`,
-            60
-        )
+        webUI.showFeed(`${tags.username} 🛡️🗡️ ${attackedName}`, 'topRight', 1.5)
     }
 }
 

@@ -33,3 +33,8 @@ Just Click start.bat
 - Attack Boss
   - ตีบอส
   - top 5 จะได้ coin พิเศษ
+
+# Web UI
+
+- boss (localhost:8080/boss)
+- feed (localhost:8080/feed)
