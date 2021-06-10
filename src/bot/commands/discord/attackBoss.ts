@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IGameService from "../../../interfaces/services/IGameService";
+import WebSocketApi from "../../../webserver/socket/api";
 import services from "../../services";
 
 class AttackBossCommand implements ICommand, IDiscordCommand {
@@ -14,6 +15,8 @@ class AttackBossCommand implements ICommand, IDiscordCommand {
         let playerId = msg.content.split(" ")[1];
         game.attackBossBy(playerId)
         msg.channel.send("บอสโดนจมตีน");
+        let webUI = WebSocketApi.getInstance()
+        webUI.showFeed(`${playerId} 🗡️🐲`, 'topRight', 1.5)
     }
 }
 
