@@ -38,6 +38,13 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
             `)
             return
         }
+
+        if (character.equipment && character.equipment.atk < coin) {
+            client.say(channel, `
+                @${tags.username} ของใหม่มันกากกว่า ก็อย่าซื้อดีกว่ามั้ง
+            `)
+            return
+        }
         
         await services.shop.buyEquipment(tags["user-id"], coin)
         character = await services.character.getCharacterByUserHash(tags["user-id"]);
