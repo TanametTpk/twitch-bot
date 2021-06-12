@@ -35,6 +35,18 @@ class GameManager {
         cron.schedule('0 0 * * * *', () => {
             this.spawnBoss()
         })
+
+        cron.schedule('0 */1 * * * *', () => {
+            this.updateBossUI()
+        })
+    }
+
+    private updateBossUI() {
+        let boss = this.bossManager.getBoss()
+        if (!boss) return;
+
+        let webUI = WebSocketApi.getInstance()
+        webUI.updateBoss(boss)
     }
 
     public spawnBoss(): void {

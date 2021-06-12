@@ -16,6 +16,7 @@ export const io = new socketIO.Server(server, {
     }
 });
 
+app.use("/assets", express.static(path.join(__dirname, '/public/assets')));
 app.use(express.static(path.join(__dirname, '/public/build')));
 
 app.get("*", (req, res) => {
