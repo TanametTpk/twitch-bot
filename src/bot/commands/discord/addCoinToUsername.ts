@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import IGameService from "../../../interfaces/services/IGameService";
 import services from "../../services";
 
 class AddCoinToUsernameCommand implements ICommand, IDiscordCommand {
