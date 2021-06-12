@@ -8,8 +8,16 @@ class SubscriptionRewardStategy implements ITwitchSubscriptionStategy {
         let character = await services.character.getCharacterByUserHash(userstate["user-id"])
         if (!character) return;
 
-        await services.character.addCoinToCharacter(character.id, 9);
-        await services.character.addCoinToAllCharacter(1);
+        let rewardCoin = 10
+        let shareRewardCoin = 1
+        let plan = userstate["msg-param-sub-plan"]
+        if (plan) {
+            if (plan === '2000') rewardCoin = rewardCoin * 2
+            if (plan === '3000') rewardCoin = rewardCoin * 4
+        }
+
+        await services.character.addCoinToCharacter(character.id, rewardCoin - shareRewardCoin);
+        await services.character.addCoinToAllCharacter(shareRewardCoin);
     }
 }
 
