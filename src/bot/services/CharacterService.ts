@@ -75,6 +75,7 @@ class CharacterService implements ICharacterService {
     }
 
     public async addCoinToCharacter(id: number, coin: number): Promise<Character | null> {
+        if (coin < 1) return null;
         return this.client.character.update({
             where: {
                 id
@@ -99,6 +100,13 @@ class CharacterService implements ICharacterService {
     }
 
     public async removeCoinFromCharacter(id: number, coin: number): Promise<Character | null> {
+        let character = await this.client.character.findFirst({ where: {id} })
+        if (!character) return null;
+
+        if (character.coin < coin) {
+            coin = character.coin;
+        }
+
         return this.client.character.update({
             where: {
                 id
