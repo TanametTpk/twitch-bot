@@ -1,5 +1,6 @@
 import { ChatUserstate, Client } from "tmi.js";
 import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import { NotificationPlacement } from "../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../webserver/socket/api";
 import services from "../services";
 
@@ -27,9 +28,11 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         let attackerId = tags["user-id"]
         let attackedId = attackedCharacter.user.hash
         let webUI = WebSocketApi.getInstance()
+        let feedPosition: NotificationPlacement = 'topRight'
+        let feedDuration: number = 2.5
 
         if (attackedId === attackerId) {
-            webUI.showFeed(`${tags.username} ☠️`, 'topRight', 1.5)
+            webUI.showFeed(`${tags.username} ☠️`, feedPosition, feedDuration)
             return;
         }
 
@@ -42,13 +45,13 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
                 channel,
                 attackedName,
                 `@${attackedName} ถูกกระทืบโดย ${tags.username}`,
-                60
+                10
             )
-            webUI.showFeed(`${attackedName} 🗡️ ${tags.username}`, 'topRight', 1.5)
+            webUI.showFeed(`${tags.username} 🗡️ ${attackedName}`, feedPosition, feedDuration)
             return
         }
 
-        webUI.showFeed(`${tags.username} 🛡️🗡️ ${attackedName}`, 'topRight', 1.5)
+        webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, feedPosition, feedDuration)
     }
 }
 
