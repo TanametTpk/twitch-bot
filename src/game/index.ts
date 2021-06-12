@@ -7,23 +7,25 @@ import sleep from "../bot/utils/sleep";
 import moment from 'moment';
 import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
-import { Character } from "@prisma/client";
+import { Character, User } from "@prisma/client";
 import { setTimeout } from "timers";
 import WebSocketApi from "../webserver/socket/api";
+import Shop from "./Shop";
 
 class GameManager {
     public bossManager: BossManager;
     public playerManager: PlayerManager;
+    public shop: Shop;
     public attackPlayerTask: NodeJS.Timer | undefined;
     private bossNextAttackTime: Date | undefined;
     private characterService: ICharacterService;
-    private equipmentService: IEquipmentService;
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
         this.playerManager = new PlayerManager(characterService, equipmentService);
+        this.shop = new Shop(characterService, equipmentService)
+
         this.characterService = characterService;
-        this.equipmentService = equipmentService;
 
         this.playerManager.updateAllPlayerEquipment()
         this.scheduleEvent()
@@ -158,27 +160,16 @@ class GameManager {
         if (boss.isDead()) this.bossHasEliminated()
     }
 
-    private isChracterHaveEnoughCoin(chracter: Character, requireCoin: number): boolean {
-        return chracter.coin >= requireCoin;
+    public async buyEquipment(chracterId: number, coin: number) {
+        let character = await this.shop.buyEquipment(chracterId, coin)
+        if (!character) return;
+
+        await this.updatePlayerDamage(character.user)
     }
 
-    public async buyEquipment(chracterId: number, coin: number) {
-        if (coin < 1) return;
-        if (coin > 20) coin = 20;
-    
-        let character = await this.characterService.getCharacterById(chracterId);
-        
-        if (!character || !this.isChracterHaveEnoughCoin(character, coin)) return;
-        
-        if (character.equipment)
-            await this.characterService.removeEquipment(character.id);
-
-        let newEquipment = await this.equipmentService.createEquipment(character, coin, Math.ceil(coin / 4));
-        if (!newEquipment) return;
-        
-        await this.characterService.removeCoinFromCharacter(character.id, coin);
-        await this.playerManager.removeOnlinePlayer(character.user)
-        await this.playerManager.addOnlinePlayer(character.user)
+    private async updatePlayerDamage(user: User): Promise<void> {
+        await this.playerManager.removeOnlinePlayer(user)
+        await this.playerManager.addOnlinePlayer(user)
     }
 
     public getBossNextAttack(): Date | undefined {
