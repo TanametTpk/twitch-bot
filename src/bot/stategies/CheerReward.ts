@@ -4,20 +4,22 @@ import services from "../services";
 
 class CheerRewardStategy implements ITwitchCheerStategy {
     async perform(client: Client, channel: string, userstate: ChatUserstate, message: string): Promise<void> {
-        if (!userstate["user-id"]) return;
+        if (!userstate["user-id"] || !userstate.bits) return;
         let character = await services.character.getCharacterByUserHash(userstate["user-id"])
         if (!character) return;
 
-        let rewardCoin = 10
-        let shareRewardCoin = 1
-        let plan = userstate["msg-param-sub-plan"]
-        if (plan) {
-            if (plan === '2000') rewardCoin = rewardCoin * 2
-            if (plan === '3000') rewardCoin = rewardCoin * 4
-        }
+        let bits = Number(userstate.bits)
+        if (character.user.cheer + bits >= 500) {
+            await services.character.addCoinToCharacter(character.id, 12);
+            await services.user.removeCheerReward(character.userId, character.user.cheer)
+            let remainBit = character.user.cheer + bits - 500
 
-        await services.character.addCoinToCharacter(character.id, rewardCoin - shareRewardCoin);
-        await services.character.addCoinToAllCharacter(shareRewardCoin);
+            if (remainBit > 0) {
+                await services.user.addCheerReward(character.userId, remainBit)
+            }
+        } else {
+            await services.user.addCheerReward(character.userId, bits)
+        }
     }
 }
 
