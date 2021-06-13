@@ -8,14 +8,21 @@ export interface Reward {
     coin: number
 }
 
+interface DeadInfo {
+    user: User
+    last_dead_time: Date
+}
+
 export default class PlayerManager {
     private onlinePlayers: Map<string, User>;
     private totalOnlineDamage: number;
     private characterService: ICharacterService;
     private equipmentService: IEquipmentService;
+    private deadList: Map<number, DeadInfo>;
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.onlinePlayers = new Map();
+        this.deadList = new Map();
         this.totalOnlineDamage = 0;
         this.characterService = characterService;
         this.equipmentService = equipmentService;
@@ -110,5 +117,22 @@ export default class PlayerManager {
 
     public isPlayerOnline(hash: string): boolean {
         return this.onlinePlayers.has(hash);
+    }
+
+    public isPlayerDead(userId: number): boolean {
+        return this.deadList.has(userId)
+    }
+
+    public canAttackPlayer(userId: number): boolean {
+        if (!this.isPlayerDead(userId)) return true;
+        let deadInfo: DeadInfo = this.deadList.get(userId)!
+        
+        let lasttime = moment(deadInfo.last_dead_time);
+        let now = moment();
+        let diffMin = now.diff(lasttime, 'seconds', true);
+        let invulnerableTime = Number(process.env.INVULNERABLE_TIME_AFTER_DIE || 180)
+
+        if (diffMin > invulnerableTime) return true;
+        return false;
     }
 }
