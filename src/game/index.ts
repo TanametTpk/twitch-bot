@@ -19,7 +19,7 @@ class GameManager {
     public attackPlayerTask: NodeJS.Timer | undefined;
     private bossNextAttackTime: Date | undefined;
     private characterService: ICharacterService;
-    private isCanPvp = true;
+    private canPvp = true;
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.bossManager = new BossManager();
@@ -33,15 +33,19 @@ class GameManager {
     }
 
     private scheduleEvent(): void {
+        let allow_auto_pvp = process.env.ALLOW_AUTO_PVP === "true"
+
         cron.schedule('0 0 * * * *', () => {
             this.spawnBoss()
 
             // pvp
-            let TenMinutes: number = 10 * 60 * 1000;
-            this.toggleEnableDisablePvp()
-            setTimeout(() => {
+            if (allow_auto_pvp) {
+                let TenMinutes: number = 10 * 60 * 1000;
                 this.toggleEnableDisablePvp()
-            }, TenMinutes);
+                setTimeout(() => {
+                    this.toggleEnableDisablePvp()
+                }, TenMinutes);
+            }
         })
 
         cron.schedule('0 */1 * * * *', () => {
@@ -49,10 +53,10 @@ class GameManager {
         })
     }
 
-    private toggleEnableDisablePvp() {
-        this.isCanPvp = !this.isCanPvp
+    public toggleEnableDisablePvp() {
+        this.canPvp = !this.canPvp
         let channel_name = process.env.tmi_channel_name as string
-        client.say(channel_name, `pvp mode: ${this.isCanPvp ? "on": "off"}`);
+        client.say(channel_name, `pvp mode: ${this.canPvp ? "on": "off"}`);
     }
 
     private updateBossUI() {
@@ -200,6 +204,10 @@ class GameManager {
 
     public getBossNextAttack(): Date | undefined {
         return this.bossNextAttackTime;
+    }
+
+    public getCanPvp(): boolean {
+        return this.canPvp
     }
 }
 

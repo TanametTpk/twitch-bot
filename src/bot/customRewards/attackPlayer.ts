@@ -15,15 +15,18 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
+        let game = services.game
+        let playerManager = game.getGameManager().playerManager
+        if (!game.canPVP()) return;
+
         let name = message
         let attackedName = name.startsWith("@") ? name.substring(1) : name
-        
-        let game = services.game
         let attackedCharacter = await services.character.getCharacterByName(attackedName)
 
         if (!attackedCharacter) throw new Error("not found attacked character")
         if (!tags["user-id"]) throw new Error("not found attacker hash id from twitch")
         if (!tags.username) throw new Error("not found attacker username from twitch")
+        if (playerManager.isPlayerDead(tags["user-id"])) return;
 
         let attackerId = tags["user-id"]
         let attackedId = attackedCharacter.user.hash
@@ -33,6 +36,13 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
 
         if (attackedId === attackerId) {
             webUI.showFeed(`${tags.username} ☠️`, feedPosition, feedDuration)
+            return;
+        }
+
+        let canAttackThisPlayer = playerManager.canAttackPlayer(attackedCharacter.user.hash)
+
+        if (!canAttackThisPlayer) {
+            client.say(channel, `ตี ${attackedName} ไม่เข้า!!`);
             return;
         }
 

@@ -69,6 +69,20 @@ class GameService implements IGameService {
 
         services.character.addCoinToCharacter(character.id, coin);
     }
+
+    public canPVP(): boolean {
+        return this.game.getCanPvp();
+    }
+
+    public setPVPModeOn(): void {
+        if (this.game.getCanPvp()) return;
+        this.game.toggleEnableDisablePvp()
+    }
+
+    public setPVPModeOff(): void {
+        if (!this.game.getCanPvp()) return;
+        this.game.toggleEnableDisablePvp();
+    }
 }
 
 export default GameService;
