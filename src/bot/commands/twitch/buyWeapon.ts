@@ -5,8 +5,7 @@ import services from "../../services";
 
 class BuyWeaponCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
-        return false;
-        // return /!buy \d/.test(text);
+        return /!buy \d/.test(text);
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {

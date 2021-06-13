@@ -22,8 +22,7 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
     }
 
     match(text: string): boolean {
-        return false;
-        // return text === "!attack boss";
+        return text === "!attack boss";
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {

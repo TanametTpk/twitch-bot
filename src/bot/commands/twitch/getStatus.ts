@@ -5,8 +5,7 @@ import services from "../../services";
 
 class GetStatusCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
-        return false;
-        // return text === "!stat";
+        return text === "!stat";
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {

@@ -6,8 +6,7 @@ import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
-        return false;
-        // return /!pvp [^ ]+/.test(text);
+        return /!pvp [^ ]+/.test(text);
     }
 
     private timeoutAndMessage(client: Client, channel: string, username: string, message: string, duration: number) {
