@@ -5,24 +5,20 @@ import ITwitchCommand from "../../interfaces/ITwitchCommand";
 import IChannelPointAction from "../../interfaces/IChannelPointAction";
 import IMiddleware from "../../interfaces/IMiddleware";
 import ITwitchSubscriptionStategy from "../../interfaces/ITwitchSubscriptionStategy";
+import ITwitchCheerStategy from "../../interfaces/ITwitchCheerStategy";
 
 export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
     private client: tmi.Client
-    private rewardActions: IChannelPointAction[]
-    private middlewareActions: IMiddleware[]
-    private subscriptionStategy: ITwitchSubscriptionStategy
 
     public constructor(
         commands: ITwitchCommand[],
-        rewardActions: IChannelPointAction[],
-        middlewareActions: IMiddleware[],
-        subscriptionStategy: ITwitchSubscriptionStategy
+        private rewardActions: IChannelPointAction[],
+        private middlewareActions: IMiddleware[],
+        private subscriptionStategy: ITwitchSubscriptionStategy,
+        private cheerStatrgy: ITwitchCheerStategy
     ) {
         super(commands)
         this.client = client;
-        this.rewardActions = rewardActions;
-        this.middlewareActions = middlewareActions;
-        this.subscriptionStategy = subscriptionStategy
     }
 
     public start(): void {
@@ -30,6 +26,10 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
 
         this.client.on('subscription', (channel: string, username: string, _, message: string, userstate: tmi.SubUserstate) => {
             this.subscriptionStategy.perform(this.client, channel, message, username, userstate);
+        })
+
+        this.client.on("cheer", (channel: string, userstate: tmi.ChatUserstate, message: string) => {
+            this.cheerStatrgy.perform(this.client, channel, userstate, message);
         })
         
         this.client.on('message', async(channel, tags, message, self) => {            
