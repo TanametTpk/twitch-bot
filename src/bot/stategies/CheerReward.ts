@@ -2,7 +2,7 @@ import { ChatUserstate, Client } from "tmi.js";
 import ITwitchCheerStategy from "../../interfaces/ITwitchCheerStategy";
 import services from "../services";
 
-class SubscriptionRewardStategy implements ITwitchCheerStategy {
+class CheerRewardStategy implements ITwitchCheerStategy {
     async perform(client: Client, channel: string, userstate: ChatUserstate, message: string): Promise<void> {
         if (!userstate["user-id"]) return;
         let character = await services.character.getCharacterByUserHash(userstate["user-id"])
@@ -21,4 +21,4 @@ class SubscriptionRewardStategy implements ITwitchCheerStategy {
     }
 }
 
-export default new SubscriptionRewardStategy()
+export default new CheerRewardStategy()

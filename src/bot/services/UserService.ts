@@ -21,7 +21,7 @@ class UserService implements IUserService {
         return this.client.user.create({
             data: {
                 name,
-                hash
+                hash,
             }
         })
     }
@@ -35,6 +35,34 @@ class UserService implements IUserService {
     public getUserByHash(hash: string): Promise<User | null> {
         return this.client.user.findFirst({
             where: {hash}
+        })
+    }
+
+    public async addCheerReward(userId: number, reward: number): Promise<User | null> {
+        if (reward < 1) return null;
+        return this.client.user.update({
+            where: { id: userId },
+            data: {
+                cheer: {
+                    increment: reward
+                }
+            }
+        })
+    }
+
+    public async removeCheerReward(userId: number, reward: number): Promise<User | null> {
+        let user = await this.getUserById(userId);
+        if (!user) return null;
+        if (reward < 1) return null;
+        if (user.cheer < reward) reward = user.cheer;
+
+        return this.client.user.update({
+            where: { id: userId },
+            data: {
+                cheer: {
+                    decrement: reward
+                }
+            }
         })
     }
 }
