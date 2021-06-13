@@ -22,6 +22,7 @@ class UserService implements IUserService {
             data: {
                 name,
                 hash,
+                cheer: 0
             }
         })
     }

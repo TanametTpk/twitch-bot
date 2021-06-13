@@ -25,7 +25,8 @@ test('should return true when player online', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -49,7 +50,8 @@ test('should return false when player not online', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
@@ -60,7 +62,8 @@ test('should add online player', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -85,7 +88,8 @@ test('should not add online player when same player is added', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -111,7 +115,8 @@ test('should not remove online player when player is not added', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -136,7 +141,8 @@ test('should not add online player when not found character', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const playerManager = new PlayerManager(mockCharacterService, mockEquipmentService)
@@ -152,13 +158,15 @@ test('should not remove online player when not found character', async() => {
     const user1: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const user2: User = {
         id: 2,
         name: "user2",
-        hash: "hash2"
+        hash: "hash2",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -186,7 +194,8 @@ test('should add equipment atk to total online damage', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const equipment: Equipment = {
@@ -219,13 +228,15 @@ test('should add multiple player', async() => {
     const user1: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const user2: User = {
         id: 2,
         name: "user2",
-        hash: "hash2"
+        hash: "hash2",
+        cheer: 0
     }
 
     const equipment: Equipment = {
@@ -270,7 +281,8 @@ test('should remove player', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -297,13 +309,15 @@ test('should remove right player', async() => {
     const user1: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const user2: User = {
         id: 2,
         name: "user2",
-        hash: "hash2"
+        hash: "hash2",
+        cheer: 0
     }
 
     const equipment: Equipment = {
@@ -352,7 +366,8 @@ test('should return only player base atk', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
     
     const character: Character & IncludeUserAndEquipment = {
@@ -374,7 +389,8 @@ test('should return player base atk and equipment', async() => {
     const user: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const equipment: Equipment = {
@@ -404,19 +420,22 @@ test('should remove expired equipment from player', async() => {
     const user1: User = {
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     const user2: User = {
         id: 2,
         name: "user2",
-        hash: "hash2"
+        hash: "hash2",
+        cheer: 0
     }
 
     const user3: User = {
         id: 3,
         name: "user3",
-        hash: "hash3"
+        hash: "hash3",
+        cheer: 0
     }
 
     const equipment: Equipment = {
@@ -480,7 +499,7 @@ test('should remove expired equipment from player', async() => {
     expect(mockCharacterService.removeEquipment).toHaveBeenCalledWith(2)
     expect(mockCharacterService.removeEquipment).not.toHaveBeenCalledWith(1)
     expect(mockCharacterService.removeEquipment).not.toHaveBeenCalledWith(3)
-    expect(mockEquipmentService.updateExpiredEquipment).toHaveBeenCalledTimes(2)
+    expect(mockEquipmentService.updateExpiredEquipment).toHaveBeenCalledTimes(1)
 })
 
 test('should give reward to players', async() => {

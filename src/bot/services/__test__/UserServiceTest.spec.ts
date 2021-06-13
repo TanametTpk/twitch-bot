@@ -13,7 +13,8 @@ test('should create new user ', async() => {
     const user: User = { 
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     prismaMock.user.create.mockResolvedValue(user)
@@ -27,7 +28,8 @@ test('should return null when user hash existed', async() => {
     const user: User = { 
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     prismaMock.user.findFirst.mockResolvedValue(user)
@@ -40,7 +42,8 @@ test('should get user by id', async() => {
     const user: User = { 
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     await prismaMock.user.findFirst.mockResolvedValue(user)
@@ -60,7 +63,8 @@ test('should get user by hash', async() => {
     const user: User = { 
         id: 1,
         name: "user1",
-        hash: "hash1"
+        hash: "hash1",
+        cheer: 0
     }
 
     await prismaMock.user.findFirst.mockResolvedValue(user)
