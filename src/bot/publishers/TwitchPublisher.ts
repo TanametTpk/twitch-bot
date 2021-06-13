@@ -60,13 +60,16 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
                 await Promise.all(rewardActionTasks)
             }
 
-            const command = this.findMatchCommand(message);
-            if (command) command.perform(
-                this.client,
-                channel,
-                tags,
-                message
-            )
+            let isCommandAvailable = process.env.AVALABLE_COMMAND === "true"
+            if (isCommandAvailable) {
+                const command = this.findMatchCommand(message);
+                if (command) command.perform(
+                    this.client,
+                    channel,
+                    tags,
+                    message
+                )
+            }
         });
     }
 
