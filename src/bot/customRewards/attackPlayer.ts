@@ -14,6 +14,19 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         client.say(channel, message);
     }
 
+    private async suicide(userHash: string, username: string) {
+        let user = await services.user.getUserByHash(userHash)
+        if (!user) return;
+
+        let webUI = WebSocketApi.getInstance()
+        let feedPosition: NotificationPlacement = 'topRight'
+        let feedDuration: number = 2.5
+        let playerManager = services.game.getGameManager().playerManager
+        playerManager.addDeadPlayer(user)
+        webUI.showFeed(`${username} ☠️`, feedPosition, feedDuration)
+        return;
+    }
+
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         let game = services.game
         let playerManager = game.getGameManager().playerManager
@@ -35,7 +48,7 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         let feedDuration: number = 2.5
 
         if (attackedId === attackerId) {
-            webUI.showFeed(`${tags.username} ☠️`, feedPosition, feedDuration)
+            this.suicide(attackedId, tags.username)
             return;
         }
 
@@ -48,6 +61,7 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
 
         let deadUser = await game.pvp(attackerId, attackedId);
         if (!deadUser) return;
+        playerManager.addDeadPlayer(deadUser)
 
         if (deadUser.hash === attackedCharacter.user.hash) {
             this.timeoutAndMessage(
