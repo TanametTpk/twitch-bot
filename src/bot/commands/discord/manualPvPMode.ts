@@ -3,7 +3,7 @@ import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import services from "../../services";
 
-class AddCoinToUsernameCommand implements ICommand, IDiscordCommand {
+class ManualPVPMode implements ICommand, IDiscordCommand {
     match(text: string): boolean {
         return /!pvp mode (on|off)/.test(text);
     }
@@ -18,4 +18,4 @@ class AddCoinToUsernameCommand implements ICommand, IDiscordCommand {
     }
 }
 
-export default new AddCoinToUsernameCommand();
+export default new ManualPVPMode();
