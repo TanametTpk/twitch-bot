@@ -14,6 +14,10 @@ class CheerRewardStategy implements ITwitchCheerStategy {
             await services.user.removeCheerReward(character.userId, character.user.cheer)
             let remainBit = character.user.cheer + bits - 500
 
+            client.say(channel, `
+                @${userstate.username} bits ครบ 500 แล้ว ท่านได้รับ 12 coin
+            `)
+
             if (remainBit > 0) {
                 await services.user.addCheerReward(character.userId, remainBit)
             }
