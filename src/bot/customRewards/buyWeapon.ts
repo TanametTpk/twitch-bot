@@ -13,8 +13,10 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
+        let playerManager = services.game.getGameManager().playerManager
         let character = await services.character.getCharacterByUserHash(tags["user-id"]);
         if (!character) throw new Error("not found character")
+        if (playerManager.isPlayerDead(tags["user-id"])) return;
 
         if (!this.isNumber(message)) {
             client.say(channel, `

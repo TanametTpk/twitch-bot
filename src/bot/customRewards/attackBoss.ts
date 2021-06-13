@@ -12,6 +12,9 @@ class AttackBossCommand extends AbstractChannelPointAction {
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let game = services.game;
+        let playerManager = game.getGameManager().playerManager
+        if (playerManager.isPlayerDead(tags["user-id"])) return;
+        
         let webUI = WebSocketApi.getInstance()
 
         if (!game.getGameManager().bossManager.isBossHasSpawned()) {
