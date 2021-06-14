@@ -4,6 +4,7 @@ import Boss from "../../game/Boss";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
+import AttackError from "../errors/AttackError";
 import PlayerDeadError from "../errors/PlayerDeadError";
 import PVPModeOffError from "../errors/PVPModeOffError";
 import services from "../services";
@@ -33,7 +34,16 @@ class GameService implements IGameService {
             throw new PlayerDeadError("Player can't pvp when they are dead.")
         }
 
-        return this.attack(attackerId, attackedId)
+        if (!playerManager.canAttackPlayer(attackedId)) {
+            throw new AttackError("can't not attack this player.")
+        }
+
+        let deadPlayer = await this.attack(attackerId, attackedId)
+        if (deadPlayer) {
+            playerManager.addDeadPlayer(deadPlayer)
+        }
+
+        return deadPlayer
     }
 
     private async attack(attackerId: string, attackedId: string): Promise<User | null> {
