@@ -1,5 +1,9 @@
 import { ChatUserstate, Client } from "tmi.js";
 import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
+import BuyBadItemError from "../errors/BuyBadItemError";
+import NegativeCoinNumberError from "../errors/NegativeCoinNumberError";
+import NotEnoughCoinError from "../errors/NotEnoughCoinError";
+import PlayerDeadError from "../errors/PlayerDeadError";
 import services from "../services";
 
 class BuyWeaponCommand extends AbstractChannelPointAction {
@@ -33,28 +37,29 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
             `)
             return
         }
-
-        if (character.coin < coin) {
-            client.say(channel, `
-                @${tags.username} เงินไม่พอโว้ยยย ไปเรียนเลขมาใหม่ไป๊
-            `)
-            return
-        }
-
-        if (character.equipment && character.equipment.atk < coin) {
-            client.say(channel, `
-                @${tags.username} ของใหม่มันกากกว่า ก็อย่าซื้อดีกว่ามั้ง
-            `)
-            return
-        }
         
-        await services.shop.buyEquipment(tags["user-id"], coin)
-        character = await services.character.getCharacterByUserHash(tags["user-id"]);
-        if (!character || !character.equipment) throw new Error("can't buy item")
+        try {
+            await services.shop.buyEquipment(tags["user-id"], coin)
 
-        let totalDmg: number = character.equipment.atk + character.atk;
-        let duration: number = character.equipment.expired_time;
-        client.say(channel, `@${tags.username}: ถอยดาบใหม่ได้แล้วโว้ย!! ตอนนี้ damage รวมกู ${totalDmg} เป็นเวลา ${duration} วัน`);
+            character = await services.character.getCharacterByUserHash(tags["user-id"]);
+            if (!character || !character.equipment) return;
+
+            let totalDmg: number = character.equipment.atk + character.atk;
+            let duration: number = character.equipment.expired_time;
+            client.say(channel, `@${tags.username}: ถอยดาบใหม่ได้แล้วโว้ย!! ตอนนี้ damage รวมกู ${totalDmg} เป็นเวลา ${duration} วัน`);
+        } catch (error) {
+            if (error instanceof NotEnoughCoinError) {
+                client.say(channel, `@${tags.username} เงินไม่พอโว้ยยย ไปเรียนเลขมาใหม่ไป๊`);
+            }
+
+            if (error instanceof BuyBadItemError) {
+                client.say(channel, `@${tags.username} ของใหม่มันกากกว่า ก็อย่าซื้อดีกว่ามั้ง`);
+            }
+
+            if (error instanceof NegativeCoinNumberError) {
+                client.say(channel, `@${tags.username} ของฟรีมันไม่มีในโลกโว้ยยยยย`);
+            }
+        }
     }
 }
 
