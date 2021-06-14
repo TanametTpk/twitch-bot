@@ -5,6 +5,7 @@ import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
 import AttackError from "../errors/AttackError";
+import BossNotFoundError from "../errors/BossNotFoundError";
 import PlayerDeadError from "../errors/PlayerDeadError";
 import PVPModeOffError from "../errors/PVPModeOffError";
 import services from "../services";
@@ -20,9 +21,22 @@ class GameService implements IGameService {
     }
 
     public async attackBossBy(playerId: string): Promise<void> {
+        let playerManager = this.getGameManager().playerManager
         let chracter = await this.characterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
-        
+
+        if (!this.game.bossManager.isBossHasSpawned()) {
+            throw new BossNotFoundError("boss is not spawn")
+        }
+
+        if (!playerManager.isPlayerDead(playerId)) {
+            throw new PlayerDeadError("can't attack boss because player is dead.")
+        }
+
+        if (!this.game.canBossAttackedBy(chracter)) {
+            throw new AttackError("can't not attack boss.")
+        }
+
         this.game.attackBoss(chracter.id)
     }
 
