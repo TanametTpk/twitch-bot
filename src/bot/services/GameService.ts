@@ -4,6 +4,8 @@ import Boss from "../../game/Boss";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
+import PlayerDeadError from "../errors/PlayerDeadError";
+import PVPModeOffError from "../errors/PVPModeOffError";
 import services from "../services";
 import roll from "../utils/roll";
 
@@ -24,6 +26,17 @@ class GameService implements IGameService {
     }
 
     public async pvp(attackerId: string, attackedId: string): Promise<User | null> {
+        if (!this.canPVP()) throw new PVPModeOffError("Can't Attack When pvp mode is off.");
+        let playerManager = this.getGameManager().playerManager
+
+        if (playerManager.isPlayerDead(attackerId)) {
+            throw new PlayerDeadError("Player can't pvp when they are dead.")
+        }
+
+        return this.attack(attackerId, attackedId)
+    }
+
+    private async attack(attackerId: string, attackedId: string): Promise<User | null> {
         let attacker = await this.characterService.getCharacterByUserHash(attackerId)
         let attacked = await this.characterService.getCharacterByUserHash(attackedId)
 
