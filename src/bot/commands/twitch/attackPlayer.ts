@@ -15,11 +15,6 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         return /!pvp [^ ]+/.test(text);
     }
 
-    private timeoutAndMessage(client: Client, channel: string, username: string, message: string, duration: number) {
-        client.timeout(channel, username, duration)
-        client.say(channel, message);
-    }
-
     private async suicide(userHash: string, username: string) {
         let user = await services.user.getUserByHash(userHash)
         if (!user) return;
