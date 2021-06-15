@@ -34,23 +34,17 @@ class GameManager {
 
     private scheduleEvent(): void {
         let allow_auto_pvp = process.env.ALLOW_AUTO_PVP === "true"
-        let pvpTime = Number(process.env.AVALABLE_PVP_TIME)
 
         cron.schedule('0 0 * * * *', () => {
             this.spawnBoss()
-
-            // pvp
-            if (allow_auto_pvp) {
-                let pvpTimeout: number = pvpTime * 1000;
-                this.toggleEnableDisablePvp()
-                setTimeout(() => {
-                    this.toggleEnableDisablePvp()
-                }, pvpTimeout);
-            }
         })
 
         cron.schedule('0 */1 * * * *', () => {
             this.updateBossUI()
+        })
+
+        if (allow_auto_pvp) cron.schedule('0 */30 * * * *', () => {
+            this.toggleEnableDisablePvp()
         })
     }
 
