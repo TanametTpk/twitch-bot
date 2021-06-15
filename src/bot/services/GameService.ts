@@ -29,7 +29,7 @@ class GameService implements IGameService {
             throw new BossNotFoundError("boss is not spawn")
         }
 
-        if (!playerManager.isPlayerDead(playerId)) {
+        if (playerManager.isPlayerDead(playerId)) {
             throw new PlayerDeadError("can't attack boss because player is dead.")
         }
 
