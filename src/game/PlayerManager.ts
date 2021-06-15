@@ -139,14 +139,6 @@ export default class PlayerManager {
 
     public canAttackPlayer(userHash: string): boolean {
         if (!this.isPlayerDead(userHash)) return true;
-        let deadInfo: DeadInfo = this.deadList.get(userHash)!
-        
-        let lasttime = moment(deadInfo.last_dead_time);
-        let now = moment();
-        let diffMin = now.diff(lasttime, 'seconds', true);
-        let invulnerableTime = Number(process.env.INVULNERABLE_TIME_AFTER_DIE || 180)
-
-        if (diffMin > invulnerableTime) return true;
         return false;
     }
 }
