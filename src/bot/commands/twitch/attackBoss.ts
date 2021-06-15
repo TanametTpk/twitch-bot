@@ -37,7 +37,7 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
         if (!character) throw new Error("not found character")
 
         try {
-            this.game.attackBossBy(tags["user-id"])
+            await this.game.attackBossBy(tags["user-id"])
             this.webUI.showFeed(`${tags.username} 🗡️🐲`, 'topRight', 1.5)
         } catch (error) {
             if (error instanceof AttackError) {

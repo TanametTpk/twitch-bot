@@ -21,7 +21,7 @@ class AttackBossCommand extends AbstractChannelPointAction {
         if (!character) throw new Error("not found character")
 
         try {
-            game.attackBossBy(tags["user-id"])
+            await game.attackBossBy(tags["user-id"])
             this.webUI.showFeed(`${tags.username} 🗡️🐲`, 'topRight', 1.5)
         } catch (error) {
             if (error instanceof AttackError) {
