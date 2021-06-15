@@ -36,7 +36,7 @@ export default class Shop {
     }
 
     private isNewEquipmentBetter(oldEquipment: Equipment, coin: number): boolean {
-        return oldEquipment.atk < coin
+        return oldEquipment.atk <= coin
     }
 
     protected isChracterHaveEnoughCoin(chracter: Character, requireCoin: number): boolean {
