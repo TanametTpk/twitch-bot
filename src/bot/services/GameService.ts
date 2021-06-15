@@ -54,6 +54,8 @@ class GameService implements IGameService {
 
         let deadPlayer = await this.attack(attackerId, attackedId)
         if (deadPlayer) {
+            console.log("dead");
+            
             playerManager.addDeadPlayer(deadPlayer)
         }
 

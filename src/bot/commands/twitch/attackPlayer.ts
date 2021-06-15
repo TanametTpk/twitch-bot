@@ -4,6 +4,7 @@ import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 import IGameService from "../../../interfaces/services/IGameService";
 import { NotificationPlacement } from "../../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../../webserver/socket/api";
+import AttackError from "../../errors/AttackError";
 import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
@@ -19,8 +20,10 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         let user = await services.user.getUserByHash(userHash)
         if (!user) return;
 
-        services.game.pvp(user.hash, user.hash)
-        this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
+        try {
+            await services.game.pvp(user.hash, user.hash)
+            this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
+        } catch (error) {}
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
@@ -42,15 +45,22 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
             return;
         }
 
-        let deadUser = await game.pvp(attackerId, attackedId);
-        if (!deadUser) return;
+        try {
+            let deadUser = await game.pvp(attackerId, attackedId);
+            if (!deadUser) return;
 
-        if (deadUser.hash === attackedCharacter.user.hash) {
-            this.webUI.showFeed(`${tags.username} 🗡️ ${attackedName}`, this.feedPosition, this.feedDuration)
-            return
+            if (deadUser.hash === attackedCharacter.user.hash) {
+                this.webUI.showFeed(`${tags.username} 🗡️ ${attackedName}`, this.feedPosition, this.feedDuration)
+                return
+            }
+
+            this.webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, this.feedPosition, this.feedDuration)
+
+        } catch (error) {
+            if (error instanceof AttackError) {
+                client.say(channel, `${tags.username} ตี ${attackedName} ไม่ได้ WTF!!`);
+            }
         }
-
-        this.webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, this.feedPosition, this.feedDuration)
     }
 }
 

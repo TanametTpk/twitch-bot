@@ -129,7 +129,7 @@ export default class PlayerManager {
         let reviveTime = Number(process.env.REVIVE_TIME || 60)
         setTimeout(() => {
             this.deadList.delete(user.hash)
-        }, reviveTime)
+        }, reviveTime * 1000)
     }
 
     public isPlayerDead(userHash: string): boolean {

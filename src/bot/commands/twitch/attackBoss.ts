@@ -5,6 +5,7 @@ import IGameService from "../../../interfaces/services/IGameService";
 import WebSocketApi from "../../../webserver/socket/api";
 import AttackError from "../../errors/AttackError";
 import BossNotFoundError from "../../errors/BossNotFoundError";
+import PlayerDeadError from "../../errors/PlayerDeadError";
 import services from "../../services";
 // import randomIntBetween from "../../utils/randomIntBetween";
 
@@ -40,6 +41,10 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
             await this.game.attackBossBy(tags["user-id"])
             this.webUI.showFeed(`${tags.username} 🗡️🐲`, 'topRight', 1.5)
         } catch (error) {
+            if (error instanceof PlayerDeadError) {
+                client.say(channel, `@${tags.username} คนตายก็อยู่นิ่งๆไป`);
+            }
+
             if (error instanceof AttackError) {
                 client.say(channel, `@${tags.username} ตีเร็วไปแล้ว -> รอให้ครบ 30 วิแล้วค่อยตีใหม่`);
             }
