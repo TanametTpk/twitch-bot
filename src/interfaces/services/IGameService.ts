@@ -12,4 +12,7 @@ export default interface IGameService {
     isPlayerOnline(hash: string): boolean
     giveRewardToAllPlayer(coin: number): void
     giveRewardToPlayer(hash: string, coin: number): void
+    canPVP(): boolean
+    setPVPModeOn(): void
+    setPVPModeOff(): void
 }

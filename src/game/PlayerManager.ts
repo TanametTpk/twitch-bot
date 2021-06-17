@@ -2,10 +2,16 @@ import moment from 'moment';
 import { Equipment, User, Character } from "@prisma/client";
 import ICharacterService, { IncludeUserAndEquipment } from "../interfaces/services/ICharacterService";
 import IEquipmentService from '../interfaces/services/IEquipmentService';
+import { setTimeout } from 'timers';
 
 export interface Reward {
     chracterId: number
     coin: number
+}
+
+interface DeadInfo {
+    user: User
+    last_dead_time: Date
 }
 
 export default class PlayerManager {
@@ -13,9 +19,11 @@ export default class PlayerManager {
     private totalOnlineDamage: number;
     private characterService: ICharacterService;
     private equipmentService: IEquipmentService;
+    private deadList: Map<string, DeadInfo>;
 
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.onlinePlayers = new Map();
+        this.deadList = new Map();
         this.totalOnlineDamage = 0;
         this.characterService = characterService;
         this.equipmentService = equipmentService;
@@ -110,5 +118,27 @@ export default class PlayerManager {
 
     public isPlayerOnline(hash: string): boolean {
         return this.onlinePlayers.has(hash);
+    }
+
+    public addDeadPlayer(user: User) {
+        this.deadList.set(user.hash, {
+            user,
+            last_dead_time: new Date()
+        })
+
+        let reviveTime = Number(process.env.REVIVE_TIME || 60)
+        
+        setTimeout(() => {
+            this.deadList.delete(user.hash)
+        }, reviveTime * 1000)
+    }
+
+    public isPlayerDead(userHash: string): boolean {
+        return this.deadList.has(userHash)
+    }
+
+    public canAttackPlayer(userHash: string): boolean {
+        if (!this.isPlayerDead(userHash)) return true;
+        return false;
     }
 }

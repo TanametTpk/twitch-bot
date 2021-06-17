@@ -4,6 +4,10 @@ import Boss from "../../game/Boss";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
+import AttackError from "../errors/AttackError";
+import BossNotFoundError from "../errors/BossNotFoundError";
+import PlayerDeadError from "../errors/PlayerDeadError";
+import PVPModeOffError from "../errors/PVPModeOffError";
 import services from "../services";
 import roll from "../utils/roll";
 
@@ -17,13 +21,51 @@ class GameService implements IGameService {
     }
 
     public async attackBossBy(playerId: string): Promise<void> {
+        let playerManager = this.getGameManager().playerManager
         let chracter = await this.characterService.getCharacterByUserHash(playerId);
         if (!chracter) return;
-        
+
+        if (!this.game.bossManager.isBossHasSpawned()) {
+            throw new BossNotFoundError("boss is not spawn")
+        }
+
+        if (playerManager.isPlayerDead(playerId)) {
+            throw new PlayerDeadError("can't attack boss because player is dead.")
+        }
+
+        if (!this.game.canBossAttackedBy(chracter)) {
+            throw new AttackError("can't not attack boss.")
+        }
+
         this.game.attackBoss(chracter.id)
     }
 
     public async pvp(attackerId: string, attackedId: string): Promise<User | null> {
+        if (!this.canPVP()) throw new PVPModeOffError("Can't Attack When pvp mode is off.");
+        let playerManager = this.getGameManager().playerManager
+
+        if (playerManager.isPlayerDead(attackerId)) {
+            throw new PlayerDeadError("Player can't pvp when they are dead.")
+        }
+
+        console.log("check");
+        console.log("can attack", playerManager.canAttackPlayer(attackedId));
+        
+        if (!playerManager.canAttackPlayer(attackedId)) {
+            console.log("can't attack bitch");
+            
+            throw new AttackError("can't not attack this player.")
+        }
+
+        let deadPlayer = await this.attack(attackerId, attackedId)
+        if (deadPlayer) {
+            playerManager.addDeadPlayer(deadPlayer)
+        }
+
+        return deadPlayer
+    }
+
+    private async attack(attackerId: string, attackedId: string): Promise<User | null> {
         let attacker = await this.characterService.getCharacterByUserHash(attackerId)
         let attacked = await this.characterService.getCharacterByUserHash(attackedId)
 
@@ -68,6 +110,20 @@ class GameService implements IGameService {
         if (!character) return;
 
         services.character.addCoinToCharacter(character.id, coin);
+    }
+
+    public canPVP(): boolean {
+        return this.game.getCanPvp();
+    }
+
+    public setPVPModeOn(): void {
+        if (this.game.getCanPvp()) return;
+        this.game.toggleEnableDisablePvp()
+    }
+
+    public setPVPModeOff(): void {
+        if (!this.game.getCanPvp()) return;
+        this.game.toggleEnableDisablePvp();
     }
 }
 

@@ -8,6 +8,7 @@ import ITwitchCommand from '../interfaces/ITwitchCommand';
 import IChannelPointAction from '../interfaces/IChannelPointAction';
 import IMiddleware from '../interfaces/IMiddleware';
 import SubscriptionReward from './stategies/SubscriptionReward';
+import CheerReward from './stategies/CheerReward';
 
 export default class Bot implements Tearable {
     private publishers: AbstractPublisher<any>[]
@@ -24,7 +25,8 @@ export default class Bot implements Tearable {
                 twitchCommands as ITwitchCommand[],
                 rewardActions as IChannelPointAction[],
                 middlewareActions as IMiddleware[],
-                SubscriptionReward
+                SubscriptionReward,
+                CheerReward
             )
         ]
     }

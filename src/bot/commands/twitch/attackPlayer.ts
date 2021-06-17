@@ -2,17 +2,28 @@ import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 import IGameService from "../../../interfaces/services/IGameService";
+import { NotificationPlacement } from "../../../interfaces/websocket/IFeedApi";
+import WebSocketApi from "../../../webserver/socket/api";
+import AttackError from "../../errors/AttackError";
 import services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
+    private webUI = WebSocketApi.getInstance()
+    private feedPosition: NotificationPlacement = 'topRight'
+    private feedDuration: number = 2.5
+
     match(text: string): boolean {
-        return false;
-        // return /!pvp [^ ]+/.test(text);
+        return /!pvp [^ ]+/.test(text);
     }
 
-    private timeoutAndMessage(client: Client, channel: string, username: string, message: string, duration: number) {
-        client.timeout(channel, username, duration)
-        client.say(channel, message);
+    private async suicide(userHash: string, username: string) {
+        let user = await services.user.getUserByHash(userHash)
+        if (!user) return;
+
+        try {
+            await services.game.pvp(user.hash, user.hash)
+            this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
+        } catch (error) {}
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
@@ -30,37 +41,26 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         let attackedId = attackedCharacter.user.hash
 
         if (attackedId === attackerId) {
-            this.timeoutAndMessage(
-                client,
-                channel,
-                tags.username,
-                `@${tags.username} ฆ่าตัวตาย`,
-                60
-            )
+            this.suicide(attackedId, tags.username)
             return;
         }
 
-        let deadUser = await game.pvp(attackerId, attackedId);
-        if (!deadUser) return;
+        try {
+            let deadUser = await game.pvp(attackerId, attackedId);
+            if (!deadUser) return;
 
-        if (deadUser.hash === attackedCharacter.user.hash) {
-            this.timeoutAndMessage(
-                client,
-                channel,
-                attackedName,
-                `@${attackedName} ถูกกระทืบโดย ${tags.username}`,
-                60
-            )
-            return
+            if (deadUser.hash === attackedCharacter.user.hash) {
+                this.webUI.showFeed(`${tags.username} 🗡️ ${attackedName}`, this.feedPosition, this.feedDuration)
+                return
+            }
+
+            this.webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, this.feedPosition, this.feedDuration)
+
+        } catch (error) {
+            if (error instanceof AttackError) {
+                client.say(channel, `${tags.username} ตี ${attackedName} ไม่ได้ WTF!!`);
+            }
         }
-
-        this.timeoutAndMessage(
-            client,
-            channel,
-            tags.username,
-            `อะไรกัน!! @${tags.username} โดน ${attackedName} counter attack ว่ะ!`,
-            60
-        )
     }
 }
 
