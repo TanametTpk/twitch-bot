@@ -133,6 +133,16 @@ export default class PlayerManager {
         }, reviveTime * 1000)
     }
 
+    public getRemainRespawnTime(userHash: string): number {
+        if (!this.isPlayerDead(userHash)) return 0;
+
+        let info: DeadInfo = this.deadList.get(userHash)!
+        let reviveTime = Number(process.env.REVIVE_TIME || 60)
+
+        let currentWaitingTime = moment().diff(moment(info.last_dead_time), 'seconds', false)
+        return reviveTime - currentWaitingTime
+    }
+
     public isPlayerDead(userHash: string): boolean {
         return this.deadList.has(userHash)
     }
