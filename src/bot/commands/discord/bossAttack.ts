@@ -5,7 +5,7 @@ import services from "../../services";
 
 class BossAttackCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
-        return text === "!boss clear";
+        return text === "!boss attack";
     }
 
     perform(msg: Message): void {

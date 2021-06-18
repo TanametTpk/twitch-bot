@@ -46,7 +46,7 @@ class AttackBossCommand implements ICommand, ITwitchCommand {
             }
 
             if (error instanceof AttackError) {
-                client.say(channel, `@${tags.username} ตีเร็วไปแล้ว -> รอให้ครบ 30 วิแล้วค่อยตีใหม่`);
+                client.say(channel, `@${tags.username} ตีเร็วไปแล้ว -> รอให้ครบ ${process.env.ATTACK_BOSS_LIMIT_TIME || 30} วิแล้วค่อยตีใหม่`);
             }
 
             if (error instanceof BossNotFoundError) {
