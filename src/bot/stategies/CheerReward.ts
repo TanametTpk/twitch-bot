@@ -9,8 +9,11 @@ class CheerRewardStategy implements ITwitchCheerStategy {
         if (!character) return;
 
         let bits = Number(userstate.bits)
+        let rewardCoin = 10
+        let shareRewardCoin = 1
         if (character.user.cheer + bits >= 500) {
-            await services.character.addCoinToCharacter(character.id, 12);
+            await services.character.addCoinToCharacter(character.id, rewardCoin - shareRewardCoin);
+            await services.character.addCoinToAllCharacter(shareRewardCoin);
             await services.user.removeCheerReward(character.userId, character.user.cheer)
             let remainBit = character.user.cheer + bits - 500
 

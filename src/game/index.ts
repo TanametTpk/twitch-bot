@@ -17,6 +17,7 @@ class GameManager {
     public playerManager: PlayerManager;
     public shop: Shop;
     public attackPlayerTask: NodeJS.Timer | undefined;
+    public notifyAttack: NodeJS.Timer | undefined;
     private bossNextAttackTime: Date | undefined;
     private characterService: ICharacterService;
     private canPvp = true;
@@ -68,11 +69,16 @@ class GameManager {
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
 
+        let fourTeenMinutes: number = 15 * 60 * 1000;
         let fiveTeenMinutes: number = 15 * 60 * 1000;
         this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
         this.attackPlayerTask = setTimeout(() => {
             this.bossAttackRandomPlayer()
         }, fiveTeenMinutes);
+
+        this.notifyAttack = setTimeout(() => {
+            // notify here
+        }, fourTeenMinutes)
     }
 
     private clearBossAttackTask(): void {
@@ -154,7 +160,7 @@ class GameManager {
         client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
     }
 
-    private bossAttackRandomPlayer() {
+    public bossAttackRandomPlayer() {
         if (!this.bossManager.isBossHasSpawned()) return;
 
         this.clearBossAttackTask();
