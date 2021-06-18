@@ -17,6 +17,12 @@ class GetStatusCommand implements ICommand, ITwitchCommand {
 
         let equipmentInfo = "ไม่มี"
         let isDead = playerManager.isPlayerDead(tags["user-id"])
+        let altRespawnText = ""
+
+        if (isDead) {
+            let remain = playerManager.getRemainRespawnTime(character.user.hash)
+            altRespawnText = `รอเกิดอีก ${remain} วินาที`
+        }
 
         if (character.equipment) {
             let isLastDay = character?.equipment?.expired_time === 0 
@@ -28,7 +34,7 @@ class GetStatusCommand implements ICommand, ITwitchCommand {
             @${tags.username} Status ->
             พลังจมตีน: ${character?.atk}
             coin: ${character.coin}
-            สถานะ: ${isDead ? "ตาย" : "ยังคงหายใจ"}
+            สถานะ: ${isDead ? "ตาย" : "ยังคงหายใจ"} ${altRespawnText}
             อาวุธ: ${equipmentInfo}
         `)
     }

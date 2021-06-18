@@ -17,4 +17,5 @@ export default interface ICharacterService {
     updateCharacterStatus(id: number, atk: number): Promise<Character | null>
     removeEquipment(id: number): Promise<Character | null>
     getAllArmedPlayer(): Promise<(Character & IncludeUserAndEquipment)[]>
+    removeCoinFromAllCharacter(coin: number): void
 }

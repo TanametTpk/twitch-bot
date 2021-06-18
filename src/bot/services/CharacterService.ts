@@ -99,6 +99,33 @@ class CharacterService implements ICharacterService {
         })
     }
 
+    public async removeCoinFromAllCharacter(coin: number): Promise<void> {
+        if (coin < 1) return;
+        await this.client.character.updateMany({
+            where: {
+                coin: {
+                    lte: coin
+                }
+            },
+            data: {
+                coin: 0
+            }
+        })
+
+        await this.client.character.updateMany({
+            where: {
+                coin: {
+                    gt: coin
+                }
+            },
+            data: {
+                coin: {
+                    decrement: coin
+                }
+            }
+        })
+    }
+
     public async removeCoinFromCharacter(id: number, coin: number): Promise<Character | null> {
         let character = await this.client.character.findFirst({ where: {id} })
         if (!character) return null;

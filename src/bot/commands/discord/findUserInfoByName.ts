@@ -15,6 +15,13 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
 
         let playerManager = services.game.getGameManager().playerManager
         let isDead = playerManager.isPlayerDead(character.user.hash)
+        let altRespawnText = ""
+
+        if (isDead) {
+            let remain = playerManager.getRemainRespawnTime(character.user.hash)
+            altRespawnText = `รอเกิดอีก ${remain} วินาที`
+        }
+
         msg.channel.send(`
             -- user --
             id: ${character.user.id}
@@ -26,7 +33,7 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             coin: ${character.coin}
             base atk: ${character.atk}
             equipment: ${character.equipment}
-            isDead: ${isDead}
+            isDead: ${isDead} ${altRespawnText}
         `);
     }
 }
