@@ -168,7 +168,8 @@ class GameManager {
         let lasttime = moment(info.last_attack_time);
         let now = moment();
         let diffMin = now.diff(lasttime, 'seconds', true);
-        return diffMin > 30;
+        let limitTime = process.env.ATTACK_BOSS_LIMIT_TIME || 30
+        return diffMin > limitTime;
     }
 
     public async attackBoss(characterId: number) {
