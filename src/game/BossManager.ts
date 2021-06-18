@@ -1,7 +1,9 @@
 import client from "../bot/twitch";
+import discordClient from '../bot/discord'
 import randomIntBetween from "../bot/utils/randomIntBetween";
 import WebSocketApi from "../webserver/socket/api";
 import Boss from "./Boss";
+import { TextChannel } from "discord.js";
 
 interface AttackInfo {
     totalDamage: number
@@ -32,6 +34,19 @@ export default class BossManager {
 
         client.say(process.env.tmi_channel_name as string, `บอสเกิดแล้ววววว`)
         webUI.updateBoss(this.boss);
+
+        if (process.env.DISCORD_CH_ID) {
+            let channel = discordClient.channels.cache.get(process.env.DISCORD_CH_ID)
+            if (!channel) return;
+            if (!channel.isText()) return;
+
+            (<TextChannel> channel).send(`
+                --- Boss Status ---
+                Level ${this.boss.getLevel()}
+                Max Hp ${this.boss.getMaxHp()}
+                Current Hp ${this.boss.getHp()}
+            `)
+        }
     }
 
     public isBossHasSpawned(): boolean {
