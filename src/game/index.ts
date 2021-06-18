@@ -69,15 +69,16 @@ class GameManager {
         let totalOnlineDamage: number = this.playerManager.getTotalOnlineDamage();
         this.bossManager.spawnBoss(totalOnlineDamage);
 
-        let fourTeenMinutes: number = 15 * 60 * 1000;
+        let fourTeenMinutes: number = 14 * 60 * 1000;
         let fiveTeenMinutes: number = 15 * 60 * 1000;
+        let channel_name = process.env.tmi_channel_name as string
         this.bossNextAttackTime = moment().add(fiveTeenMinutes, 'millisecond').toDate();
         this.attackPlayerTask = setTimeout(() => {
             this.bossAttackRandomPlayer()
         }, fiveTeenMinutes);
 
         this.notifyAttack = setTimeout(() => {
-            // notify here
+            client.say(channel_name, `อีก 1 นาทีเตรียมตัวตาย`);
         }, fourTeenMinutes)
     }
 
@@ -85,6 +86,8 @@ class GameManager {
         if (this.attackPlayerTask)
             clearTimeout(this.attackPlayerTask)
 
+        if (this.notifyAttack)
+            clearTimeout(this.notifyAttack)
         this.bossManager.clear();
     }
 
