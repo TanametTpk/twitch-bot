@@ -6,4 +6,5 @@ export default interface IUserService {
     getUserByHash(hash: string): Promise<User | null>
     addCheerReward(userId: number, reward: number): Promise<User | null>
     removeCheerReward(userId: number, reward: number): Promise<User | null>
+    changeName(userId: number, name: string): Promise<User>
 }
