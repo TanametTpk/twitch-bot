@@ -52,8 +52,8 @@ export default class PlayerManager {
         this.onlinePlayers.delete(user.hash);
         this.totalOnlineDamage -= character.atk;
 
-        if (character.equipment)
-            this.totalOnlineDamage -= character.equipment.atk;
+        // if (character.equipment)
+        //     this.totalOnlineDamage -= character.equipment.atk;
     }
 
     private isShouldUpdate(equipment: Equipment): boolean {
