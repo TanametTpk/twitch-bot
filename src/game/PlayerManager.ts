@@ -39,8 +39,8 @@ export default class PlayerManager {
         this.onlinePlayers.set(user.hash, user);
         this.totalOnlineDamage += character.atk;
 
-        if (character.equipment)
-            this.totalOnlineDamage += character.equipment.atk;
+        // if (character.equipment)
+        //     this.totalOnlineDamage += character.equipment.atk;
     }
 
     public async removeOnlinePlayer(user: User) {
