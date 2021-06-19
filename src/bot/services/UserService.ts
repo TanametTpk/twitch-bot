@@ -8,6 +8,17 @@ class UserService implements IUserService {
         this.client = client;
     }
 
+    public changeName(userId: number, name: string): Promise<User> {
+        return this.client.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                name: name
+            }
+        })
+    }
+
     private async isUserAlreadyExists(hash: string): Promise<boolean> {
         const user = await this.getUserByHash(hash);
         if (user) return true;

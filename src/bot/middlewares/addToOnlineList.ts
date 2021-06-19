@@ -9,6 +9,11 @@ class AddToOnlineListMiddleware implements IMiddleware {
 
         let user = await services.user.getUserByHash(tags["user-id"]);
         if (user) {
+            if (user.name !== tags.username) {
+                user.name = tags.username
+                await services.user.changeName(user.id, user.name)
+            }
+
             services.game.getGameManager().playerManager.addOnlinePlayer(user)
             return;
         }
