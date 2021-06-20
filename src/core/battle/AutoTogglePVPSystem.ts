@@ -10,7 +10,7 @@ export default class AutoTogglePVPSystem extends PVPSystem {
         this.isOn = true
         this.pvpTime = pvpTime
         this.preNotifyTime = pvpTime - preNotifyTime > 0 ? preNotifyTime : -1
-        this.currentPvpTime = 0
+        this.currentPvpTime = pvpTime
     }
 
     update(): void {

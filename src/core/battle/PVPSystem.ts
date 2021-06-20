@@ -10,9 +10,7 @@ export default class PVPSystem implements Tickable {
         this.isOn = true
     }
 
-    start(): void {
-        this.statusNotify()
-    }
+    start(): void {}
 
     update(): void {}
 
