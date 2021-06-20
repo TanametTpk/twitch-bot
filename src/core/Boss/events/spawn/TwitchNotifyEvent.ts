@@ -4,7 +4,6 @@ import Boss from "../../Boss";
 
 export default class TwitchNotifyEvent implements IBossSpawnEvent {
     do(boss: Boss): void {
-        let channel_name = process.env.tmi_channel_name as string
-        client.say(channel_name, "บอสเกิดแล้ววววววว")
+        client.say(process.env.tmi_channel_name as string, `บอส ${boss.getName()} level: ${boss.getLevel()} เกิดแล้ววววว`)
     }
 }
