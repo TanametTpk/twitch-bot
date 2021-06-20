@@ -1,3 +1,4 @@
+import services from "../../../../bot/services";
 import client from "../../../../bot/twitch";
 import getUniqueNumber from "../../../../bot/utils/getUniqueNumber";
 import roll from "../../../../bot/utils/roll";
@@ -12,7 +13,11 @@ interface Reward {
 }
 
 export default class GiveRewardToAllPlayerEvent implements IBossDeadEvent {
-    constructor(private characterService: ICharacterService) {}
+    private characterService: ICharacterService
+
+    constructor() {
+        this.characterService = services.character
+    }
 
     private getTopFivePlayer(info: BattleInfo[]): Player[] {
         let allDamageNumber: number[] = info.map((battleInfo) => battleInfo.damage)

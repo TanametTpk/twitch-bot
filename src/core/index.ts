@@ -36,18 +36,6 @@ class GameCore {
         return GameCore.instance;
     }
 
-    // constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
-    //     this.tickSystem = new TickSystem();
-    //     this.bossManager = new BossManager();
-    //     this.playerManager = new PlayerManager(characterService, equipmentService);
-
-    //     this.config(characterService);
-
-    //     this.tickSystem.register(this.bossManager);
-    //     this.tickSystem.register(this.playerManager);
-    //     this.tickSystem.start();
-    // }
-
     private config(): void {
         this.bossManager.addSpawnEvent(new TwitchBossSpawnNotifyEvent())
         this.bossManager.addSpawnEvent(new DiscordBossSpawnNotifyEvent())

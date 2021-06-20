@@ -2,6 +2,7 @@ import client from "../../../bot/twitch";
 import roll from "../../../bot/utils/roll";
 import sleep from "../../../bot/utils/sleep";
 import IBossSkill from "../../interfaces/IBossSkill";
+import PlayerManager from "../../PlayerManager";
 import Boss from "../Boss";
 
 export default class ThanosSnapSkill implements IBossSkill {
@@ -14,13 +15,12 @@ export default class ThanosSnapSkill implements IBossSkill {
         let timeoutSeconds = 60;
         let casualties = 0;
 
-        let players = this.playerManager.getOnlinePlayers()
+        let players = PlayerManager.getInstance().getOnlinePlayers()
         
         for (let player of players) {
-            let username = player.name
+            let username = player.getInfo().user.name
             if (roll(50)) {
                 casualties++;
-                console.log(`${username} got attacked.`);
                 client.timeout(channel_name, username, timeoutSeconds, `โดนจมตีน`);
                 await sleep(620);
             }
