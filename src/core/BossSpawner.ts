@@ -1,6 +1,4 @@
-import BaseBoss from "./Boss/BaseBoss"
-import Boss from "./Boss/Boss"
-import BossTick from "./Boss/BossTick"
+import NormalBoss from "./Boss/NormalBoss"
 import tick from "./helpers/tick"
 import Tickable from "./interfaces/Tickable"
 
@@ -36,21 +34,21 @@ export default class BossSpawner implements Tickable {
         return this.currentInterval < 1;
     }
 
-    public spawnBoss(bossType: BossTypes): BaseBoss {
+    public spawnBoss(bossType: BossTypes): NormalBoss {
         this.isBossAlreadySpawn = true
-        let newBoss: BaseBoss
+        let newBoss: NormalBoss
         let bossLimitTime = tick.MINUTE * 15
 
         if (bossType === "mini") {
-            newBoss = new BaseBoss("Mini Boss", 10, 1, bossLimitTime);
+            newBoss = new NormalBoss("Mini Boss", 10, 1, bossLimitTime);
         }
 
         else if (bossType === "normal") {
-            newBoss = new BaseBoss("Normal Boss", 100, 5, bossLimitTime);
+            newBoss = new NormalBoss("Normal Boss", 100, 5, bossLimitTime);
         }
 
         else{
-            newBoss = new BaseBoss("Big Boss", 100, 10, bossLimitTime);
+            newBoss = new NormalBoss("Big Boss", 100, 10, bossLimitTime);
         }
 
         return newBoss
