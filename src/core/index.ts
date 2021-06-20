@@ -12,7 +12,7 @@ class GameCore {
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.tickSystem = new TickSystem();
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager(characterService, equipmentService);
+        this.playerManager = new PlayerManager();
 
         this.tickSystem.register(this.bossManager);
         this.tickSystem.register(this.playerManager);
