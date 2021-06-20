@@ -14,9 +14,21 @@ class GameCore {
         this.bossManager = new BossManager();
         this.playerManager = new PlayerManager();
 
+        this.config();
+
         this.tickSystem.register(this.bossManager);
         this.tickSystem.register(this.playerManager);
         this.tickSystem.start();
+    }
+
+    private config(): void {
+        // add notification
+        this.bossManager.addSpawnEvent()
+
+        // add rewarding
+        this.bossManager.addDeadEvent()
+        // add notification
+        this.bossManager.addDeadEvent()
     }
 }
 

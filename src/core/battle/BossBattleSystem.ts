@@ -1,5 +1,6 @@
 import moment from "moment"
 import NormalBoss from "../Boss/NormalBoss"
+import Player from "../Player/Player"
 
 export interface BattleInfo {
     player: Player,
@@ -31,7 +32,7 @@ export default class BossBattleSystem {
     }
 
     public canAttackBoss(player: Player): boolean {
-        let info = this.battleInfo.get(player.user.hash)
+        let info = this.battleInfo.get(player.getId())
         if (!info) return true;
         
         let lasttime = moment(info.attack_at);
@@ -42,15 +43,15 @@ export default class BossBattleSystem {
     }
 
     private record(player: Player, damage: number): void {
-        let info = this.battleInfo.get(player.user.hash)
+        let info = this.battleInfo.get(player.getId())
         if (info) {
             info.damage += damage
             info.attack_at = new Date()
-            this.battleInfo.set(player.user.hash, info)
+            this.battleInfo.set(player.getId(), info)
             return
         }
 
-        this.battleInfo.set(player.user.hash, {
+        this.battleInfo.set(player.getId(), {
             player,
             damage,
             attack_at: new Date()
