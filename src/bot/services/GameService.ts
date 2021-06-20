@@ -8,7 +8,7 @@ import AttackError from "../errors/AttackError";
 import BossNotFoundError from "../errors/BossNotFoundError";
 import PlayerDeadError from "../errors/PlayerDeadError";
 import PVPModeOffError from "../errors/PVPModeOffError";
-import services from "../services";
+import * as services from "../services";
 import roll from "../utils/roll";
 
 class GameService implements IGameService {

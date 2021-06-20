@@ -1,6 +1,6 @@
 import { Client, ChatUserstate } from "tmi.js";
 import IMiddleware from "../../interfaces/IMiddleware";
-import services from "../services";
+import * as services from "../services";
 
 class AddToOnlineListMiddleware implements IMiddleware {
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {

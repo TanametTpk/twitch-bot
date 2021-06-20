@@ -1,7 +1,5 @@
 import BossManager from "./BossManager";
 import PlayerManager from "./PlayerManager";
-import ICharacterService from "../interfaces/services/ICharacterService";
-import IEquipmentService from "../interfaces/services/IEquipmentService";
 import TickSystem from "./TickSystem";
 import TwitchBossSpawnNotifyEvent from "./Boss/events/spawn/TwitchNotifyEvent";
 import TwitchBossDeadNotifyEvent from "./Boss/events/dead/TwitchNotifyEvent";

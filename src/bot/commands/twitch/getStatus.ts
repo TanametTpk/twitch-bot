@@ -1,7 +1,7 @@
 import { Client, ChatUserstate } from "tmi.js";
 import ICommand from "../../../interfaces/ICommand";
 import ITwitchCommand from "../../../interfaces/ITwitchCommand";
-import services from "../../services";
+import * as services from "../../services";
 
 class GetStatusCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {

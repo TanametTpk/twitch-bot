@@ -5,16 +5,16 @@ import ShopService from "./services/ShopService";
 import UserService from "./services/UserService";
 import client from '../database/client';
 
-const character = new CharacterService(client)
-const equipment = new EquipmentService(client)
-const user = new UserService(client)
-const game = new GameService(character, equipment)
-const shop = new ShopService(character, game)
+export const character = new CharacterService(client)
+export const equipment = new EquipmentService(client)
+export const user = new UserService(client)
+export const game = new GameService(character, equipment)
+export const shop = new ShopService(character, game)
 
-export default {
-    character,
-    equipment,
-    user,
-    game,
-    shop,
-}
+// export default {
+//     character,
+//     equipment,
+//     user,
+//     game,
+//     shop,
+// }

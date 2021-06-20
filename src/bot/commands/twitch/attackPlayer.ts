@@ -5,7 +5,7 @@ import IGameService from "../../../interfaces/services/IGameService";
 import { NotificationPlacement } from "../../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../../webserver/socket/api";
 import AttackError from "../../errors/AttackError";
-import services from "../../services";
+import * as services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
     private webUI = WebSocketApi.getInstance()

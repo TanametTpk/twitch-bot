@@ -6,7 +6,7 @@ import WebSocketApi from "../../../webserver/socket/api";
 import AttackError from "../../errors/AttackError";
 import BossNotFoundError from "../../errors/BossNotFoundError";
 import PlayerDeadError from "../../errors/PlayerDeadError";
-import services from "../../services";
+import * as services from "../../services";
 import randomIntBetween from "../../utils/randomIntBetween";
 // import randomIntBetween from "../../utils/randomIntBetween";
 

@@ -1,6 +1,6 @@
 import { ChatUserstate, Client } from "tmi.js";
 import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointAction";
-import services from "../services";
+import * as services from "../services";
 
 class GetStatusCommand extends AbstractChannelPointAction {
     constructor() {

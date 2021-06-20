@@ -1,6 +1,6 @@
 import { Character, Equipment } from "@prisma/client";
 import moment from "moment";
-import services from "../../bot/services";
+import * as services from "../../bot/services";
 import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import Tickable from "../interfaces/Tickable";

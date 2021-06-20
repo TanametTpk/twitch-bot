@@ -4,7 +4,7 @@ import BuyBadItemError from "../errors/BuyBadItemError";
 import NegativeCoinNumberError from "../errors/NegativeCoinNumberError";
 import NotEnoughCoinError from "../errors/NotEnoughCoinError";
 import PlayerDeadError from "../errors/PlayerDeadError";
-import services from "../services";
+import * as services from "../services";
 
 class BuyWeaponCommand extends AbstractChannelPointAction {
     constructor() {

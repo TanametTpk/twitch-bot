@@ -5,7 +5,7 @@ import WebSocketApi from "../../webserver/socket/api";
 import AttackError from "../errors/AttackError";
 import PlayerDeadError from "../errors/PlayerDeadError";
 import PVPModeOffError from "../errors/PVPModeOffError";
-import services from "../services";
+import * as services from "../services";
 
 class AttackPlayerCommand extends AbstractChannelPointAction {
     private webUI = WebSocketApi.getInstance()

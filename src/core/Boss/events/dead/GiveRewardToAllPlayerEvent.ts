@@ -1,4 +1,4 @@
-import services from "../../../../bot/services";
+import  * as services from "../../../../bot/services";
 import client from "../../../../bot/twitch";
 import getUniqueNumber from "../../../../bot/utils/getUniqueNumber";
 import roll from "../../../../bot/utils/roll";
