@@ -1,5 +1,5 @@
 import moment from "moment"
-import NormalBoss from "../Boss/NormalBoss"
+import BaseBoss from "../Boss/BaseBoss"
 import Player from "../Player/Player"
 
 export interface BattleInfo {
@@ -23,7 +23,7 @@ export default class BossBattleSystem {
         this.battleInfo.clear()
     }
 
-    public attack(player: Player, boss: NormalBoss): void {
+    public attack(player: Player, boss: BaseBoss): void {
         if (!this.canAttackBoss(player)) throw new Error()
         let prevHp = boss.getHp()
         player.attack(boss)

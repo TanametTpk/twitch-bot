@@ -1,4 +1,5 @@
-import NormalBoss from "./Boss/NormalBoss"
+import BaseBoss from "./Boss/BaseBoss"
+import ThanosSnapSkill from "./Boss/skills/ThanosSnapSkill"
 import tick from "./helpers/tick"
 import Tickable from "./interfaces/Tickable"
 
@@ -34,23 +35,24 @@ export default class BossSpawner implements Tickable {
         return this.currentInterval < 1;
     }
 
-    public spawnBoss(bossType: BossTypes): NormalBoss {
+    public spawnBoss(bossType: BossTypes): BaseBoss {
         this.isBossAlreadySpawn = true
-        let newBoss: NormalBoss
+        let newBoss: BaseBoss
         let bossLimitTime = tick.MINUTE * 15
 
         if (bossType === "mini") {
-            newBoss = new NormalBoss("Mini Boss", 10, 1, bossLimitTime);
+            newBoss = new BaseBoss("Mini Boss", 10, 1, bossLimitTime);
         }
 
         else if (bossType === "normal") {
-            newBoss = new NormalBoss("Normal Boss", 100, 5, bossLimitTime);
+            newBoss = new BaseBoss("Normal Boss", 100, 5, bossLimitTime);
         }
 
         else{
-            newBoss = new NormalBoss("Big Boss", 100, 10, bossLimitTime);
+            newBoss = new BaseBoss("Big Boss", 100, 10, bossLimitTime);
         }
 
+        newBoss.setFinalAttackSkill(new ThanosSnapSkill())
         return newBoss
     }
 }

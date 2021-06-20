@@ -2,7 +2,7 @@ import IBossSkill from "../interfaces/IBossSkill";
 import BossTick from "./BossTick";
 import DoNothingSkill from "./skills/DoNothingSkill";
 
-export default class NormalBoss extends BossTick {
+export default class BaseBoss extends BossTick {
     private finalAttackSkill: IBossSkill
 
     constructor(name: string, hp: number, level: number, bossAge: number) {

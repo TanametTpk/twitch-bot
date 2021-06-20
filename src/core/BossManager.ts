@@ -1,7 +1,7 @@
 import Tickable from "./interfaces/Tickable";
 import Tick from './helpers/tick';
 import BossSpawner from "./BossSpawner";
-import NormalBoss from "./Boss/NormalBoss";
+import BaseBoss from "./Boss/BaseBoss";
 import BossBattleSystem, { BattleInfo } from "./battle/BossBattleSystem";
 import IBossDeadEvent from "./interfaces/Boss/IBossDeadEvent";
 import IBossSpawnEvent from "./interfaces/Boss/IBossSpawnEvent";
@@ -10,7 +10,7 @@ export default class BossManager implements Tickable {
     private static instance: BossManager;
     public battleSystem: BossBattleSystem
     public bossSpawner: BossSpawner
-    private boss?: NormalBoss
+    private boss?: BaseBoss
     private bossSpawnEvents: IBossSpawnEvent[]
     private bossDeadEvents: IBossDeadEvent[]
 
@@ -52,11 +52,11 @@ export default class BossManager implements Tickable {
         }
     }
 
-    public setBoss(boss: NormalBoss): void {
+    public setBoss(boss: BaseBoss): void {
         this.boss = boss;
     }
 
-    public getBoss(): NormalBoss | undefined {
+    public getBoss(): BaseBoss | undefined {
         return this.boss
     }
 
@@ -70,7 +70,7 @@ export default class BossManager implements Tickable {
         }
     }
 
-    private startSpawnEvent(boss: NormalBoss): void {
+    private startSpawnEvent(boss: BaseBoss): void {
         for (const event of this.bossSpawnEvents) {
             event.do(boss)
         }
