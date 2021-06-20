@@ -6,6 +6,7 @@ import TickSystem from "./TickSystem";
 import TwitchBossSpawnNotifyEvent from "./Boss/events/spawn/TwitchNotifyEvent";
 import TwitchBossDeadNotifyEvent from "./Boss/events/dead/TwitchNotifyEvent";
 import GiveRewardToAllPlayerEvent from "./Boss/events/dead/GiveRewardToAllPlayerEvent";
+import WebSocketBossDeadNotifyEvent from "./Boss/events/dead/WebSocketNotifyEvent";
 import DiscordBossSpawnNotifyEvent from "./Boss/events/spawn/DiscordNotifyEvent";
 import WebSocketBossSpawnNotifyEvent from "./Boss/events/spawn/WebSocketNotifyEvent";
 
@@ -31,8 +32,9 @@ class GameCore {
         this.bossManager.addSpawnEvent(new DiscordBossSpawnNotifyEvent())
         this.bossManager.addSpawnEvent(new WebSocketBossSpawnNotifyEvent())
 
-        this.bossManager.addDeadEvent(new GiveRewardToAllPlayerEvent(characterService))
         this.bossManager.addDeadEvent(new TwitchBossDeadNotifyEvent())
+        this.bossManager.addDeadEvent(new GiveRewardToAllPlayerEvent(characterService))
+        this.bossManager.addDeadEvent(new WebSocketBossDeadNotifyEvent())
     }
 }
 
