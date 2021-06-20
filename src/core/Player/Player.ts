@@ -7,18 +7,26 @@ import Tickable from "../interfaces/Tickable";
 export default class Player implements Attackable, Damagable, Tickable {
     private info: Character & IncludeUserAndEquipment
     private currentInvulnerable: number
+    private remainRespawnTime: number
 
     constructor(info: Character & IncludeUserAndEquipment) {
         this.info = info
         this.currentInvulnerable = 0
+        this.remainRespawnTime = 0
     }
     
     public start(): void {}
 
     public update(): void {
         this.currentInvulnerable -= 1
+        this.remainRespawnTime -= 1
+
         if (this.currentInvulnerable < 1) {
             this.currentInvulnerable = 0
+        }
+
+        if (this.remainRespawnTime < 1) {
+            this.remainRespawnTime = 0
         }
     }
 
@@ -28,7 +36,7 @@ export default class Player implements Attackable, Damagable, Tickable {
 
     public wasAttack(dmg: number): void {
         if (dmg < 1) return
-        // TODO - timeout this player
+        this.remainRespawnTime = 60
     }
 
     public getCoin(): number {
@@ -54,6 +62,10 @@ export default class Player implements Attackable, Damagable, Tickable {
         return this.info.equipment
     }
 
+    public setEquipment(equipment: Equipment): void {
+        this.info.equipment = equipment
+    }
+
     public getUser(): User {
         return this.info.user
     }
@@ -73,5 +85,9 @@ export default class Player implements Attackable, Damagable, Tickable {
 
     public getId(): string {
         return this.info.user.hash
+    }
+
+    public isDead(): boolean {
+        return this.remainRespawnTime > 0
     }
 }

@@ -3,7 +3,7 @@ import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointActi
 import BuyBadItemError from "../errors/BuyBadItemError";
 import NegativeCoinNumberError from "../errors/NegativeCoinNumberError";
 import NotEnoughCoinError from "../errors/NotEnoughCoinError";
-import PlayerDeadError from "../errors/PlayerDeadError";
+import PlayerNotFoundError from "../errors/PlayerNotFoundError";
 import * as services from "../services";
 
 class BuyWeaponCommand extends AbstractChannelPointAction {
@@ -18,9 +18,9 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"]) return;
         let playerManager = services.game.getGameManager().playerManager
-        let character = await services.character.getCharacterByUserHash(tags["user-id"]);
-        if (!character) throw new Error("not found character")
-        if (playerManager.isPlayerDead(tags["user-id"])) return;
+        let player = playerManager.getPlayer(tags["user-id"]);
+        if (!player) throw new PlayerNotFoundError("not found player in online player")
+        if (player.isDead()) return;
 
         if (!this.isNumber(message)) {
             client.say(channel, `
@@ -41,7 +41,7 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
         try {
             await services.shop.buyEquipment(tags["user-id"], coin)
 
-            character = await services.character.getCharacterByUserHash(tags["user-id"]);
+            let character = await services.character.getCharacterByUserHash(tags["user-id"]);
             if (!character || !character.equipment) return;
 
             let totalDmg: number = character.equipment.atk + character.atk;

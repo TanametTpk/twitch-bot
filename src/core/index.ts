@@ -7,15 +7,18 @@ import GiveRewardToAllPlayerEvent from "./Boss/events/dead/GiveRewardToAllPlayer
 import WebSocketBossDeadNotifyEvent from "./Boss/events/dead/WebSocketNotifyEvent";
 import DiscordBossSpawnNotifyEvent from "./Boss/events/spawn/DiscordNotifyEvent";
 import WebSocketBossSpawnNotifyEvent from "./Boss/events/spawn/WebSocketNotifyEvent";
+import Shop from "./Shop";
 
 class GameCore {
     private static instance: GameCore;
     public tickSystem: TickSystem;
     public bossManager: BossManager;
     public playerManager: PlayerManager;
+    public shop: Shop;
 
     private constructor() {
         this.tickSystem = new TickSystem();
+        this.shop = new Shop()
         this.bossManager = BossManager.getInstance();
         this.playerManager = PlayerManager.getInstance();
 

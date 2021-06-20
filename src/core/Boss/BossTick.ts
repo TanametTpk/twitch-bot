@@ -19,4 +19,8 @@ export default class BossTick extends Boss implements Tickable {
     public isBossTimeout(): boolean {
         return this.bossAge < 1;
     }
+
+    public getBossRemainTime(): number {
+        return this.bossAge
+    }
 }

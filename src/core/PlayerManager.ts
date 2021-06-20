@@ -72,4 +72,8 @@ export default class PlayerManager implements Tickable {
     public isPlayerOnline(playerId: string): boolean {
         return this.onlinePlayers.has(playerId);
     }
+
+    public getPlayer(playerId: string): Player | undefined {
+        return this.onlinePlayers.get(playerId)
+    }
 }
