@@ -26,7 +26,7 @@ class GetStatusCommand extends AbstractChannelPointAction {
             @${tags.username} Status ->
             พลังจมตีน: ${player.getBaseAtk()}
             coin: ${player.getCoin()}
-            สถานะ: ${player.isDead() ? "ตาย" : "ยังคงหายใจ"}
+            สถานะ: ${player.isDead() ? "ตาย" + `รอเกิด ${player.getRespawnTime()} วิ` : "ยังคงหายใจ"}
             อาวุธ: ${equipmentInfo}
         `)
     }

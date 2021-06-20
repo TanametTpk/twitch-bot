@@ -74,6 +74,10 @@ export default class Player implements Attackable, Damagable, Tickable {
         return this.info
     }
 
+    public setInfo(info: Character & IncludeUserAndEquipment): void {
+        this.info = info
+    }
+
     public isInvulnerable(): boolean {
         return this.currentInvulnerable > 0
     }
@@ -88,6 +92,8 @@ export default class Player implements Attackable, Damagable, Tickable {
     }
 
     public isDead(): boolean {
+        console.log(this.remainRespawnTime);
+        
         return this.remainRespawnTime > 0
     }
 

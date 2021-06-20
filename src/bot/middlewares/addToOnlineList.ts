@@ -7,13 +7,20 @@ class AddToOnlineListMiddleware implements IMiddleware {
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"] || !tags.username) return;
 
+        let player = services.game.getGameManager().playerManager.getPlayer(tags["user-id"])
         let character = await services.character.getCharacterByUserHash(tags["user-id"]);
+        if (player && character) {
+            player.setInfo(character)
+            services.game.getGameManager().playerManager.addOnlinePlayer(player)
+            return;
+        }
+
         if (character) {
             if (character.user.name !== tags.username) {
                 character.user.name = tags.username
                 await services.user.changeName(character.user.id, character.user.name)
             }
-            
+
             services.game.getGameManager().playerManager.addOnlinePlayer(new Player(character))
             return;
         }

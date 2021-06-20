@@ -24,6 +24,13 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             altRespawnText = `รอเกิดอีก ${remain} วินาที`
         }
 
+        let equipmentInfo = ""
+        if (player.getEquipment()) {
+            let isLastDay = player.getEquipment()!.expired_time === 0 
+            let remainMessage = isLastDay ? "ใช้ได้วันสุดท้ายแล้ว" : `(ใช้ได้อีก ${player.getEquipment()!.expired_time} วัน)`
+            equipmentInfo = `Atk ${player.getEquipment()!.atk} ${remainMessage}`
+        }
+
         msg.channel.send(`
             -- user --
             id: ${character.user.id}
@@ -34,7 +41,7 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             id: ${character.id}
             coin: ${character.coin}
             base atk: ${character.atk}
-            equipment: ${character.equipment}
+            equipment: ${equipmentInfo}
             isDead: ${player.isDead()} ${altRespawnText}
         `);
     }

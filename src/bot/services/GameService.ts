@@ -1,8 +1,6 @@
 import { User } from "@prisma/client";
 import GameCore from "../../core";
 import Boss from "../../core/Boss/Boss";
-import ICharacterService from "../../interfaces/services/ICharacterService";
-import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
 import AttackError from "../errors/AttackError";
 import BossNotFoundError from "../errors/BossNotFoundError";
@@ -13,13 +11,9 @@ import * as services from "../services";
 import roll from "../utils/roll";
 
 class GameService implements IGameService {
-    private characterService: ICharacterService
-    // private game: GameManager
     private game: GameCore
 
-    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
-        this.characterService = characterService
-        // this.game = new GameManager(characterService, equipmentService)
+    constructor() {
         this.game = GameCore.getInstance()
     }
 
