@@ -3,8 +3,6 @@ import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointActi
 import { NotificationPlacement } from "../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../webserver/socket/api";
 import AttackError from "../errors/AttackError";
-import PlayerDeadError from "../errors/PlayerDeadError";
-import PVPModeOffError from "../errors/PVPModeOffError";
 import * as services from "../services";
 
 class AttackPlayerCommand extends AbstractChannelPointAction {
