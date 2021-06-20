@@ -3,7 +3,11 @@ import PlayerManager from "./PlayerManager";
 import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
 import TickSystem from "./TickSystem";
-import TwitchNotifyEvent from "./Boss/events/spawn/TwitchNotifyEvent";
+import TwitchBossSpawnNotifyEvent from "./Boss/events/spawn/TwitchNotifyEvent";
+import TwitchBossDeadNotifyEvent from "./Boss/events/dead/TwitchNotifyEvent";
+import GiveRewardToAllPlayerEvent from "./Boss/events/dead/GiveRewardToAllPlayerEvent";
+import DiscordBossSpawnNotifyEvent from "./Boss/events/spawn/DiscordNotifyEvent";
+import WebSocketBossSpawnNotifyEvent from "./Boss/events/spawn/WebSocketNotifyEvent";
 
 class GameCore {
     public tickSystem: TickSystem;
@@ -15,21 +19,20 @@ class GameCore {
         this.bossManager = new BossManager();
         this.playerManager = new PlayerManager(characterService, equipmentService);
 
-        this.config();
+        this.config(characterService);
 
         this.tickSystem.register(this.bossManager);
         this.tickSystem.register(this.playerManager);
         this.tickSystem.start();
     }
 
-    private config(): void {
-        // add notification
-        this.bossManager.addSpawnEvent(new TwitchNotifyEvent())
+    private config(characterService: ICharacterService): void {
+        this.bossManager.addSpawnEvent(new TwitchBossSpawnNotifyEvent())
+        this.bossManager.addSpawnEvent(new DiscordBossSpawnNotifyEvent())
+        this.bossManager.addSpawnEvent(new WebSocketBossSpawnNotifyEvent())
 
-        // add rewarding
-        this.bossManager.addDeadEvent()
-        // add notification
-        this.bossManager.addDeadEvent()
+        this.bossManager.addDeadEvent(new GiveRewardToAllPlayerEvent(characterService))
+        this.bossManager.addDeadEvent(new TwitchBossDeadNotifyEvent())
     }
 }
 
