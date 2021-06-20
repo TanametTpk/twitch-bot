@@ -1,5 +1,6 @@
 import { Character, Equipment } from "@prisma/client";
 import moment from "moment";
+import services from "../../bot/services";
 import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import Tickable from "../interfaces/Tickable";
@@ -8,9 +9,9 @@ export default class EquipmentChecker implements Tickable {
     private characterService: ICharacterService;
     private equipmentService: IEquipmentService;
 
-    constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
-        this.characterService = characterService;
-        this.equipmentService = equipmentService;
+    constructor() {
+        this.characterService = services.character;
+        this.equipmentService = services.equipment;
     }
 
     start(): void {

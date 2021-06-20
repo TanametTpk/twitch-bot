@@ -7,17 +7,26 @@ import IBossDeadEvent from "./interfaces/Boss/IBossDeadEvent";
 import IBossSpawnEvent from "./interfaces/Boss/IBossSpawnEvent";
 
 export default class BossManager implements Tickable {
+    private static instance: BossManager;
     public battleSystem: BossBattleSystem
     public bossSpawner: BossSpawner
     private boss?: NormalBoss
     private bossSpawnEvents: IBossSpawnEvent[]
     private bossDeadEvents: IBossDeadEvent[]
 
-    constructor() {
+    private constructor() {
         this.bossSpawner = new BossSpawner(Tick.HOUR)
         this.battleSystem = new BossBattleSystem()
         this.bossSpawnEvents = []
         this.bossDeadEvents = []
+    }
+
+    public static getInstance(): BossManager {
+        if (!BossManager.instance) {
+            BossManager.instance = new BossManager();
+        }
+
+        return BossManager.instance;
     }
 
     start(): void {
