@@ -1,6 +1,5 @@
-import { BattleInfo } from "../../battle/BossBattleSystem";
-import NormalBoss from "../../Boss/NormalBoss";
+import Boss from "../../Boss/Boss";
 
-export default interface IBossDeadEvent {
-    do(boss: NormalBoss): void
+export default interface IBossSpawnEvent {
+    do(boss: Boss): void
 }

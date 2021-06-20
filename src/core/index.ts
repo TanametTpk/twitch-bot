@@ -3,6 +3,7 @@ import PlayerManager from "./PlayerManager";
 import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
 import TickSystem from "./TickSystem";
+import TwitchNotifyEvent from "./Boss/events/spawn/TwitchNotifyEvent";
 
 class GameCore {
     public tickSystem: TickSystem;
@@ -12,7 +13,7 @@ class GameCore {
     constructor(characterService: ICharacterService, equipmentService: IEquipmentService) {
         this.tickSystem = new TickSystem();
         this.bossManager = new BossManager();
-        this.playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager(characterService, equipmentService);
 
         this.config();
 
@@ -23,7 +24,7 @@ class GameCore {
 
     private config(): void {
         // add notification
-        this.bossManager.addSpawnEvent()
+        this.bossManager.addSpawnEvent(new TwitchNotifyEvent())
 
         // add rewarding
         this.bossManager.addDeadEvent()
