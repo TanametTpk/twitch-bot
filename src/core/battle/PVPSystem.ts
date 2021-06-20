@@ -22,6 +22,7 @@ export default class PVPSystem implements Tickable {
 
     public toggleOnOff(): void {
         this.isOn = !this.isOn
+        this.statusNotify()
     }
 
     public statusNotify(): void {
@@ -38,6 +39,7 @@ export default class PVPSystem implements Tickable {
     }
 
     public attack(attacker: Player, attacked: Player): void {
+        if (!this.isOn) return;
         if (!this.canAttackPlayer)
             throw new AttackError(`Can't Attack ${attacked.getInfo().user.name} because player is Invulnerable`)
         attacker.attack(attacked)

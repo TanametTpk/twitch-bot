@@ -22,7 +22,6 @@ export default class AutoTogglePVPSystem extends PVPSystem {
         if (this.currentPvpTime < 1) {
             this.currentPvpTime = this.pvpTime
             this.toggleOnOff()
-            this.statusNotify()
         }
     }
 

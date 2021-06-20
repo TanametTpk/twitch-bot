@@ -75,7 +75,7 @@ export default class Player implements Attackable, Damagable, Tickable {
     }
 
     public isInvulnerable(): boolean {
-        return this.currentInvulnerable < 1
+        return this.currentInvulnerable > 0
     }
 
     public setInvalnerable(duration: number) {
