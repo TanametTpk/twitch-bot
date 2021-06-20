@@ -13,15 +13,15 @@ export default class Shop {
         
     }
 
-    public async buyEquipment(chracterId: number, coin: number): Promise<(Character & IncludeUserAndEquipment) | undefined> {
+    public async buyEquipment(characterId: number, coin: number): Promise<(Character & IncludeUserAndEquipment) | undefined> {
         if (coin < 0) throw new NegativeCoinNumberError("can't use negative number to buy item");
         if (coin < 1) return;
         if (coin > 20) coin = 20;
     
-        let character = await this.characterService.getCharacterById(chracterId);
+        let character = await this.characterService.getCharacterById(characterId);
         
         if (!character) return;
-        if (!this.isChracterHaveEnoughCoin(character, coin)) throw new NotEnoughCoinError();
+        if (!this.ischaracterHaveEnoughCoin(character, coin)) throw new NotEnoughCoinError();
         
         if (character.equipment) {
             if (!this.isNewEquipmentBetter(character.equipment, coin)) throw new BuyBadItemError("item is worst than you have")
@@ -39,7 +39,7 @@ export default class Shop {
         return oldEquipment.atk <= coin
     }
 
-    protected isChracterHaveEnoughCoin(chracter: Character, requireCoin: number): boolean {
-        return chracter.coin >= requireCoin;
+    protected ischaracterHaveEnoughCoin(character: Character, requireCoin: number): boolean {
+        return character.coin >= requireCoin;
     }
 }

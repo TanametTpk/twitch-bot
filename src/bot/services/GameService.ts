@@ -22,8 +22,8 @@ class GameService implements IGameService {
 
     public async attackBossBy(playerId: string): Promise<void> {
         let playerManager = this.getGameManager().playerManager
-        let chracter = await this.characterService.getCharacterByUserHash(playerId);
-        if (!chracter) return;
+        let character = await this.characterService.getCharacterByUserHash(playerId);
+        if (!character) return;
 
         if (!this.game.bossManager.isBossHasSpawned()) {
             throw new BossNotFoundError("boss is not spawn")
@@ -33,11 +33,11 @@ class GameService implements IGameService {
             throw new PlayerDeadError("can't attack boss because player is dead.")
         }
 
-        if (!this.game.canBossAttackedBy(chracter)) {
+        if (!this.game.canBossAttackedBy(character)) {
             throw new AttackError("can't not attack boss.")
         }
 
-        this.game.attackBoss(chracter.id)
+        this.game.attackBoss(character.id)
     }
 
     public async pvp(attackerId: string, attackedId: string): Promise<User | null> {

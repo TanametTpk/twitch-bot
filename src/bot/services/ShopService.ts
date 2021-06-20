@@ -15,14 +15,14 @@ class ShopService implements IShopService {
 
     async buyEquipment(hash: string, coin: number): Promise<Character & IncludeUserAndEquipment | null> {
         let playerManager = this.gameService.getGameManager().playerManager
-        let chracter = await this.characterService.getCharacterByUserHash(hash);
-        if (!chracter) return null;
+        let character = await this.characterService.getCharacterByUserHash(hash);
+        if (!character) return null;
         
-        if (playerManager.isPlayerDead(chracter.user.hash)) {
+        if (playerManager.isPlayerDead(character.user.hash)) {
             throw new PlayerDeadError("can't buy because player is dead")
         }
 
-        await this.gameService.getGameManager().buyEquipment(chracter.id, coin);
+        await this.gameService.getGameManager().buyEquipment(character.id, coin);
         return this.characterService.getCharacterByUserHash(hash);
     }
 }

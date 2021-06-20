@@ -5,7 +5,7 @@ import client from '../bot/twitch';
 import roll from "../bot/utils/roll";
 import sleep from "../bot/utils/sleep";
 import moment from 'moment';
-import ICharacterService from "../interfaces/services/ICharacterService";
+import ICharacterService, { IncludeUserAndEquipment } from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
 import { Character, User } from "@prisma/client";
 import { setTimeout } from "timers";
@@ -95,7 +95,6 @@ class GameManager {
         let channel_name = process.env.tmi_channel_name as string
         let timeoutSeconds = 60;
         let casualties = 0;
-        console.log(`Boss: I am inevitible..`)
 
         let players = this.playerManager.getOnlinePlayers()
         console.log(players);
@@ -139,15 +138,24 @@ class GameManager {
     private async bossHasEliminated() {
         let playerIdList: number[] = Array.from(this.bossManager.attacker.keys());
         let topFiveDmgId: number[] = this.getTopFivePlayer();
+        let topFiveList: (Character & IncludeUserAndEquipment)[] = []
+        let luckyList: (Character & IncludeUserAndEquipment)[] = []
         let createRewards: Promise<Reward | undefined>[] = playerIdList.map(async(playerId) => {
             let isExtraReward = roll(5)
-            let chracter = await this.characterService.getCharacterByUserId(playerId)
+            let character = await this.characterService.getCharacterByUserId(playerId)
             let reward: number = isExtraReward ? 2 : 1;
-            if (!chracter) return;
-            if (topFiveDmgId.includes(playerId)) reward = 3;
+            if (!character) return;
+            if (topFiveDmgId.includes(playerId)) {
+                reward = 3;
+                topFiveList.push(character)
+            }
+
+            if (isExtraReward) {
+                luckyList.push(character)
+            }
 
             return {
-                chracterId: chracter.id,
+                characterId: character.id,
                 coin: reward
             }
         })
@@ -161,6 +169,23 @@ class GameManager {
         let webUI = WebSocketApi.getInstance()
         webUI.bossEliminated()
         client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
+        client.say(process.env.tmi_channel_name as string, `--- top 5 most damage ---`)
+        let topFiveText = ""
+        for (let player of topFiveList) {
+            let username = player.user.name
+            topFiveText += `<${username}>`
+        }
+        client.say(process.env.tmi_channel_name as string, topFiveText)
+
+        if (luckyList.length > 0) {
+            client.say(process.env.tmi_channel_name as string, `--- lucky list ---`)
+            let luckyText = ""
+            for (let player of luckyList) {
+                let username = player.user.name
+                luckyText += `<${username}>`
+            }
+            client.say(process.env.tmi_channel_name as string, luckyText)
+        }
     }
 
     public bossAttackRandomPlayer() {
@@ -201,8 +226,8 @@ class GameManager {
         this.bossHasEliminated()
     }
 
-    public async buyEquipment(chracterId: number, coin: number) {
-        let character = await this.shop.buyEquipment(chracterId, coin)
+    public async buyEquipment(characterId: number, coin: number) {
+        let character = await this.shop.buyEquipment(characterId, coin)
         if (!character) return;
 
         await this.updatePlayerDamage(character.user)
