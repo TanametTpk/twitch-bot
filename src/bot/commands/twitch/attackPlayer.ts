@@ -32,6 +32,7 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         
         let game: IGameService = services.game
         let attackedCharacter = await services.character.getCharacterByName(attackedName)
+        let reviveTime = Number(process.env.REVIVE_TIME || 60)
 
         if (!attackedCharacter) throw new Error("not found attacked character")
         if (!tags["user-id"]) throw new Error("not found attacker hash id from twitch")
@@ -42,6 +43,7 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
 
         if (attackedId === attackerId) {
             this.suicide(attackedId, tags.username)
+            client.timeout(channel, tags.username, reviveTime)
             return;
         }
 
@@ -49,13 +51,13 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
             let deadUser = await game.pvp(attackerId, attackedId);
             if (!deadUser) return;
 
+            client.timeout(channel, deadUser.name, reviveTime)
             if (deadUser.hash === attackedCharacter.user.hash) {
                 this.webUI.showFeed(`${tags.username} 🗡️ ${attackedName}`, this.feedPosition, this.feedDuration)
                 return
             }
 
             this.webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, this.feedPosition, this.feedDuration)
-
         } catch (error) {
             if (error instanceof AttackError) {
                 client.say(channel, `${tags.username} ตี ${attackedName} ไม่ได้ WTF!!`);
