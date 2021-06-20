@@ -41,8 +41,8 @@ export default class GiveRewardToAllPlayerEvent implements IBossDeadEvent {
         return list.some((player) => player.getId() === target.getId())
     }
 
-    private distributeRewards(rewards: Reward[]): void {
-        rewards.map((reward) => {
+    private async distributeRewards(rewards: Reward[]): Promise<any> {
+        return rewards.map((reward) => {
             this.characterService.addCoinToCharacter(reward.characterId, reward.coin);
         })
     }
@@ -78,7 +78,7 @@ export default class GiveRewardToAllPlayerEvent implements IBossDeadEvent {
         })
 
         let rewards: Reward[] = await Promise.all(createRewards);
-        this.distributeRewards(rewards);
+        await this.distributeRewards(rewards);
 
         client.say(process.env.tmi_channel_name as string, `บอสถูกกำจัดแล้ว เอารางวัลไปซะเหล่านักพจญภัย`)
         this.showUsers("Top 5 Most Damage", topFiveDmgPlayer)

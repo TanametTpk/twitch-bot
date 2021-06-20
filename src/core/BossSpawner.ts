@@ -35,6 +35,10 @@ export default class BossSpawner implements Tickable {
         return this.currentInterval < 1;
     }
 
+    public spawnNow(): void {
+        this.currentInterval = 0
+    }
+
     public spawnBoss(bossType: BossTypes): BaseBoss {
         this.isBossAlreadySpawn = true
         let newBoss: BaseBoss

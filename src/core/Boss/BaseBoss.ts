@@ -1,3 +1,4 @@
+import WebSocketApi from "../../webserver/socket/api";
 import IBossSkill from "../interfaces/IBossSkill";
 import BossTick from "./BossTick";
 import DoNothingSkill from "./skills/DoNothingSkill";
@@ -23,5 +24,11 @@ export default class BaseBoss extends BossTick {
 
     public attack(): void {
         this.finalAttackSkill.use()
+    }
+
+    public wasAttack(damage: number) {
+        super.wasAttack(damage)
+        let webUI = WebSocketApi.getInstance()
+        webUI.updateBoss(this, true)
     }
 }

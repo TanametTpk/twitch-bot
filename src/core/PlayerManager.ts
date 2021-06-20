@@ -48,12 +48,10 @@ export default class PlayerManager implements Tickable {
     }
 
     public async addOnlinePlayer(player: Player) {
-        if (this.onlinePlayers.has(player.getId())) return;
         this.onlinePlayers.set(player.getId(), player);
     }
 
     public async removeOnlinePlayer(player: Player) {
-        if (!this.onlinePlayers.has(player.getId())) return;
         this.onlinePlayers.delete(player.getId());
     }
 

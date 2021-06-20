@@ -94,7 +94,7 @@ class GameService implements IGameService {
     }
 
     public spawnBoss(): void {
-        this.game.bossManager.bossSpawner.spawnBoss("normal");
+        this.game.bossManager.bossSpawner.spawnNow();
     }
 
     public getGameManager(): GameCore {

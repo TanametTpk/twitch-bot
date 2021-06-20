@@ -6,7 +6,6 @@ import * as services from "../services";
 class AddToOnlineListMiddleware implements IMiddleware {
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
         if (!tags["user-id"] || !tags.username) return;
-        if (services.game.isPlayerOnline(tags["user-id"])) return;
 
         let character = await services.character.getCharacterByUserHash(tags["user-id"]);
         if (character) {
@@ -14,7 +13,7 @@ class AddToOnlineListMiddleware implements IMiddleware {
                 character.user.name = tags.username
                 await services.user.changeName(character.user.id, character.user.name)
             }
-
+            
             services.game.getGameManager().playerManager.addOnlinePlayer(new Player(character))
             return;
         }
