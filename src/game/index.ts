@@ -195,6 +195,12 @@ class GameManager {
         if (boss.isDead()) this.bossHasEliminated()
     }
 
+    public killBoss() {
+        if (!this.bossManager.isBossHasSpawned()) return
+        this.bossManager.clear()
+        this.bossHasEliminated()
+    }
+
     public async buyEquipment(chracterId: number, coin: number) {
         let character = await this.shop.buyEquipment(chracterId, coin)
         if (!character) return;
