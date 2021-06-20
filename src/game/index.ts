@@ -150,7 +150,7 @@ class GameManager {
                 topFiveList.push(character)
             }
 
-            if (isExtraReward) {
+            if (isExtraReward && !topFiveDmgId.includes(playerId)) {
                 luckyList.push(character)
             }
 
