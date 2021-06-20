@@ -84,7 +84,7 @@ export default class BossManager {
         
         if (this.boss) {
             let webUI = WebSocketApi.getInstance();
-            webUI.updateBoss(this.boss);
+            webUI.updateBoss(this.boss, true);
         }
     }
 }
