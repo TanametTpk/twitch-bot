@@ -505,11 +505,11 @@ test('should remove expired equipment from player', async() => {
 test('should give reward to players', async() => {
     const rewards: Reward[] = [
         {
-            chracterId: 1,
+            characterId: 1,
             coin: 5
         },
         {
-            chracterId: 2,
+            characterId: 2,
             coin: 1
         }
     ]

@@ -5,7 +5,7 @@ import IEquipmentService from '../interfaces/services/IEquipmentService';
 import { setTimeout } from 'timers';
 
 export interface Reward {
-    chracterId: number
+    characterId: number
     coin: number
 }
 
@@ -104,7 +104,7 @@ export default class PlayerManager {
 
     public distributeRewards(rewards: Reward[]): void {
         rewards.map((reward) => {
-            this.characterService.addCoinToCharacter(reward.chracterId, reward.coin);
+            this.characterService.addCoinToCharacter(reward.characterId, reward.coin);
         })
     }
 
