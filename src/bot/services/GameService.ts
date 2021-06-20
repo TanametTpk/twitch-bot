@@ -47,19 +47,14 @@ class GameService implements IGameService {
         if (playerManager.isPlayerDead(attackerId)) {
             throw new PlayerDeadError("Player can't pvp when they are dead.")
         }
-
-        console.log("check");
-        console.log("can attack", playerManager.canAttackPlayer(attackedId));
         
         if (!playerManager.canAttackPlayer(attackedId)) {
-            console.log("can't attack bitch");
-            
             throw new AttackError("can't not attack this player.")
         }
 
         let deadPlayer = await this.attack(attackerId, attackedId)
         if (deadPlayer) {
-            playerManager.addDeadPlayer(deadPlayer)
+            // playerManager.addDeadPlayer(deadPlayer)
         }
 
         return deadPlayer
