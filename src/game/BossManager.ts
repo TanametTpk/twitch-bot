@@ -25,7 +25,9 @@ export default class BossManager {
     private createBoss(totalOnlineDamage: number): Boss {
         let factor = Number(process.env.BOSS_HP_FACTOR || 4)
         const level = this.calculateDiffuculty()
-        const max_hp: number = totalOnlineDamage * factor * ((level + 5) / 10)
+        let max_hp: number = totalOnlineDamage * factor * ((level + 5) / 10)
+
+        if (max_hp < 1) max_hp = 10
         return new Boss(max_hp, level);
     }
 
