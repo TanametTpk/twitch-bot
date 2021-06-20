@@ -16,7 +16,7 @@ class BossAttackCommand implements ICommand, IDiscordCommand {
             return
         }
 
-        gameService.getGameManager().bossAttackRandomPlayer();
+        gameService.getGameManager().bossManager.getBoss()?.attack();
         msg.channel.send(`boss โจมตีแล้ว`);
     }
 }

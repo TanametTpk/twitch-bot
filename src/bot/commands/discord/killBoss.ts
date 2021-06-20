@@ -16,7 +16,7 @@ class KillBossCommand implements ICommand, IDiscordCommand {
             return
         }
 
-        gameService.getGameManager().killBoss()
+        boss.wasAttack(boss.getHp())
         msg.channel.send(`boss ย่อยสลายแล้ว`);
     }
 }

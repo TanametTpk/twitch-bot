@@ -90,4 +90,8 @@ export default class Player implements Attackable, Damagable, Tickable {
     public isDead(): boolean {
         return this.remainRespawnTime > 0
     }
+
+    public getRespawnTime(): number {
+        return this.remainRespawnTime
+    }
 }

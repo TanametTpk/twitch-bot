@@ -20,4 +20,8 @@ export default class BaseBoss extends BossTick {
     public setFinalAttackSkill(skill: IBossSkill): void {
         this.finalAttackSkill = skill
     }
+
+    public attack(): void {
+        this.finalAttackSkill.use()
+    }
 }

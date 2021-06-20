@@ -47,7 +47,7 @@ export default class BossManager implements Tickable {
             if (this.boss.isDead()) {
                 let info: BattleInfo[] = this.battleSystem.getInfo()
                 this.startDeadEvent(info)
-                this.battleSystem.clear()
+                this.clear()
             }
         }
     }
@@ -82,5 +82,10 @@ export default class BossManager implements Tickable {
 
     public addSpawnEvent(event: IBossSpawnEvent): void {
         this.bossSpawnEvents.push(event)
+    }
+
+    public clear(): void {
+        this.boss = undefined
+        this.battleSystem.clear()
     }
 }

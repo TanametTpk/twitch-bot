@@ -1,7 +1,6 @@
 import { User } from "@prisma/client";
 import GameCore from "../../core";
 import Boss from "../../core/Boss/Boss";
-import GameManager from "../../game";
 import ICharacterService from "../../interfaces/services/ICharacterService";
 import IEquipmentService from "../../interfaces/services/IEquipmentService";
 import IGameService from "../../interfaces/services/IGameService";
