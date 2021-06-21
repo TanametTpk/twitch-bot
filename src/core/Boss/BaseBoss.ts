@@ -4,7 +4,7 @@ import BossTick from "./BossTick";
 import DoNothingSkill from "./skills/DoNothingSkill";
 
 export default class BaseBoss extends BossTick {
-    private finalAttackSkill: IBossSkill
+    protected finalAttackSkill: IBossSkill
 
     constructor(name: string, hp: number, level: number, bossAge: number) {
         super(name, hp, level, bossAge)

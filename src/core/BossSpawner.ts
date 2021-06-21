@@ -1,5 +1,7 @@
 import randomIntBetween from "../bot/utils/randomIntBetween"
+import AutoAttackBoss from "./Boss/AutoAttackBoss"
 import BaseBoss from "./Boss/BaseBoss"
+import RandomHitSkill from "./Boss/skills/RandomHitSkill"
 import ThanosSnapSkill from "./Boss/skills/ThanosSnapSkill"
 import tick from "./helpers/tick"
 import Tickable from "./interfaces/Tickable"
@@ -66,7 +68,9 @@ export default class BossSpawner implements Tickable {
         else{
             let level = randomIntBetween(7, 10)
             let hp: number = this.calculateHp(level)
-            newBoss = new BaseBoss("บอสโคตวย", hp, level, limitTime);
+            let autoAtkBoss = new AutoAttackBoss("บอสโคตวย", hp, level, limitTime);
+            autoAtkBoss.setNormalAttackSkill(new RandomHitSkill(30))
+            newBoss = autoAtkBoss
         }
 
         newBoss.setFinalAttackSkill(new ThanosSnapSkill())
