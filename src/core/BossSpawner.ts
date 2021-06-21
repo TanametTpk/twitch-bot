@@ -68,7 +68,7 @@ export default class BossSpawner implements Tickable {
         else{
             let level = randomIntBetween(7, 10)
             let hp: number = this.calculateHp(level)
-            let autoAtkBoss = new AutoAttackBoss("บอสโคตวย", hp, level, limitTime);
+            let autoAtkBoss = new AutoAttackBoss("บอสโคตวย", hp, level, limitTime, 15);
             autoAtkBoss.setNormalAttackSkill(new RandomHitSkill(30))
             newBoss = autoAtkBoss
         }
