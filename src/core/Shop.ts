@@ -2,9 +2,11 @@ import { Equipment } from "@prisma/client";
 import BuyBadItemError from "../bot/errors/BuyBadItemError";
 import NegativeCoinNumberError from "../bot/errors/NegativeCoinNumberError";
 import NotEnoughCoinError from "../bot/errors/NotEnoughCoinError";
+import NotFoundPotion from "../bot/errors/NotFoundPotion";
 import * as services from "../bot/services";
 import ICharacterService from "../interfaces/services/ICharacterService";
 import IEquipmentService from "../interfaces/services/IEquipmentService";
+import tick from "./helpers/tick";
 import Player from "./Player/Player";
 
 export default class Shop {
@@ -37,6 +39,16 @@ export default class Shop {
         
         await this.characterService.removeCoinFromCharacter(player.getInfo().id, coin);
         return player
+    }
+
+    public async buyPotion(player: Player, potion: string): Promise<void> {
+        if (!this.isHaveEnoughCoin(player, 2)) throw new NotEnoughCoinError();
+
+        if (potion === "ลืมไปก่อน") {
+            player.setEffect("forgotness", tick.MINUTE * 5)
+        }
+
+        throw new NotFoundPotion(`not found ${potion}`)
     }
 
     private isNewEquipmentBetter(oldEquipment: Equipment, coin: number): boolean {

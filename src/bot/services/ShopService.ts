@@ -3,6 +3,7 @@ import ICharacterService, { IncludeUserAndEquipment } from "../../interfaces/ser
 import IGameService from "../../interfaces/services/IGameService";
 import IShopService from "../../interfaces/services/IShopService";
 import PlayerDeadError from "../errors/PlayerDeadError";
+import PlayerNotFoundError from "../errors/PlayerNotFoundError";
 
 class ShopService implements IShopService {
     private characterService: ICharacterService
@@ -28,6 +29,14 @@ class ShopService implements IShopService {
         playerManager.removeOnlinePlayer(player)
         playerManager.addOnlinePlayer(player)
         return this.characterService.getCharacterByUserHash(hash);
+    }
+
+    async buyPotion(hash: string, name: string) {
+        let playerManager = this.gameService.getGameManager().playerManager
+        let player = playerManager.getPlayer(hash)
+        if (!player) throw new PlayerNotFoundError("not found online player");
+
+        return this.gameService.getGameManager().shop.buyPotion(player, name);
     }
 }
 
