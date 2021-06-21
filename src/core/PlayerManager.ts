@@ -1,5 +1,3 @@
-import ICharacterService from '../interfaces/services/ICharacterService';
-import IEquipmentService from '../interfaces/services/IEquipmentService';
 import AutoTogglePVPSystem from './battle/AutoTogglePVPSystem';
 import PVPSystem from './battle/PVPSystem';
 import EquipmentChecker from './Equipment/EquipmentChecker';

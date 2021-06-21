@@ -38,13 +38,27 @@ export default class PVPSystem implements Tickable {
 
     public attack(attacker: Player, attacked: Player): void {
         if (!this.isOn) return;
-        if (!this.canAttackPlayer)
+        if (!this.canAttackPlayer(attacked))
             throw new AttackError(`Can't Attack ${attacked.getInfo().user.name} because player is Invulnerable`)
+
+        if (this.isHaveBlockEffect(attacked) || this.isHaveBlockEffect(attacker))
+            throw new AttackError(`Can't Attack ${attacked.getInfo().user.name} because player have block effect`)
         attacker.attack(attacked)
     }
 
     public canAttackPlayer(player: Player): boolean {
         if (!player.isInvulnerable()) return true;
         return false;
+    }
+
+    public isHaveBlockEffect(player: Player): boolean {
+        let effect = player.getEffects()
+        let blockEffectList: string[] = [
+            "forgotness"
+        ]
+        for (const name of blockEffectList) {
+            if (effect.is(name)) return true
+        }
+        return false
     }
 }
