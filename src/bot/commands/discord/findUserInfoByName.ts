@@ -43,6 +43,7 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             base atk: ${character.atk}
             equipment: ${equipmentInfo}
             isDead: ${player.isDead()} ${altRespawnText}
+            effect: ${player.getEffects().toString()}
         `);
     }
 }

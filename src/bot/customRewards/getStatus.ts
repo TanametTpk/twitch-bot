@@ -28,6 +28,7 @@ class GetStatusCommand extends AbstractChannelPointAction {
             coin: ${player.getCoin()}
             สถานะ: ${player.isDead() ? "ตาย" + `รอเกิด ${player.getRespawnTime()} วิ` : "ยังคงหายใจ"}
             อาวุธ: ${equipmentInfo}
+            effect: ${player.getEffects().toString()}
         `)
     }
 }
