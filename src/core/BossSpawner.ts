@@ -1,9 +1,11 @@
+import randomIntBetween from "../bot/utils/randomIntBetween"
 import BaseBoss from "./Boss/BaseBoss"
 import ThanosSnapSkill from "./Boss/skills/ThanosSnapSkill"
 import tick from "./helpers/tick"
 import Tickable from "./interfaces/Tickable"
+import PlayerManager from "./PlayerManager"
 
-type BossTypes = "mini" | "normal" | "big"
+export type BossTypes = "mini" | "normal" | "big"
 
 export default class BossSpawner implements Tickable {
     protected spawnInterval: number
@@ -39,24 +41,67 @@ export default class BossSpawner implements Tickable {
         this.currentInterval = 0
     }
 
-    public spawnBoss(bossType: BossTypes): BaseBoss {
+    public spawnBoss(bossType?: BossTypes): BaseBoss {
+        this.spawnNow()
         this.isBossAlreadySpawn = true
         let newBoss: BaseBoss
-        let bossLimitTime = tick.MINUTE * 15
+        let limitTime = Number(process.env.ATTACK_BOSS_LIMIT_TIME || tick.MINUTE * 15)
+        bossType = bossType ? bossType : this.calculateDifficulty()
 
+        /*
+            TODO - refactor to use design pattern here
+        */
         if (bossType === "mini") {
-            newBoss = new BaseBoss("Mini Boss", 10, 1, bossLimitTime);
+            let level = randomIntBetween(1, 3)
+            let hp: number = this.calculateHp(level)
+            newBoss = new BaseBoss("บอสโง่ๆ", hp, level, limitTime);
         }
 
         else if (bossType === "normal") {
-            newBoss = new BaseBoss("Normal Boss", 100, 5, bossLimitTime);
+            let level = randomIntBetween(4, 6)
+            let hp: number = this.calculateHp(level)
+            newBoss = new BaseBoss("บอสเฉยๆ", hp, level, limitTime);
         }
 
         else{
-            newBoss = new BaseBoss("Big Boss", 100, 10, bossLimitTime);
+            let level = randomIntBetween(7, 10)
+            let hp: number = this.calculateHp(level)
+            newBoss = new BaseBoss("บอสโคตวย", hp, level, limitTime);
         }
 
         newBoss.setFinalAttackSkill(new ThanosSnapSkill())
         return newBoss
+    }
+
+    private calculateDifficulty(): BossTypes {
+        let playerManager = PlayerManager.getInstance()
+        let players = playerManager.getOnlinePlayers()
+        let count = 0
+        for (const player of players) {
+            if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
+                count += 1
+        }
+
+        let ratio = count / players.length * 100
+        if (ratio >= 50) return "big"
+        if (ratio >= 30) return "normal"
+        return "mini"
+    }
+
+    /*
+        Boss hp based on all player damage
+        Max hp = all player damage * expected attack times(factor)
+        
+        Boss Level will effect hp with formula ((level + 5) / 10)
+        Max Boss Level is 10 so we need boss to loop powerful so hp will multiply by 1.5
+        If Boss is Level 1 then hp will multiply by 0.5
+    */
+    private calculateHp(level: number): number {
+        let totalDamage = PlayerManager.getInstance().getTotalOnlineDamage()
+        let factor = Number(process.env.BOSS_HP_FACTOR || 4)
+        let max_hp: number = totalDamage * factor * ((level + 5) / 10)
+
+        if (max_hp < 1) max_hp = 10
+        return max_hp
     }
 }

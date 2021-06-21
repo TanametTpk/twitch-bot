@@ -1,6 +1,6 @@
 import Tickable from "./interfaces/Tickable";
 import Tick from './helpers/tick';
-import BossSpawner from "./BossSpawner";
+import BossSpawner, { BossTypes } from "./BossSpawner";
 import BaseBoss from "./Boss/BaseBoss";
 import BossBattleSystem, { BattleInfo } from "./battle/BossBattleSystem";
 import IBossDeadEvent from "./interfaces/Boss/IBossDeadEvent";
@@ -34,12 +34,7 @@ export default class BossManager implements Tickable {
     }
 
     update(): void {
-        this.bossSpawner.update();
-        if (this.bossSpawner.bossShouldSpawn()) {
-            let boss = this.bossSpawner.spawnBoss("normal")
-            this.setBoss(boss)
-            this.startSpawnEvent(boss)
-        }
+        this.spawnBossUpdate()
 
         if (this.boss) {
             this.boss.update()
@@ -49,6 +44,15 @@ export default class BossManager implements Tickable {
                 this.startDeadEvent(info)
                 this.clear()
             }
+        }
+    }
+
+    private spawnBossUpdate(): void {
+        this.bossSpawner.update();
+        if (this.bossSpawner.bossShouldSpawn()) {
+            let boss = this.bossSpawner.spawnBoss()
+            this.setBoss(boss)
+            this.startSpawnEvent(boss)
         }
     }
 
