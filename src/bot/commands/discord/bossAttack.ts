@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import services from "../../services";
+import * as services from "../../services";
 
 class BossAttackCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -16,7 +16,7 @@ class BossAttackCommand implements ICommand, IDiscordCommand {
             return
         }
 
-        gameService.getGameManager().bossAttackRandomPlayer();
+        gameService.getGameManager().bossManager.getBoss()?.attack();
         msg.channel.send(`boss โจมตีแล้ว`);
     }
 }

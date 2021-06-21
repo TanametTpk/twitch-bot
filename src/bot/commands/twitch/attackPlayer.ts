@@ -5,7 +5,7 @@ import IGameService from "../../../interfaces/services/IGameService";
 import { NotificationPlacement } from "../../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../../webserver/socket/api";
 import AttackError from "../../errors/AttackError";
-import services from "../../services";
+import * as services from "../../services";
 
 class AttackPlayerCommand implements ICommand, ITwitchCommand {
     private webUI = WebSocketApi.getInstance()
@@ -16,14 +16,18 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         return /!pvp [^ ]+/.test(text);
     }
 
-    private async suicide(userHash: string, username: string) {
+    private async suicide(client: Client, userHash: string, username: string, channel: string, reviveTime: number) {
         let user = await services.user.getUserByHash(userHash)
         if (!user) return;
 
         try {
-            await services.game.pvp(user.hash, user.hash)
+            let deadUser = await services.game.pvp(user.hash, user.hash)            
+            if (!deadUser) return;
+
             this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
-        } catch (error) {}
+            client.timeout(channel, username, reviveTime)
+        } catch (error) {
+        }
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
@@ -42,8 +46,7 @@ class AttackPlayerCommand implements ICommand, ITwitchCommand {
         let attackedId = attackedCharacter.user.hash
 
         if (attackedId === attackerId) {
-            this.suicide(attackedId, tags.username)
-            client.timeout(channel, tags.username, reviveTime)
+            this.suicide(client, attackedId, tags.username, channel, reviveTime)
             return;
         }
 

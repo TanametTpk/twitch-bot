@@ -1,10 +1,12 @@
 
 export default class Boss {
-    private hp!: number;
-    private max_hp!: number;
-    private level!: number;
+    protected name: string;
+    protected hp: number;
+    protected max_hp: number;
+    protected level: number;
 
-    constructor(hp: number, level: number) {
+    constructor(name: string, hp: number, level: number) {
+        this.name = name;
         this.hp = hp;
         this.max_hp = hp;
         this.level = level;
@@ -19,6 +21,10 @@ export default class Boss {
 
     public isDead(): boolean {
         return this.hp <= 0;
+    }
+
+    public getName(): string {
+        return this.name;
     }
 
     public getMaxHp(): number {

@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import services from "../../services";
+import * as services from "../../services";
 
 class ClearBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {

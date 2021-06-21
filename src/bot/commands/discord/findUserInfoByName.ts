@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import services from "../../services";
+import * as services from "../../services";
 
 class FindUserByNameCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -14,13 +14,24 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
         if (!character) return;
 
         let playerManager = services.game.getGameManager().playerManager
-        let isDead = playerManager.isPlayerDead(character.user.hash)
+        let player = playerManager.getPlayer(character.user.hash)
+        if (!player) return;
+
         let altRespawnText = ""
 
-        if (isDead) {
-            let remain = playerManager.getRemainRespawnTime(character.user.hash)
+        if (player.isDead()) {
+            let remain = player.getRespawnTime()
             altRespawnText = `รอเกิดอีก ${remain} วินาที`
         }
+
+        let equipmentInfo = ""
+        if (player.getEquipment()) {
+            let isLastDay = player.getEquipment()!.expired_time === 0 
+            let remainMessage = isLastDay ? "ใช้ได้วันสุดท้ายแล้ว" : `(ใช้ได้อีก ${player.getEquipment()!.expired_time} วัน)`
+            equipmentInfo = `Atk ${player.getEquipment()!.atk} ${remainMessage}`
+        }
+
+        let effectInfo = player.getEffects().toString()
 
         msg.channel.send(`
             -- user --
@@ -32,8 +43,9 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             id: ${character.id}
             coin: ${character.coin}
             base atk: ${character.atk}
-            equipment: ${character.equipment}
-            isDead: ${isDead} ${altRespawnText}
+            equipment: ${equipmentInfo}
+            isDead: ${player.isDead()} ${altRespawnText}
+            effect: ${effectInfo.length < 1 ? "ไม่มี" : effectInfo}
         `);
     }
 }

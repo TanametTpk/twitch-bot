@@ -1,6 +1,6 @@
 import { ChatUserstate, Client } from "tmi.js";
 import ITwitchCheerStategy from "../../interfaces/ITwitchCheerStategy";
-import services from "../services";
+import * as services from "../services";
 
 class CheerRewardStategy implements ITwitchCheerStategy {
     async perform(client: Client, channel: string, userstate: ChatUserstate, message: string): Promise<void> {

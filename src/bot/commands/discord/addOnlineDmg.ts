@@ -1,8 +1,9 @@
-import { Message } from "discord.js";
+import { Message, User } from "discord.js";
+import Player from "../../../core/Player/Player";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IGameService from "../../../interfaces/services/IGameService";
-import services from "../../services";
+import * as services from "../../services";
 
 class AddOnlineDmg implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -12,11 +13,10 @@ class AddOnlineDmg implements ICommand, IDiscordCommand {
     async perform(msg: Message) {
         let game: IGameService = services.game;
         let playerId = msg.content.split(" ")[2];
-        let user = await services.user.getUserByHash(playerId)
+        let character = await services.character.getCharacterByUserHash(playerId)
+        if (!character) return;
 
-        if (!user) return;
-
-        game.getGameManager().playerManager.addOnlinePlayer(user)
+        game.getGameManager().playerManager.addOnlinePlayer(new Player(character))
         msg.channel.send("เพิ่ม dmg ให้แล้ว");
     }
 }

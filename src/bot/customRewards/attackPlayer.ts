@@ -3,9 +3,7 @@ import AbstractChannelPointAction from "../../abstracts/AbstractChannelPointActi
 import { NotificationPlacement } from "../../interfaces/websocket/IFeedApi";
 import WebSocketApi from "../../webserver/socket/api";
 import AttackError from "../errors/AttackError";
-import PlayerDeadError from "../errors/PlayerDeadError";
-import PVPModeOffError from "../errors/PVPModeOffError";
-import services from "../services";
+import * as services from "../services";
 
 class AttackPlayerCommand extends AbstractChannelPointAction {
     private webUI = WebSocketApi.getInstance()
@@ -16,12 +14,17 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         super("68d5382c-f30b-45bf-842b-da7f50811eeb");
     }
 
-    private async suicide(userHash: string, username: string) {
+    private async suicide(client: Client, userHash: string, username: string, channel: string, reviveTime: number) {
         let user = await services.user.getUserByHash(userHash)
         if (!user) return;
 
-        services.game.pvp(user.hash, user.hash)
-        this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
+        try {
+            let deadUser = await services.game.pvp(user.hash, user.hash)            
+            if (!deadUser) return;
+
+            this.webUI.showFeed(`${username} ☠️`, this.feedPosition, this.feedDuration)
+            client.timeout(channel, username, reviveTime)
+        } catch (error) {}
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
@@ -39,8 +42,7 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         let attackedId = attackedCharacter.user.hash
 
         if (attackedId === attackerId) {
-            this.suicide(attackedId, tags.username)
-            client.timeout(channel, tags.username, reviveTime)
+            this.suicide(client, attackedId, tags.username, channel, reviveTime)
             return;
         }
 

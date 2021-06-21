@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
-import services from "../../services";
+import * as services from "../../services";
 
 class KillBossCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {
@@ -16,7 +16,7 @@ class KillBossCommand implements ICommand, IDiscordCommand {
             return
         }
 
-        gameService.getGameManager().killBoss()
+        boss.wasAttack(boss.getHp())
         msg.channel.send(`boss ย่อยสลายแล้ว`);
     }
 }

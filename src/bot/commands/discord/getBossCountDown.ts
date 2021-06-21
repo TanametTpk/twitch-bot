@@ -3,7 +3,7 @@ import moment from "moment";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import IGameService from "../../../interfaces/services/IGameService";
-import services from "../../services";
+import * as services from "../../services";
 
 class GetBossCountDownCommand implements ICommand, IDiscordCommand {
     match(text: string): boolean {

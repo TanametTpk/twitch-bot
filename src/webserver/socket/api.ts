@@ -1,5 +1,5 @@
 import randomIntBetween from '../../bot/utils/randomIntBetween';
-import Boss from '../../game/Boss';
+import Boss from '../../core/Boss/Boss';
 import IBossApi from '../../interfaces/websocket/IBossApi';
 import IFeedApi, { NotificationPlacement } from '../../interfaces/websocket/IFeedApi';
 import { io } from '../server';

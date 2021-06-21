@@ -1,6 +1,6 @@
 import { Client, SubUserstate } from "tmi.js";
 import ITwitchSubscriptionStategy from "../../interfaces/ITwitchSubscriptionStategy";
-import services from "../services";
+import * as services from "../services";
 
 class SubscriptionRewardStategy implements ITwitchSubscriptionStategy {
     async perform(client: Client, channel: string, message: string, username: string, userstate: SubUserstate): Promise<void> {

@@ -4,7 +4,7 @@ import ITwitchCommand from "../../../interfaces/ITwitchCommand";
 import BuyBadItemError from "../../errors/BuyBadItemError";
 import NegativeCoinNumberError from "../../errors/NegativeCoinNumberError";
 import NotEnoughCoinError from "../../errors/NotEnoughCoinError";
-import services from "../../services";
+import * as services from "../../services";
 
 class BuyWeaponCommand implements ICommand, ITwitchCommand {
     match(text: string): boolean {
