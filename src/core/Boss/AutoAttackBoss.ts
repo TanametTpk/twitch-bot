@@ -5,15 +5,17 @@ import DoNothingSkill from "./skills/DoNothingSkill";
 
 export default class AutoAttackBoss extends BaseBoss {
     private normalAttackSkill: IBossSkill
+    private atkTime: number
 
-    constructor(name: string, hp: number, level: number, bossAge: number) {
+    constructor(name: string, hp: number, level: number, bossAge: number, atkTime: number) {
         super(name, hp, level, bossAge)
         this.normalAttackSkill = new DoNothingSkill()
+        this.atkTime = atkTime
     }
 
     public update(): void {
         super.update()
-        if (this.bossAge % 15 === 0) {
+        if (this.bossAge % this.atkTime === 0) {
             this.normalAttackSkill.use()
         }
     }
