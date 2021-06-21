@@ -12,9 +12,9 @@ export default class SpellManager {
         this.spells.push(spell)
     }
 
-    public isMatchSpell(text: string): boolean {
+    public isMatchSpell(player: Player, text: string): boolean {
         for (const spell of this.spells) {
-           if (spell.check(text)) return true; 
+           if (spell.check(player, text)) return true; 
         }
 
         return false;
@@ -22,7 +22,7 @@ export default class SpellManager {
 
     public castSpell(player: Player, text: string) {
         for (const spell of this.spells) {
-            if (spell.check(text)) {
+            if (spell.check(player, text)) {
                 spell.cast(player, text)
                 break
             }
