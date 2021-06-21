@@ -43,6 +43,14 @@ export default class BossSpawner implements Tickable {
         this.currentInterval = 0
     }
 
+    public getInterval(): number {
+        return this.spawnInterval
+    }
+
+    public getNextBossSpawnTime(): number {
+        return this.currentInterval
+    }
+
     public spawnBoss(bossType?: BossTypes): BaseBoss {
         this.spawnNow()
         this.isBossAlreadySpawn = true
@@ -56,19 +64,20 @@ export default class BossSpawner implements Tickable {
         if (bossType === "mini") {
             let level = randomIntBetween(1, 3)
             let hp: number = this.calculateHp(level)
-            newBoss = new BaseBoss("บอสโง่ๆ", hp, level, limitTime);
+            newBoss = new BaseBoss("โง่ๆ", hp, level, limitTime);
         }
 
         else if (bossType === "normal") {
             let level = randomIntBetween(4, 6)
             let hp: number = this.calculateHp(level)
-            newBoss = new BaseBoss("บอสเฉยๆ", hp, level, limitTime);
+            newBoss = new BaseBoss("เฉยๆ", hp, level, limitTime);
         }
 
         else{
             let level = randomIntBetween(7, 10)
             let hp: number = this.calculateHp(level)
-            let autoAtkBoss = new AutoAttackBoss("บอสโคตวย", hp, level, limitTime, 15);
+            let attackInterval = Number(process.env.BOSS_AUTO_ATK_INTERVAL || 15)
+            let autoAtkBoss = new AutoAttackBoss("โคตวย", hp, level, limitTime, attackInterval);
             autoAtkBoss.setNormalAttackSkill(new RandomHitSkill(30))
             newBoss = autoAtkBoss
         }

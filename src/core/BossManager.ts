@@ -1,6 +1,6 @@
 import Tickable from "./interfaces/Tickable";
 import Tick from './helpers/tick';
-import BossSpawner, { BossTypes } from "./BossSpawner";
+import BossSpawner from "./BossSpawner";
 import BaseBoss from "./Boss/BaseBoss";
 import BossBattleSystem, { BattleInfo } from "./battle/BossBattleSystem";
 import IBossDeadEvent from "./interfaces/Boss/IBossDeadEvent";
@@ -15,7 +15,8 @@ export default class BossManager implements Tickable {
     private bossDeadEvents: IBossDeadEvent[]
 
     private constructor() {
-        this.bossSpawner = new BossSpawner(Tick.HOUR)
+        let bossSpawnTime = Number(process.env.BOSS_SPAWN_TIME || Tick.HOUR)
+        this.bossSpawner = new BossSpawner(bossSpawnTime)
         this.battleSystem = new BossBattleSystem()
         this.bossSpawnEvents = []
         this.bossDeadEvents = []
@@ -42,6 +43,10 @@ export default class BossManager implements Tickable {
             if (this.boss.isDead()) {
                 let info: BattleInfo[] = this.battleSystem.getInfo()
                 this.startDeadEvent(info)
+                this.clear()
+            }
+
+            if (this.boss.isBossTimeout()) {
                 this.clear()
             }
         }

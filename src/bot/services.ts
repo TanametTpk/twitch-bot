@@ -8,7 +8,7 @@ import client from '../database/client';
 export const character = new CharacterService(client)
 export const equipment = new EquipmentService(client)
 export const user = new UserService(client)
-export const game = new GameService(character, equipment)
+export const game = new GameService()
 export const shop = new ShopService(character, game)
 
 // export default {

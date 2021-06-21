@@ -35,7 +35,7 @@ class ShopService implements IShopService {
         let playerManager = this.gameService.getGameManager().playerManager
         let player = playerManager.getPlayer(hash)
         if (!player) throw new PlayerNotFoundError("not found online player");
-
+        
         return this.gameService.getGameManager().shop.buyPotion(player, name);
     }
 }

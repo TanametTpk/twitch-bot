@@ -15,7 +15,8 @@ export default class AutoAttackBoss extends BaseBoss {
 
     public update(): void {
         super.update()
-        if (this.bossAge % this.atkTime === 0) {
+        
+        if (this.bossAge % this.atkTime === 0 && this.bossAge > 0) {
             this.normalAttackSkill.use()
         }
     }

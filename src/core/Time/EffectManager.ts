@@ -42,4 +42,8 @@ export default class EffectManager implements Tickable {
     getEffect(): Effect {
         return new Effect(this)
     }
+
+    getAllEffectName(): string[] {
+        return Array.from(this.effectMapping.keys())
+    }
 }

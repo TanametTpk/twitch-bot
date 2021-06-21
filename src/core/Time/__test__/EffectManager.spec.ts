@@ -78,3 +78,19 @@ test('can reset multiple effects seperately', async() => {
     expect(effect.getEffectDuration("effect1")).toEqual(9)
     expect(effect.getEffectDuration("effect2")).toEqual(100)
 })
+
+test('can get key name', async() => {
+    effect.addEffect("effect1", 10)
+    expect(effect.getAllEffectName().includes("effect1")).toEqual(true)
+})
+
+test('can get multiple key key name', async() => {
+    effect.addEffect("effect1", 10)
+    effect.addEffect("effect2", 10)
+    expect(effect.getAllEffectName().includes("effect1")).toEqual(true)
+    expect(effect.getAllEffectName().includes("effect2")).toEqual(true)
+})
+
+test('should not return key that not adding', async() => {
+    expect(effect.getAllEffectName().includes("effect1")).toEqual(false)
+})

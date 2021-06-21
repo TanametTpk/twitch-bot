@@ -67,11 +67,11 @@ class GameService implements IGameService {
         let attackDiffRatio = attackedDmg / attackerDmg
         let successRate = 100 / attackDiffRatio
         if (attackDiffRatio >= 1 && roll(successRate)) {
-            attacked.attack(attacker)
+            this.getGameManager().playerManager.pvpSystem.attack(attacked, attacker)
             return attacked.getInfo().user
         }
 
-        attacker.attack(attacked)
+        this.getGameManager().playerManager.pvpSystem.attack(attacker, attacked)
         return attacker.getInfo().user
     }
 
