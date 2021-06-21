@@ -1,4 +1,5 @@
 import Tickable from "../interfaces/Tickable";
+import Effect from "../Player/Effect";
 
 export default class EffectManager implements Tickable {
     private effectMapping: Map<string, number>
@@ -36,5 +37,9 @@ export default class EffectManager implements Tickable {
         if (!this.maxDurationMapping.has(name)) return
         let originalValue = this.maxDurationMapping.get(name)
         this.effectMapping.set(name, originalValue!)
+    }
+
+    getEffect(): Effect {
+        return new Effect(this)
     }
 }

@@ -3,31 +3,22 @@ import { IncludeUserAndEquipment } from "../../interfaces/services/ICharacterSer
 import Attackable from "../interfaces/Attackable";
 import Damagable from "../interfaces/Damagable";
 import Tickable from "../interfaces/Tickable";
+import EffectManager from "../Time/EffectManager";
+import Effect from "./Effect";
 
 export default class Player implements Attackable, Damagable, Tickable {
     private info: Character & IncludeUserAndEquipment
-    private currentInvulnerable: number
-    private remainRespawnTime: number
+    private effectManager: EffectManager
 
     constructor(info: Character & IncludeUserAndEquipment) {
         this.info = info
-        this.currentInvulnerable = 0
-        this.remainRespawnTime = 0
+        this.effectManager = new EffectManager()
     }
     
     public start(): void {}
 
     public update(): void {
-        this.currentInvulnerable -= 1
-        this.remainRespawnTime -= 1
-
-        if (this.currentInvulnerable < 1) {
-            this.currentInvulnerable = 0
-        }
-
-        if (this.remainRespawnTime < 1) {
-            this.remainRespawnTime = 0
-        }
+        this.effectManager.update()
     }
 
     public attack(object: Damagable): void {
@@ -36,7 +27,7 @@ export default class Player implements Attackable, Damagable, Tickable {
 
     public wasAttack(dmg: number): void {
         if (dmg < 1) return
-        this.remainRespawnTime = 60
+        this.effectManager.addEffect("dead", 60)
     }
 
     public getCoin(): number {
@@ -62,7 +53,7 @@ export default class Player implements Attackable, Damagable, Tickable {
         return this.info.equipment
     }
 
-    public setEquipment(equipment: Equipment): void {
+    public setEquipment(equipment: Equipment | null): void {
         this.info.equipment = equipment
     }
 
@@ -79,12 +70,12 @@ export default class Player implements Attackable, Damagable, Tickable {
     }
 
     public isInvulnerable(): boolean {
-        return this.currentInvulnerable > 0
+        return this.effectManager.getEffectDuration("invulnerable") > 0
     }
 
     public setInvalnerable(duration: number) {
         if (duration < 1) return
-        this.currentInvulnerable = duration
+        this.effectManager.addEffect("invulnerable", duration)
     }
 
     public getId(): string {
@@ -92,12 +83,18 @@ export default class Player implements Attackable, Damagable, Tickable {
     }
 
     public isDead(): boolean {
-        console.log(this.remainRespawnTime);
-        
-        return this.remainRespawnTime > 0
+        return this.effectManager.getEffectDuration("dead") > 0
     }
 
     public getRespawnTime(): number {
-        return this.remainRespawnTime
+        return this.effectManager.getEffectDuration("dead")
+    }
+
+    public getEffects(): Effect {
+        return this.effectManager.getEffect()
+    }
+
+    public setEffect(name: string, duration: number): void {
+        this.effectManager.addEffect(name, duration)
     }
 }
