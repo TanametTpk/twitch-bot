@@ -15,10 +15,30 @@ test('can set effect', async() => {
     expect(effect.getEffectDuration("effect")).toEqual(10)
 })
 
+test('can get max duration', async() => {
+    effect.addEffect("effect", 10)
+    expect(effect.getMaxDuration("effect")).toEqual(10)
+})
+
+test('not init effect max duration should return 0', async() => {
+    expect(effect.getMaxDuration("effect")).toEqual(0)
+})
+
 test('effect duration will decrease 1 every update', async() => {
     effect.addEffect("effect", 10)
     effect.update()
     expect(effect.getEffectDuration("effect")).toEqual(9)
+})
+
+test('when update max duration should not decrease', async() => {
+    effect.addEffect("effect", 10)
+    effect.update()
+    expect(effect.getMaxDuration("effect")).toEqual(10)
+})
+
+test('when reset effect than not found should do nothing', async() => {
+    effect.resetEffect("effect")
+    expect(effect.getEffectDuration("effect")).toEqual(0)
 })
 
 test('effect duration have min value is 0', async() => {

@@ -30,8 +30,17 @@ beforeEach(() => {
     player2 = new Player(info)
 })
 
-test('can get user info', () => {
+test('can get info', () => {
     expect(player.getInfo()).toEqual(info)
+})
+
+test('can set info', () => {
+    player.setInfo(info)
+    expect(player.getInfo()).toEqual(info)
+})
+
+test('can get user info', () => {
+    expect(player.getUser()).toEqual(info.user)
 })
 
 test('when init player is not dead', () => {
@@ -138,6 +147,11 @@ test('when init player is not invulnerable', () => {
 test('player should invulnerble when set', () => {
     player.setInvalnerable(1)
     expect(player.isInvulnerable()).toEqual(true)
+})
+
+test('player should not invulnerble when set with 0', () => {
+    player.setInvalnerable(0)
+    expect(player.isInvulnerable()).toEqual(false)
 })
 
 test('when update invulnerble effect should gone', () => {
