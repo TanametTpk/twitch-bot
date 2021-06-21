@@ -31,6 +31,13 @@ export default class BossBattleSystem {
         this.record(player, dealingDamage)
     }
 
+    public directAttack(player: Player, boss: BaseBoss, damage: number): void {
+        let prevHp = boss.getHp()
+        boss.wasAttack(damage)
+        let dealingDamage = prevHp - boss.getHp()
+        this.record(player, dealingDamage)
+    }
+
     public canAttackBoss(player: Player): boolean {
         let info = this.battleInfo.get(player.getId())
         if (!info) return true;

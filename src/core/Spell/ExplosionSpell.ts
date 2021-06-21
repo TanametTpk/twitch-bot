@@ -1,12 +1,16 @@
+import { character } from "../../bot/services";
 import client from "../../bot/twitch";
 import roll from "../../bot/utils/roll";
 import sleep from "../../bot/utils/sleep";
 import BossManager from "../BossManager";
+import tick from "../helpers/tick";
 import ISpell from "../interfaces/ISpell";
 import Player from "../Player/Player";
 import PlayerManager from "../PlayerManager";
 
 export default class ExplosionSpell implements ISpell {
+    private sideEffectName: string = "หมดแรงจากการใช้เวทย์ระเบิด"
+
     constructor(private timeoutSeconds: number) {
 
     }
@@ -18,6 +22,8 @@ export default class ExplosionSpell implements ISpell {
     }
 
     async cast(player: Player, text: string) {
+        if (!this.canCastSpell(player)) return;
+
         text = text.replace("!spell ความมืดเหนือความมืดทั้งปวง ", "")
         text = text.replace(" explosion", "")
         let name = player.getUser().name
@@ -25,11 +31,13 @@ export default class ExplosionSpell implements ISpell {
         let usageCoin = this.countCharacter(last_character, text)
         if (usageCoin < 1) usageCoin = 1
         if (usageCoin > 10) usageCoin = 10
-
+        if (player.getCoin() < usageCoin) return;
         let dmg = this.calculateDamage(player, usageCoin)
         let bossManager = BossManager.getInstance()
 
+        await character.removeCoinFromCharacter(player.getInfo().id, usageCoin)
         player.wasAttack(dmg)
+        player.setEffect(this.sideEffectName, tick.HOUR * 24)
         client.timeout(process.env.tmi_channel_name as string, player.getUser().name, usageCoin)
         client.say(process.env.tmi_channel_name as string, `@${player.getUser().name} ระเบิดตัวเองตาย ด้วยเวทมนต์ระเบิด`)
 
@@ -37,7 +45,7 @@ export default class ExplosionSpell implements ISpell {
         this.drawBomb()
 
         if (bossManager.isBossSpawn()) {
-            bossManager.getBoss()?.wasAttack(dmg)
+            bossManager.battleSystem.directAttack(player, bossManager.getBoss()!, dmg)
         }
 
         this.explosionOtherPlayer(player, usageCoin)
@@ -47,7 +55,7 @@ export default class ExplosionSpell implements ISpell {
         let count = 0
         for (const c of text) {
             if (c === char) count += 1 
-        }
+        }        
         return count
     }
 
@@ -65,18 +73,8 @@ export default class ExplosionSpell implements ISpell {
     }
 
     private drawBomb(): void {
-        let text = `
-)
-(
-.-'-.
-:   :
-:TNT:
-:___:
-`
-        let lines = text.split("\n")
-        for (const line of lines) {
-            client.say(process.env.tmi_channel_name as string, line)
-        }
+        let text = `!!!! ระเบิดลง !!!!`
+        client.say(process.env.tmi_channel_name as string, text)
     }
 
     private async explosionOtherPlayer(player: Player, coin: number) {
@@ -93,5 +91,9 @@ export default class ExplosionSpell implements ISpell {
             }
         }
         client.say(channel_name, `มี ${casualties} คนในแชท โดนลูกหลง จากระเบิดของ ไอ้นี่ -> ${player.getUser().name}`);
+    }
+
+    private canCastSpell(player: Player): boolean {
+        return !player.getEffects().is(this.sideEffectName)
     }
 }
