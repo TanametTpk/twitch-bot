@@ -46,6 +46,7 @@ export default class Shop {
 
         if (potion === "ลืมไปก่อน") {
             player.setEffect("forgotness", tick.MINUTE * 5)
+            await this.characterService.removeCoinFromCharacter(player.getInfo().id, 2);
             return
         }
 

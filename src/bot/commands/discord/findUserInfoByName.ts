@@ -31,6 +31,8 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             equipmentInfo = `Atk ${player.getEquipment()!.atk} ${remainMessage}`
         }
 
+        let effectInfo = player.getEffects().toString()
+
         msg.channel.send(`
             -- user --
             id: ${character.user.id}
@@ -43,7 +45,7 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             base atk: ${character.atk}
             equipment: ${equipmentInfo}
             isDead: ${player.isDead()} ${altRespawnText}
-            effect: ${player.getEffects().toString()}
+            effect: ${effectInfo.length < 1 ? "ไม่มี" : effectInfo}
         `);
     }
 }
