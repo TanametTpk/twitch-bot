@@ -16,7 +16,7 @@ export default class ExplosionSpell implements ISpell {
     }
 
     check(player: Player, text: string): boolean {
-        if (!text.startsWith("!spell ความมืดเหนือความมืดทั้งปวง ")) return false
+        if (!text.startsWith("ความมืดเหนือความมืดทั้งปวง ")) return false
         if (!text.endsWith(" explosion")) return false
         return true
     }
