@@ -38,7 +38,11 @@ export default class ExplosionSpell implements ISpell {
         await character.removeCoinFromCharacter(player.getInfo().id, usageCoin)
         player.wasAttack(dmg)
         player.setEffect(this.sideEffectName, tick.HOUR * 24)
-        client.timeout(process.env.tmi_channel_name as string, player.getUser().name, usageCoin * 20)
+        
+        setTimeout(() => {
+            client.timeout(process.env.tmi_channel_name as string, player.getUser().name, usageCoin * 20)
+        }, 5000)
+
         client.say(process.env.tmi_channel_name as string, `@${player.getUser().name} ระเบิดตัวเองตาย ด้วยเวทมนต์ระเบิด`)
 
         if (!this.isCastSuccess(usageCoin)) return;
