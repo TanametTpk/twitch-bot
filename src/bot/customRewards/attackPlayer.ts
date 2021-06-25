@@ -58,9 +58,9 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
 
             this.webUI.showFeed(`${attackedName} 🛡️🗡️ ${tags.username}`, this.feedPosition, this.feedDuration)
         } catch (error) {
-            if (error instanceof AttackError) {
-                client.say(channel, `${tags.username} ตี ${attackedName} ไม่ได้ WTF!!`);
-            }
+            // if (error instanceof AttackError) {
+            //     client.say(channel, `${tags.username} ตี ${attackedName} ไม่ได้ WTF!!`);
+            // }
         }
     }
 }
