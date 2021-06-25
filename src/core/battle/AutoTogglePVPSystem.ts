@@ -8,7 +8,7 @@ export default class AutoTogglePVPSystem extends PVPSystem {
 
     constructor(pvpTime: number, allowPvpTime: number, preNotifyTime: number) {
         super()
-        this.isOn = true
+        this.isOn = false
         this.pvpTime = pvpTime
         this.preNotifyTime = pvpTime - preNotifyTime > 0 ? preNotifyTime : -1
         this.currentPvpTime = pvpTime
@@ -22,7 +22,7 @@ export default class AutoTogglePVPSystem extends PVPSystem {
         }
 
         if (this.currentPvpTime < 1) {
-            if (this.isOn) {
+            if (!this.isOn) {
                 this.currentPvpTime = this.allowPvpTime
             }else {
                 this.currentPvpTime = this.pvpTime
