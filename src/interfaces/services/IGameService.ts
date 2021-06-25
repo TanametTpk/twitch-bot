@@ -1,6 +1,6 @@
 import { User } from ".prisma/client";
-import GameManager from "../../game";
-import Boss from "../../game/Boss";
+import GameCore from "../../core";
+import Boss from "../../core/Boss/Boss";
 
 export default interface IGameService {
     attackBossBy(playerId: string): void
@@ -8,7 +8,7 @@ export default interface IGameService {
     getBoss(): Boss | undefined
     getBossAttackTime(): Date | undefined
     spawnBoss(): void
-    getGameManager(): GameManager
+    getGameManager(): GameCore
     isPlayerOnline(hash: string): boolean
     giveRewardToAllPlayer(coin: number): void
     giveRewardToPlayer(hash: string, coin: number): void
