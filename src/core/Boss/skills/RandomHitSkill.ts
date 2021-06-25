@@ -1,8 +1,8 @@
 import client from "../../../bot/twitch";
 import roll from "../../../bot/utils/roll";
 import sleep from "../../../bot/utils/sleep";
+import BossManager from "../../BossManager";
 import IBossSkill from "../../interfaces/IBossSkill";
-import PlayerManager from "../../PlayerManager";
 import Boss from "../Boss";
 
 export default class RandomHitSkill implements IBossSkill {
@@ -20,10 +20,10 @@ export default class RandomHitSkill implements IBossSkill {
         let channel_name = process.env.tmi_channel_name as string
         let casualties = 0;
 
-        let players = PlayerManager.getInstance().getOnlinePlayers()
+        let battleInfo = BossManager.getInstance().battleSystem.getInfo()
         
-        for (let player of players) {
-            let username = player.getInfo().user.name
+        for (let info of battleInfo) {
+            let username = info.player.getUser().name
             if (roll(1)) {
                 casualties++;
                 client.timeout(channel_name, username, this.timeoutSeconds, `โดนบอสจมตีน`);
