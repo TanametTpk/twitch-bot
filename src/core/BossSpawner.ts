@@ -55,7 +55,7 @@ export default class BossSpawner implements Tickable {
         this.spawnNow()
         this.isBossAlreadySpawn = true
         let newBoss: BaseBoss
-        let limitTime = Number(process.env.ATTACK_BOSS_LIMIT_TIME || tick.MINUTE * 15)
+        let limitTime = Number(process.env.ATTACK_BOSS_LIFE_TIME || tick.MINUTE * 15)
         bossType = bossType ? bossType : this.calculateDifficulty()
 
         /*
