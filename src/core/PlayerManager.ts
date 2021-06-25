@@ -18,8 +18,9 @@ export default class PlayerManager implements Tickable {
         this.pvpSystem = new PVPSystem()
         if (process.env.ALLOW_AUTO_PVP === "true") {
             let pvpDuration: number = Number(process.env.PVP_TIME || tick.HOUR)
+            let allowPvpTime: number = Number(process.env.PVP_DURATION_TIME || tick.HOUR)
             let notifyTime: number = Number(process.env.PRE_NOTIFY_PVP_TIME || tick.MINUTE)
-            this.pvpSystem = new AutoTogglePVPSystem(pvpDuration, notifyTime)
+            this.pvpSystem = new AutoTogglePVPSystem(pvpDuration, allowPvpTime, notifyTime)
         }
     }
 
