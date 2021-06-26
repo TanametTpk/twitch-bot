@@ -10,6 +10,7 @@ import WebSocketBossSpawnNotifyEvent from "./Boss/events/spawn/WebSocketNotifyEv
 import Shop from "./Shop";
 import SpellManager from "./SpellManager";
 import ExplosionSpell from "./Spell/ExplosionSpell";
+import DamageBuffSpell from "./Spell/DamageBuffSpell";
 
 class GameCore {
     private static instance: GameCore;
@@ -58,6 +59,7 @@ class GameCore {
 
     private configSpell(): void {
         this.spellManager.addSpell(new ExplosionSpell(30))
+        this.spellManager.addSpell(new DamageBuffSpell(1))
     }
 }
 

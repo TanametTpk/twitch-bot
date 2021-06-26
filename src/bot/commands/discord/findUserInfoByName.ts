@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import Player from "../../../core/Player/Player";
 import ICommand from "../../../interfaces/ICommand";
 import IDiscordCommand from "../../../interfaces/IDiscordCommand";
 import * as services from "../../services";
@@ -15,7 +16,9 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
 
         let playerManager = services.game.getGameManager().playerManager
         let player = playerManager.getPlayer(character.user.hash)
-        if (!player) return;
+        if (!player) {
+            player = new Player(character)
+        };
 
         let altRespawnText = ""
 
@@ -43,6 +46,7 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
             id: ${character.id}
             coin: ${character.coin}
             base atk: ${character.atk}
+            base Atk with buff: ${player.getBaseAtk(true)}
             equipment: ${equipmentInfo}
             isDead: ${player.isDead()} ${altRespawnText}
             effect: ${effectInfo.length < 1 ? "ไม่มี" : effectInfo}

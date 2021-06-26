@@ -4,15 +4,18 @@ import Attackable from "../interfaces/Attackable";
 import Damagable from "../interfaces/Damagable";
 import Tickable from "../interfaces/Tickable";
 import EffectManager from "../Time/EffectManager";
+import BuffManager from "./BuffManager";
 import Effect from "./Effect";
 
 export default class Player implements Attackable, Damagable, Tickable {
     private info: Character & IncludeUserAndEquipment
     private effectManager: EffectManager
+    private buffManager: BuffManager
 
     constructor(info: Character & IncludeUserAndEquipment) {
         this.info = info
         this.effectManager = new EffectManager()
+        this.buffManager = new BuffManager()
     }
     
     public start(): void {}
@@ -22,7 +25,8 @@ export default class Player implements Attackable, Damagable, Tickable {
     }
 
     public attack(object: Damagable): void {
-        object.wasAttack(this.getTotalDamage())
+        this.buffManager.triggerAttack()
+        object.wasAttack(this.getTotalDamage(true))
     }
 
     public wasAttack(dmg: number): void {
@@ -34,12 +38,13 @@ export default class Player implements Attackable, Damagable, Tickable {
         return this.info.coin
     }
 
-    public getBaseAtk(): number {
+    public getBaseAtk(withBuff: boolean = false): number {
+        if (withBuff) return this.info.atk + this.buffManager.getDmg()
         return this.info.atk
     }
 
-    public getTotalDamage(): number {
-        let total = this.getBaseAtk()
+    public getTotalDamage(withBuff: boolean = false): number {
+        let total = this.getBaseAtk(withBuff)
         if (this.isHaveEquipment())
             total += this.getEquipment()!.atk
         return total
