@@ -84,8 +84,12 @@ export default class ExplosionSpell implements ISpell {
     private async explosionOtherPlayer(player: Player, coin: number) {
         let channel_name = process.env.tmi_channel_name as string
         let casualties = 0;
-        let players = PlayerManager.getInstance().getOnlinePlayers()
+        let manager = PlayerManager.getInstance()
+        let players = manager.getOnlinePlayers()
         
+        if (!manager.pvpSystem.getIsStatusOn())
+            players = []
+
         for (let player of players) {
             let username = player.getInfo().user.name
             if (roll(coin)) {

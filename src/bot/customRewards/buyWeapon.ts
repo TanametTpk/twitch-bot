@@ -24,7 +24,7 @@ class BuyWeaponCommand extends AbstractChannelPointAction {
 
         if (!this.isNumber(message)) {
             client.say(channel, `
-                @${tags.username} ใส่ตัวเลยมาดีๆหน่อย เสีย point ฟรีๆ เลยเห็นไหม
+                @${tags.username} ใส่ตัวเลขมาดีๆหน่อย เสีย point ฟรีๆ เลยเห็นไหม
             `)
             return;
         }
