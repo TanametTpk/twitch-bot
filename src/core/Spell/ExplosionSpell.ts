@@ -24,7 +24,7 @@ export default class ExplosionSpell implements ISpell {
     async cast(player: Player, text: string) {
         if (!this.canCastSpell(player)) return;
 
-        text = text.replace("!spell ความมืดเหนือความมืดทั้งปวง ", "")
+        text = text.replace("ความมืดเหนือความมืดทั้งปวง ", "")
         text = text.replace(" explosion", "")
         let name = player.getUser().name
         let last_character = name[name.length - 1]

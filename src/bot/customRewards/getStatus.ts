@@ -25,7 +25,7 @@ class GetStatusCommand extends AbstractChannelPointAction {
         let effectInfo = player.getEffects().toString()
         client.say(channel, `
             @${tags.username} Status ->
-            พลังจมตีน: ${player.getBaseAtk()}
+            พลังจมตีน: ${player.getBaseAtk(true)}
             coin: ${player.getCoin()}
             สถานะ: ${player.isDead() ? "ตาย" + `รอเกิด ${player.getRespawnTime()} วิ` : "ยังคงหายใจ"}
             อาวุธ: ${equipmentInfo}
