@@ -10,7 +10,7 @@ import Effect from "./Effect";
 export default class Player implements Attackable, Damagable, Tickable {
     private info: Character & IncludeUserAndEquipment
     private effectManager: EffectManager
-    private buffManager: BuffManager
+    public buffManager: BuffManager
 
     constructor(info: Character & IncludeUserAndEquipment) {
         this.info = info
