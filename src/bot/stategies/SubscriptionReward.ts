@@ -18,6 +18,14 @@ class SubscriptionRewardStategy implements ITwitchSubscriptionStategy {
 
         await services.character.addCoinToCharacter(character.id, rewardCoin - shareRewardCoin);
         await services.character.addCoinToAllCharacter(shareRewardCoin);
+
+        client.say(channel, `
+            @${username} ได้รับ ${rewardCoin} coin จากการซับ
+        `)
+
+        client.say(channel, `
+            @${username} ได้อุทิศส่วนบุญให้ทุกคนอีก ${shareRewardCoin} coin
+        `)
     }
 }
 
