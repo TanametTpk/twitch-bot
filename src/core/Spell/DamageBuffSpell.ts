@@ -31,7 +31,7 @@ export default class DamageBuffSpell implements ISpell {
 
         await character.removeCoinFromCharacter(player.getInfo().id, usageCoin)
         player.setEffect(this.sideEffectName, tick.MINUTE * 30)
-        player.buffManager.add(new BaseAttackBuff("iron-fist", tick.MINUTE * 31, usageCoin * 1.5))
+        player.buffManager.add(new BaseAttackBuff("iron-fist", tick.MINUTE * 31, usageCoin * 5))
         
         setTimeout(() => {
             client.timeout(process.env.tmi_channel_name as string, player.getUser().name, this.timeoutSeconds)

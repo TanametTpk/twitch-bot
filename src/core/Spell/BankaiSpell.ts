@@ -27,7 +27,7 @@ export default class BankaiSpell implements ISpell {
 
         await character.removeCoinFromCharacter(player.getInfo().id, usageCoin)
         player.setEffect(this.sideEffectName, tick.MINUTE * 30)
-        player.buffManager.add(new BaseAttackBuff("iron-fist", tick.MINUTE * 31, usageCoin * 2))
+        player.buffManager.add(new BaseAttackBuff("บังไค", tick.MINUTE * 31, usageCoin * 2))
         
         setTimeout(() => {
             client.timeout(process.env.tmi_channel_name as string, player.getUser().name, this.timeoutSeconds)
