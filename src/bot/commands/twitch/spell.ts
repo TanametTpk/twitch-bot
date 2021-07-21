@@ -11,6 +11,7 @@ class SpellCommand implements ICommand, ITwitchCommand {
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
+        message = message.replace("!spell", "");
         if (!tags["user-id"]) return;
         
         let playerManager = services.game.getGameManager().playerManager
