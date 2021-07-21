@@ -49,6 +49,7 @@ export default class ExplosionSpell implements ISpell {
         this.drawBomb()
 
         if (bossManager.isBossSpawn()) {
+            client.say(process.env.tmi_channel_name as string, `@${player.getUser().name} ใช้เวทมนต์ระเบิดใส่หน้าบอสสำเร็จ`)
             bossManager.battleSystem.directAttack(player, bossManager.getBoss()!, dmg)
         }
 
@@ -69,7 +70,7 @@ export default class ExplosionSpell implements ISpell {
     }
 
     private calculateDamage(player: Player, coin: number): number {
-        return player.getTotalDamage() * coin
+        return player.getTotalDamage(true) * coin
     }
 
     private calculateChance(coin: number): number {
