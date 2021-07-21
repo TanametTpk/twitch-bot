@@ -1,3 +1,4 @@
+import moment from 'moment';
 import AutoTogglePVPSystem from './battle/AutoTogglePVPSystem';
 import PVPSystem from './battle/PVPSystem';
 import EquipmentChecker from './Equipment/EquipmentChecker';
@@ -5,11 +6,16 @@ import tick from './helpers/tick';
 import Tickable from './interfaces/Tickable';
 import Player from './Player/Player';
 
+export interface OnlinePlayerInfo {
+    player: Player
+    lastAtive: Date
+}
+
 export default class PlayerManager implements Tickable {
     private static instance: PlayerManager;
     public pvpSystem: PVPSystem;
     public equipmentChecker: EquipmentChecker;
-    private onlinePlayers: Map<string, Player>;
+    private onlinePlayers: Map<string, OnlinePlayerInfo>;
 
     private constructor() {
         this.onlinePlayers = new Map();
@@ -41,13 +47,16 @@ export default class PlayerManager implements Tickable {
         this.equipmentChecker.update()
         this.pvpSystem.update()
 
-        this.onlinePlayers.forEach((player: Player) => {
-            player.update()
+        this.onlinePlayers.forEach((info: OnlinePlayerInfo) => {
+            info.player.update()
         })
     }
 
     public async addOnlinePlayer(player: Player) {
-        this.onlinePlayers.set(player.getId(), player);
+        this.onlinePlayers.set(player.getId(), {
+            player,
+            lastAtive: new Date()
+        });
     }
 
     public async removeOnlinePlayer(player: Player) {
@@ -55,13 +64,14 @@ export default class PlayerManager implements Tickable {
     }
 
     public getOnlinePlayers(): Player[] {
-        return Array.from(this.onlinePlayers.values());
+        return Array.from(this.onlinePlayers.values()).map(info => info.player);
     }
 
     public getTotalOnlineDamage(): number {
         let total = 0
-        this.onlinePlayers.forEach((player: Player) => {
-            total += player.getTotalDamage()
+        this.onlinePlayers.forEach((info: OnlinePlayerInfo) => {
+            if (moment.duration(moment(new Date()).diff(info.lastAtive)).asSeconds() <= (process.env.PLAYER_ACTIVE_TIME || 1800))
+                total += info.player.getTotalDamage()
         })
         return total;
     }
@@ -71,6 +81,6 @@ export default class PlayerManager implements Tickable {
     }
 
     public getPlayer(playerId: string): Player | undefined {
-        return this.onlinePlayers.get(playerId)
+        return this.onlinePlayers.get(playerId)?.player
     }
 }
