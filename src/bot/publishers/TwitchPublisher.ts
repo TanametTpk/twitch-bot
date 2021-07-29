@@ -6,6 +6,7 @@ import IChannelPointAction from "../../interfaces/IChannelPointAction";
 import IMiddleware from "../../interfaces/IMiddleware";
 import ITwitchSubscriptionStategy from "../../interfaces/ITwitchSubscriptionStategy";
 import ITwitchCheerStategy from "../../interfaces/ITwitchCheerStategy";
+import ITwitchMysteryGift from "../../interfaces/ITwitchMysteryGift";
 
 export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
     private client: tmi.Client
@@ -26,6 +27,12 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
 
         this.client.on('subscription', (channel: string, username: string, _, message: string, userstate: tmi.SubUserstate) => {
             this.subscriptionStategy.perform(this.client, channel, message, username, userstate);
+        })
+
+        this.client.on('submysterygift', (channel: string, username: string, numbOfSubs: number, methods: tmi.SubMethods, userstate: tmi.SubMysteryGiftUserstate) => {
+            // use same code
+            // Userstate may have side effect when parse SubMysteryGiftUserstate to SubUserstate
+            this.subscriptionStategy.perform(this.client, channel, "", username, userstate as tmi.SubUserstate)
         })
 
         this.client.on("cheer", (channel: string, userstate: tmi.ChatUserstate, message: string) => {
