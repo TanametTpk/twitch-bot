@@ -11,7 +11,7 @@ class CheerRewardStategy implements ITwitchCheerStategy {
         let bits = Number(userstate.bits)
         let rewardCoin = Number(process.env.REWARD_FOR_PEOPLE_WHO_CHEER_YOU) || 12
         let shareRewardCoin = Number(process.env.SHARE_REWARD_WHEN_GOT_CHEER) || 1
-        let rewardRatio = Number(process.env.GIVE_REWARD_WHEN_RECEIVED_CHEER_NUMBER_OF) ||200
+        let rewardRatio = Number(process.env.GIVE_REWARD_WHEN_RECEIVED_CHEER_NUMBER_OF) || 200
         if (character.user.cheer + bits >= rewardRatio) {
             let numberOfReward = Math.floor((character.user.cheer + bits) / rewardRatio)
             await services.character.addCoinToCharacter(character.id, (rewardCoin - shareRewardCoin) * numberOfReward);
