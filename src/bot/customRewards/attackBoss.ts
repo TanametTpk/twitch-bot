@@ -41,17 +41,17 @@ class AttackBossCommand extends AbstractChannelPointAction {
             this.webUI.showFeed(`${tags.username} 🗡️🐲`, 'topRight', 1.5)
             // client.say(channel, `${tags.username} ${this.randomWord()}`)
         } catch (error) {
-            // if (error instanceof PlayerDeadError) {
-            //     client.say(channel, `@${tags.username} คนตายก็อยู่นิ่งๆไป`);
-            // }
+            if (error instanceof PlayerDeadError) {
+                client.say(channel, `@${tags.username} คนตายก็อยู่นิ่งๆไป`);
+            }
 
             // if (error instanceof AttackError) {
             //     client.say(channel, `@${tags.username} ตีเร็วไปแล้ว -> รอให้ครบ ${process.env.ATTACK_BOSS_LIMIT_TIME || 30} วิแล้วค่อยตีใหม่`);
             // }
 
-            // if (error instanceof BossNotFoundError) {
-            //     client.say(channel, `@${tags.username} ใจเย็นหนุ่มบอสยังไม่เกิด`);
-            // }
+            if (error instanceof BossNotFoundError) {
+                client.say(channel, `@${tags.username} ใจเย็นหนุ่มบอสยังไม่เกิด`);
+            }
         }
     }
 }
