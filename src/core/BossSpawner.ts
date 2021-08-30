@@ -87,15 +87,16 @@ export default class BossSpawner implements Tickable {
     }
 
     private calculateDifficulty(): BossTypes {
-        let playerManager = PlayerManager.getInstance()
-        let players = playerManager.getOnlinePlayers()
-        let count = 0
-        for (const player of players) {
-            if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
-                count += 1
-        }
+        // let playerManager = PlayerManager.getInstance()
+        // let players = playerManager.getOnlinePlayers()
+        // let count = 0
+        // for (const player of players) {
+        //     if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
+        //         count += 1
+        // }
 
-        let ratio = count / players.length * 100
+        // let ratio = count / players.length * 100
+        let ratio = randomIntBetween(0, 100)
         if (ratio >= 50) return "big"
         if (ratio >= 30) return "normal"
         return "mini"
