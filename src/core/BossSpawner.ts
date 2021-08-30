@@ -64,21 +64,21 @@ export default class BossSpawner implements Tickable {
         if (bossType === "mini") {
             let level = randomIntBetween(1, 3)
             let hp: number = this.calculateHp(level)
-            newBoss = new BaseBoss("โง่ๆ", hp, level, limitTime);
+            newBoss = new BaseBoss(process.env.SMALL_BOSS_NAME || "โง่ๆ", hp, level, limitTime);
         }
 
         else if (bossType === "normal") {
             let level = randomIntBetween(4, 6)
             let hp: number = this.calculateHp(level)
-            newBoss = new BaseBoss("เฉยๆ", hp, level, limitTime);
+            newBoss = new BaseBoss(process.env.NORMAL_BOSS_NAME || "เฉยๆ", hp, level, limitTime);
         }
 
         else{
             let level = randomIntBetween(7, 10)
             let hp: number = this.calculateHp(level)
             let attackInterval = Number(process.env.BOSS_AUTO_ATK_INTERVAL || 15)
-            let autoAtkBoss = new AutoAttackBoss("โคตวย", hp, level, limitTime, attackInterval);
-            autoAtkBoss.setNormalAttackSkill(new RandomHitSkill(30))
+            let autoAtkBoss = new AutoAttackBoss(process.env.BIG_BOSS_NAME || "โคตวย", hp, level, limitTime, attackInterval);
+            autoAtkBoss.setNormalAttackSkill(new RandomHitSkill((Number(process.env.BOSS_RANDOM_HIT_TIMEOUTS) || 30)))
             newBoss = autoAtkBoss
         }
 
@@ -87,17 +87,22 @@ export default class BossSpawner implements Tickable {
     }
 
     private calculateDifficulty(): BossTypes {
-        let playerManager = PlayerManager.getInstance()
-        let players = playerManager.getOnlinePlayers()
-        let count = 0
-        for (const player of players) {
-            if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
-                count += 1
+        let ratio = randomIntBetween(0, 100)
+
+        if (Number(process.env.IS_RANDOM_BOSS_LEVEL) < 1) {
+            let playerManager = PlayerManager.getInstance()
+            let players = playerManager.getOnlinePlayers()
+            let count = 0
+            for (const player of players) {
+                if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
+                    count += 1
+            }
+
+            ratio = count / players.length * 100
         }
 
-        let ratio = count / players.length * 100
-        if (ratio >= 50) return "big"
-        if (ratio >= 30) return "normal"
+        if (ratio >= (Number(process.env.BIG_BOSS_RATIO) || 50)) return "big"
+        if (ratio >= (Number(process.env.NORMAL_BOSS_RATIO) || 30)) return "normal"
         return "mini"
     }
 

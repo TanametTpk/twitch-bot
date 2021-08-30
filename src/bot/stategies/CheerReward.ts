@@ -9,17 +9,18 @@ class CheerRewardStategy implements ITwitchCheerStategy {
         if (!character) return;
 
         let bits = Number(userstate.bits)
-        let rewardCoin = 12
-        let shareRewardCoin = 1
-        if (character.user.cheer + bits >= 500) {
-            let numberOfReward = Math.floor((character.user.cheer + bits) / 500)
+        let rewardCoin = Number(process.env.REWARD_FOR_PEOPLE_WHO_CHEER_YOU) || 12
+        let shareRewardCoin = Number(process.env.SHARE_REWARD_WHEN_GOT_CHEER) || 1
+        let rewardRatio = Number(process.env.GIVE_REWARD_WHEN_RECEIVED_CHEER_NUMBER_OF) || 200
+        if (character.user.cheer + bits >= rewardRatio) {
+            let numberOfReward = Math.floor((character.user.cheer + bits) / rewardRatio)
             await services.character.addCoinToCharacter(character.id, (rewardCoin - shareRewardCoin) * numberOfReward);
             await services.character.addCoinToAllCharacter(shareRewardCoin * numberOfReward);
             await services.user.removeCheerReward(character.userId, character.user.cheer)
-            let remainBit = (character.user.cheer + bits) % 500
+            let remainBit = (character.user.cheer + bits) % rewardRatio
 
             client.say(channel, `
-                @${userstate.username} bits ครบ 500 แล้ว ท่านได้รับ 12 coin
+                @${userstate.username} bits ครบ ${rewardRatio} แล้ว ท่านได้รับ ${rewardCoin} coin และแบ่งให้ทุกคนอีก ${shareRewardCoin} coin
             `)
 
             if (remainBit > 0) {
