@@ -78,7 +78,7 @@ export default class BossSpawner implements Tickable {
             let hp: number = this.calculateHp(level)
             let attackInterval = Number(process.env.BOSS_AUTO_ATK_INTERVAL || 15)
             let autoAtkBoss = new AutoAttackBoss("โคตวย", hp, level, limitTime, attackInterval);
-            autoAtkBoss.setNormalAttackSkill(new RandomHitSkill(30))
+            autoAtkBoss.setNormalAttackSkill(new RandomHitSkill((Number(process.env.BOSS_RANDOM_HIT_TIMEOUTS) || 30)))
             newBoss = autoAtkBoss
         }
 
@@ -87,18 +87,22 @@ export default class BossSpawner implements Tickable {
     }
 
     private calculateDifficulty(): BossTypes {
-        // let playerManager = PlayerManager.getInstance()
-        // let players = playerManager.getOnlinePlayers()
-        // let count = 0
-        // for (const player of players) {
-        //     if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
-        //         count += 1
-        // }
-
-        // let ratio = count / players.length * 100
         let ratio = randomIntBetween(0, 100)
-        if (ratio >= 50) return "big"
-        if (ratio >= 30) return "normal"
+
+        if (Number(process.env.IS_RANDOM_BOSS_LEVEL) < 1) {
+            let playerManager = PlayerManager.getInstance()
+            let players = playerManager.getOnlinePlayers()
+            let count = 0
+            for (const player of players) {
+                if (player.isHaveEquipment() && player.getEquipment()!.atk >= 15)
+                    count += 1
+            }
+
+            ratio = count / players.length * 100
+        }
+
+        if (ratio >= (Number(process.env.BIG_BOSS_RATIO) || 50)) return "big"
+        if (ratio >= (Number(process.env.NORMAL_BOSS_RATIO) || 30)) return "normal"
         return "mini"
     }
 
