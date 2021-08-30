@@ -42,11 +42,13 @@ export default class Shop {
     }
 
     public async buyPotion(player: Player, potion: string): Promise<void> {
-        if (!this.isHaveEnoughCoin(player, 2)) throw new NotEnoughCoinError();
-
         if (potion === "ลืมไปก่อน") {
-            player.setEffect("forgotness", tick.MINUTE * 5)
-            await this.characterService.removeCoinFromCharacter(player.getInfo().id, 2);
+            let price = (Number(process.env.FORGOTNESS_PRICE) || 2)
+            let duration = (Number(process.env.FORGOTNESS_DURATION) || tick.MINUTE * 5)
+            if (!this.isHaveEnoughCoin(player, price)) throw new NotEnoughCoinError();
+
+            player.setEffect("forgotness", duration)
+            await this.characterService.removeCoinFromCharacter(player.getInfo().id, price);
             return
         }
 
