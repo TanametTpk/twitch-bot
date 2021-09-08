@@ -31,7 +31,7 @@ class AttackPlayerCommand extends AbstractChannelPointAction {
         let game = services.game
         let name = message
         let attackedName = name.startsWith("@") ? name.substring(1) : name
-        let attackedCharacter = await services.character.getCharacterByName(attackedName)
+        let attackedCharacter = await services.character.getCharacterByName(attackedName.toLowerCase())
         let reviveTime = Number(process.env.REVIVE_TIME || 60)
 
         if (!attackedCharacter) throw new Error("not found attacked character")
