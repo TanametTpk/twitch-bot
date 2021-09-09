@@ -137,12 +137,14 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
                     console.log(tags["custom-reward-id"]);
                 }
 
-                let rewardActionTasks = this.rewardActions.map(
-                    async (action) => {
-                        if (action.match(tags["custom-reward-id"]))
-                            action.perform(this.client, channel, tags, message);
-                    }
-                )
+                let rewardActionTasks = this.rewardActions
+                    .filter((action: IChannelPointAction) => !action.getIsNeedMessage())
+                    .map(
+                        async (action) => {
+                            if (action.match(tags["custom-reward-id"]))
+                                action.perform(this.client, channel, tags, message);
+                        }
+                    )
 
                 await Promise.all(rewardActionTasks)
             }

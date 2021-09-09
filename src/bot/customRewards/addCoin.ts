@@ -4,7 +4,7 @@ import * as services from "../services";
 
 class AddCoinAction extends AbstractChannelPointAction {
     constructor() {
-        super("d94548d4-52cf-47c3-ac0a-bc16d53c8f8a");
+        super("d94548d4-52cf-47c3-ac0a-bc16d53c8f8a", false);
     }
 
     async perform(client: Client, channel: string, userstate: ChatUserstate, message: string): Promise<void> {
