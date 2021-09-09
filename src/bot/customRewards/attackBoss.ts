@@ -11,7 +11,7 @@ class AttackBossCommand extends AbstractChannelPointAction {
     private webUI = WebSocketApi.getInstance()
 
     constructor() {
-        super("6caf7630-92a6-4484-9873-e1bc3609fe42");
+        super("6caf7630-92a6-4484-9873-e1bc3609fe42", false);
     }
 
     private randomWord(): string {

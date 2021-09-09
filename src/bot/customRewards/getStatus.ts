@@ -5,7 +5,7 @@ import * as services from "../services";
 
 class GetStatusCommand extends AbstractChannelPointAction {
     constructor() {
-        super("2d7efc80-44f1-4ca0-ba01-b1c399151674");
+        super("2d7efc80-44f1-4ca0-ba01-b1c399151674", false);
     }
 
     async perform(client: Client, channel: string, tags: ChatUserstate, message: string): Promise<void> {
