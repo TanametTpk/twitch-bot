@@ -14,6 +14,10 @@ class BuyEquipmentCommand implements ICommand, IDiscordCommand {
         return /!player buy [^ ]+ \d/.test(text);
     }
 
+    getHelp(): string {
+        return "!player buy <playerID> <coin>";
+    }
+
     private getParams(msg: string): Params {
         let splitedMsg = msg.split(" ");
 

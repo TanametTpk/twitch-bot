@@ -8,6 +8,10 @@ class BossAttackCommand implements ICommand, IDiscordCommand {
         return text === "!boss attack";
     }
 
+    getHelp(): string {
+        return "!boss attack";
+    }
+
     perform(msg: Message): void {
         const gameService = services.game
         const boss = gameService.getGameManager().bossManager.getBoss()

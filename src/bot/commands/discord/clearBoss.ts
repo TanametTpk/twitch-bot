@@ -8,6 +8,10 @@ class ClearBossCommand implements ICommand, IDiscordCommand {
         return text === "!boss clear";
     }
 
+    getHelp(): string {
+        return "!boss clear - Clears the boss list";
+    }
+
     perform(msg: Message): void {
         const gameService = services.game
         const boss = gameService.getGameManager().bossManager.getBoss();

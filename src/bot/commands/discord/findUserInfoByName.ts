@@ -9,6 +9,10 @@ class FindUserByNameCommand implements ICommand, IDiscordCommand {
         return /!info of [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!info of <username>";
+    }
+
     async perform(msg: Message) {
         let username = msg.content.split(" ")[2]
         let character = await services.character.getCharacterByName(username);

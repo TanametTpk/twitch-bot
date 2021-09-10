@@ -8,6 +8,10 @@ class CreateFakeUserCommand implements ICommand, IDiscordCommand {
         return /!player create [a-zA-Z0-9]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!player create <username> - Creates a fake player with the given username";
+    }
+
     async perform(msg: Message) {
         let name = msg.content.split(" ")[2];
         let user = await services.user.createUser(name, `${Math.random()}`)

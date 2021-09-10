@@ -10,6 +10,10 @@ class AttackPlayerCommand implements ICommand, IDiscordCommand {
         return /!player [^ ]+ pvp [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!player [attackerId] pvp [attackedId]";
+    }
+
     perform(msg: Message): void {
         let game: IGameService = services.game;
         let params = msg.content.split(" ");

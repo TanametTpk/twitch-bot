@@ -8,6 +8,10 @@ class BossStatusCommand implements ICommand, IDiscordCommand {
         return text === "!boss status";
     }
 
+    getHelp(): string {
+        return "!boss status";
+    }
+
     perform(msg: Message): void {
         const gameService = services.game
         const boss = gameService.getGameManager().bossManager.getBoss();

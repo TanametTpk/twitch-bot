@@ -2,7 +2,7 @@ import ICommand from "../interfaces/ICommand";
 import Tearable from "../interfaces/Tearable";
 
 export default abstract class AbstractPublisher<T extends ICommand> implements Tearable {
-    private commands!: T[]
+    protected commands!: T[]
 
     constructor(commands: T[]) {
         this.commands = commands

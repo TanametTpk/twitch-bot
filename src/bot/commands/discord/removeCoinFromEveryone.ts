@@ -8,6 +8,10 @@ class RemoveCoinFromEveryoneCommand implements ICommand, IDiscordCommand {
         return /!remove all \d+ coin/.test(text);
     }
 
+    getHelp(): string {
+        return "!remove all <amount> coin - remove <amount> coin from everyone";
+    }
+
     async perform(msg: Message) {
         let coin = Number(msg.content.split(" ")[2]);
         await services.character.removeCoinFromAllCharacter(coin);
