@@ -8,6 +8,10 @@ class ManualPVPMode implements ICommand, IDiscordCommand {
         return /!pvp mode (on|off)/.test(text);
     }
 
+    getHelp(): string {
+        return "!pvp mode <on|off> - Sets the PvP mode to on or off";
+    }
+
     async perform(msg: Message) {
         let mode = msg.content.split(" ")[2];
         let isOn = mode === "on"

@@ -10,6 +10,10 @@ class AttackBossCommand implements ICommand, IDiscordCommand {
         return /!player [^ ]+ atk boss/.test(text);
     }
 
+    getHelp(): string {
+        return "!player <name> atk boss";
+    }
+
     perform(msg: Message): void {
         let game: IGameService = services.game;
         let playerId = msg.content.split(" ")[1];

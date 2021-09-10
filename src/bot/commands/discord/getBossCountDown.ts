@@ -10,6 +10,10 @@ class GetBossCountDownCommand implements ICommand, IDiscordCommand {
         return text === "!boss countdown";
     }
 
+    getHelp(): string {
+        return "!boss countdown";
+    }
+
     perform(msg: Message): void {
         let game: IGameService = services.game;
         let attackTime = game.getBossAttackTime();

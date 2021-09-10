@@ -13,6 +13,15 @@ export default class DiscordPublisher extends AbstractPublisher<IDiscordCommand>
 
     public start(): void {
         this.client.on('message', msg => {
+            if (msg.content === '!help') {
+                let message: string = this.commands.reduce((acc, command) => {
+                    return acc + `${command.getHelp()}\n`;
+                }, '');
+                msg.channel.send(message);
+
+                return;
+            }
+
             const command = this.findMatchCommand(msg.content);
             if (command) command.perform(msg)
         })

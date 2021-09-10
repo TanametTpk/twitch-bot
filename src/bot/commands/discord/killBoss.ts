@@ -8,6 +8,10 @@ class KillBossCommand implements ICommand, IDiscordCommand {
         return text === "!boss kill";
     }
 
+    getHelp(): string {
+        return "!boss kill - Kills the boss";
+    }
+
     perform(msg: Message): void {
         const gameService = services.game
         const boss = gameService.getGameManager().bossManager.getBoss()

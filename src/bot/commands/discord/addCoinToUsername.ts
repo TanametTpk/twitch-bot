@@ -8,6 +8,10 @@ class AddCoinToUsernameCommand implements ICommand, IDiscordCommand {
         return /!give \d+ coin to [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!give <amount> coin to <username>";
+    }
+
     async perform(msg: Message) {
         let coin = Number(msg.content.split(" ")[1]);
         let username = msg.content.split(" ")[4]

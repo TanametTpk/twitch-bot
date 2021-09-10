@@ -8,6 +8,10 @@ class GetUserCommand implements ICommand, IDiscordCommand {
         return /!player status [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!player status <player> - Get the status of a player";
+    }
+
     async perform(msg: Message) {
         let playerId = msg.content.split(" ")[2]
         let character = await services.character.getCharacterByUserHash(playerId)

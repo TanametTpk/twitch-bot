@@ -8,6 +8,10 @@ class AddCoinToEveryoneCommand implements ICommand, IDiscordCommand {
         return /!give all \d+ coin/.test(text);
     }
 
+    getHelp(): string {
+        return "!give all <amount> coin";
+    }
+
     async perform(msg: Message) {
         let coin = Number(msg.content.split(" ")[2]);
         await services.character.addCoinToAllCharacter(coin);

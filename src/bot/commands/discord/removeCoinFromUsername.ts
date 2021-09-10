@@ -8,6 +8,10 @@ class RemoveCoinFromUsernameCommand implements ICommand, IDiscordCommand {
         return /!remove \d+ coin from [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!remove <amount> coin from <username>";
+    }
+
     async perform(msg: Message) {
         let coin = Number(msg.content.split(" ")[1]);
         let username = msg.content.split(" ")[4]

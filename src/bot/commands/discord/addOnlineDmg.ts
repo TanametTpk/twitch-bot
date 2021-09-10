@@ -10,6 +10,10 @@ class AddOnlineDmg implements ICommand, IDiscordCommand {
         return /!player add-dmg [^ ]+/.test(text);
     }
 
+    getHelp(): string {
+        return "!player add-dmg <player> <amount> | this is will create dmg for create boss level and health";
+    }
+
     async perform(msg: Message) {
         let game: IGameService = services.game;
         let playerId = msg.content.split(" ")[2];
