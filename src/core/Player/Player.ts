@@ -99,6 +99,10 @@ export default class Player implements Attackable, Damagable, Tickable {
         return this.effectManager.getEffect()
     }
 
+    public removeEffect(name: string): void {
+        this.effectManager.addEffect(name, 0)
+    }
+
     public setEffect(name: string, duration: number): void {
         this.effectManager.addEffect(name, duration)
     }
