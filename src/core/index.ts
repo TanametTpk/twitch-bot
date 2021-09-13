@@ -12,6 +12,7 @@ import SpellManager from "./SpellManager";
 import ExplosionSpell from "./Spell/ExplosionSpell";
 import DamageBuffSpell from "./Spell/DamageBuffSpell";
 import BankaiSpell from "./Spell/BankaiSpell";
+import ResetExplosionSpell from "./Spell/ResetExplosionSpell";
 
 class GameCore {
     private static instance: GameCore;
@@ -62,6 +63,7 @@ class GameCore {
         this.spellManager.addSpell(new ExplosionSpell(30))
         this.spellManager.addSpell(new DamageBuffSpell(1))
         this.spellManager.addSpell(new BankaiSpell(1))
+        this.spellManager.addSpell(new ResetExplosionSpell())
     }
 }
 
