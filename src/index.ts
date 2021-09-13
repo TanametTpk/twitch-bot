@@ -19,7 +19,9 @@ async function main() {
 
 main()
     .catch(async e => {
-        console.log(e);
+        if (process.env.DEBUG === "true") {
+            console.log(e);
+
         if (bot)
             bot.stop();
 

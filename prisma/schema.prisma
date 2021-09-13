@@ -35,3 +35,9 @@ model Equipment {
   last_time_check DateTime
   atk             Int
 }
+
+model SlotMachineRewardSaved {
+  id                Int      @id @default(autoincrement())
+  created_at        DateTime
+  cumurative_reward Int
+}
