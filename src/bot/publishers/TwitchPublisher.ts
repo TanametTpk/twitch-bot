@@ -148,7 +148,7 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
             }
 
             let isCommandAvailable = process.env.AVALABLE_COMMAND === "true"
-            if (isCommandAvailable) {
+            if (isCommandAvailable && message) {
                 const command = this.findMatchCommand(message);
                 if (command) command.perform(
                     this.client,
