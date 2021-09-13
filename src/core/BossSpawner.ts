@@ -101,8 +101,8 @@ export default class BossSpawner implements Tickable {
             ratio = count / players.length * 100
         }
 
-        if (ratio >= (Number(process.env.BIG_BOSS_RATIO) || 50)) return "big"
-        if (ratio >= (Number(process.env.NORMAL_BOSS_RATIO) || 30)) return "normal"
+        if (ratio >= (Number(process.env.BIG_BOSS_RATIO) || 66)) return "big"
+        if (ratio >= (Number(process.env.NORMAL_BOSS_RATIO) || 33)) return "normal"
         return "mini"
     }
 
