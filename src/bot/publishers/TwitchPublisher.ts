@@ -28,8 +28,6 @@ export default class TwitchCommander extends AbstractPublisher<ITwitchCommand> {
         this.client = client;
         let clientId = process.env.TWITCH_CLIENT_ID || ""
         let accessToken = process.env.TWITCH_CLIENT_ACCESS_TOKEN || ""
-
-        console.log(clientId, accessToken);
         
         let authProvider = new StaticAuthProvider(clientId, accessToken)
         this.apiClient = new ApiClient({ authProvider })

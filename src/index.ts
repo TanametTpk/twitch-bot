@@ -19,7 +19,7 @@ async function main() {
 
 main()
     .catch(async e => {
-        if (process.env.DEBUG === "true") {
+        if (process.env.DEBUG === "true")
             console.log(e);
 
         if (bot)
